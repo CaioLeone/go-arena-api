@@ -1,193 +1,152 @@
-# Arena dos Bárbaros API
+# Arena dos Bárbaros — Fullstack (Go + React)
 
 ## Visão Geral do Projeto
 
 ### Nome do Projeto
-Arena dos Bárbaros API
+Arena dos Bárbaros
 
 ### Descrição
-Arena dos Bárbaros é uma API RESTful desenvolvida em Go para gerenciamento de batalhas PvP entre jogadores.
+**Arena dos Bárbaros** é uma aplicação **fullstack** para gerenciamento de batalhas PvP entre jogadores. Combina:
+
+- **Backend**: API RESTful em Go com autenticação segura
+- **Frontend**: Interface moderna em React + TypeScript
 
 O sistema permitirá:
 - autenticação de usuários,
-- criação de personagens,
-- batalhas entre jogadores,
-- sistema de ranking,
-- leaderboard em tempo real utilizando Redis,
-- e gerenciamento seguro de sessões com JWT e Refresh Tokens.
-
-O projeto será construído com foco em:
-- arquitetura backend profissional,
-- segurança,
-- performance,
-- escalabilidade,
-- e boas práticas modernas de APIs REST.
+- criação e gerenciamento de personagens,
+- batalhas entre jogadores em tempo real,
+- sistema de ranking e leaderboard,
+- interface responsiva e intuitiva.
 
 ---
 
-# Objetivo do Projeto
+## Objetivo do Projeto
 
-O objetivo principal do projeto é praticar e consolidar conhecimentos avançados de desenvolvimento backend utilizando Go.
+Praticar e consolidar conhecimentos **avançados de desenvolvimento fullstack**:
 
-O projeto focará principalmente em:
+**Backend (Go):**
+- Arquitetura profissional em camadas
+- Autenticação JWT segura
+- PostgreSQL + Redis
+- Middleware e rate limiting
+- Docker e containerização
 
-- autenticação moderna com JWT,
-- Refresh Tokens,
-- middleware,
-- cache com Redis,
-- rate limiting,
-- arquitetura em camadas,
-- relacionamento entre entidades,
-- validação de dados,
-- Dockerização,
-- e boas práticas REST.
+**Frontend (React):**
+- Componentes modernos em React 18
+- TypeScript para type safety
+- Context API para gerenciamento de estado
+- Integração com API REST
+- Interface responsiva com TailwindCSS
 
-Além disso, o sistema simulará um ambiente competitivo PvP entre jogadores, tornando o aprendizado mais divertido e próximo de um sistema real.
-
----
-
-# Tecnologias Utilizadas
-
-## Backend
-- Go
-
-## Framework HTTP
-- Gin ou Chi
-
-## Banco de Dados
-- PostgreSQL
-
-## Cache e Leaderboard
-- Redis
-
-## Autenticação
-- JWT
-- Refresh Tokens
-
-## Containerização
-- Docker
-- Docker Compose
-
-## Desenvolvimento
-- Air (Hot Reload)
-
-## Validação
-- go-playground/validator
-
-## ORM / SQL
-(Pode ser definido posteriormente)
-
-- GORM
-ou
-- SQLC
-ou
-- pgx
+**Meta:** Criar um portfólio fullstack competitivo no mercado.
 
 ---
 
-# Funcionalidades do Sistema
+## Tecnologias Utilizadas
 
-## 1. Autenticação
+### Backend
+- **Go** 1.22+
+- **Gin** (framework HTTP)
+- **PostgreSQL** (banco de dados)
+- **Redis** (cache e leaderboard)
+- **JWT** (autenticação)
+- **Docker** (containerização)
 
-O sistema deverá permitir:
+### Frontend
+- **React** 18
+- **TypeScript**
+- **React Router** v6 (routing)
+- **Axios** (HTTP client)
+- **TailwindCSS** (styling)
+- **Vite** (build tool)
 
-- Registro de usuário
-- Login
+### DevTools
+- **Air** (hot reload - backend)
+- **npm** (package manager - frontend)
+- **Docker Compose** (orquestração)
+
+---
+
+## Funcionalidades do Sistema
+
+### 1. Autenticação
+- Registro de novo usuário
+- Login com email/password
+- Tokens JWT (access + refresh)
 - Logout
-- Geração de Access Token
-- Geração de Refresh Token
-- Renovação de sessão
 - Proteção de rotas privadas
 
----
-
-## 2. Sistema de Personagens
-
-Usuários poderão:
-
-- Criar personagens
-- Escolher nome do personagem
-- Escolher classe
-- Visualizar atributos
+### 2. Sistema de Personagens
+- Criar personagem com classe (Barbáro, Mago, Arqueiro, Assassino)
+- Visualizar lista de personagens
+- Ver detalhes do personagem (stats)
 - Editar personagem
+- Deletar personagem
+
+### 3. Sistema de Batalha PvP
+- Desafiar outro jogador
+- Cálculo automático de dano
+- Determinação automática de vencedor
+- Atualização automática de ranking
+- Histórico completo de batalhas
+
+### 4. Ranking Global
+- Leaderboard em tempo real
+- Top 10 players
+- Posição do jogador atual
+- Atualização com cada batalha
+
+### 5. Interface Gráfica (UI/UX)
+- Dashboard intuitivo
+- Formulários com validação
+- Feedback visual (toasts, loading states)
+- Responsividade em mobile
+- Tema "barbárico" (visual coerente)
 
 ---
 
-## 3. Sistema de Batalha
+## Regras de Negócio
 
-O sistema deverá permitir:
-
-- Iniciar batalha PvP
-- Calcular dano
-- Determinar vencedor
-- Atualizar ranking
-- Registrar histórico de batalhas
-
----
-
-## 4. Ranking Global
-
-O sistema deverá:
-
-- Exibir ranking global
-- Exibir top jogadores
-- Atualizar leaderboard em Redis
-- Consultar ranking rapidamente via cache
-
----
-
-# Regras de Negócio
-
-## Usuários
+### Usuários
 - Cada usuário pode possuir múltiplos personagens.
 - O email deve ser único.
-- A senha deve ser criptografada.
+- A senha deve ser criptografada com bcrypt.
 
----
-
-## Personagens
+### Personagens
 - Cada personagem pertence a um usuário.
 - O nome do personagem deve ser único.
 - O personagem inicia no nível 1.
 - O personagem inicia com 100 de HP.
 
----
-
-## Batalhas
+### Batalhas
 - Apenas personagens vivos podem lutar.
 - O vencedor recebe pontos de ranking.
 - O derrotado perde pontos.
 - Todas as batalhas devem ser registradas.
 
----
-
-## Ranking
+### Ranking
 - O ranking será ordenado por pontos.
-- O leaderboard será armazenado em Redis.
-- O banco PostgreSQL continuará sendo a fonte oficial de dados.
+- O leaderboard será armazenado em Redis para performance.
+- O banco PostgreSQL continua sendo a fonte oficial.
 
 ---
 
-# Entidades do Sistema
+## Entidades do Sistema
 
-## User
-
+### User
 | Campo | Tipo |
 |---|---|
 | id | UUID |
 | name | string |
 | email | string |
-| password | string |
+| password | string (hash) |
 | created_at | timestamp |
 
----
-
-## Character
-
+### Character
 | Campo | Tipo |
 |---|---|
 | id | UUID |
-| user_id | UUID |
+| user_id | UUID (FK) |
 | name | string |
 | class | string |
 | level | int |
@@ -196,202 +155,121 @@ O sistema deverá:
 | defense | int |
 | ranking_points | int |
 
----
-
-## Battle
-
+### Battle
 | Campo | Tipo |
 |---|---|
 | id | UUID |
-| attacker_id | UUID |
-| defender_id | UUID |
-| winner_id | UUID |
+| attacker_id | UUID (FK) |
+| defender_id | UUID (FK) |
+| winner_id | UUID (FK) |
 | damage_dealt | int |
 | created_at | timestamp |
 
 ---
 
-# Arquitetura do Projeto
+## Arquitetura Geral
 
-O sistema utilizará arquitetura em camadas:
+### Backend (Go)
+```
+Handler/API Layer (Gin)
+    ↓
+Service Layer (Regras de negócio)
+    ↓
+Repository Layer (Acesso a dados)
+    ↓
+PostgreSQL / Redis
+```
 
-```text
-Handler/API Layer
-↓
-Service Layer
-↓
-Repository Layer
-↓
-Database
+### Frontend (React)
+```
+Pages (Login, Characters, Battles, Leaderboard)
+    ↓
+Components (Cards, Modals, Forms)
+    ↓
+Hooks (useAuth, useCharacters, useBattles)
+    ↓
+Services (API calls com Axios)
+    ↓
+API Backend (Go)
 ```
 
 ---
 
-## Responsabilidade das Camadas
+## Fluxo do Usuário
 
-### Handler
-Responsável por:
-- receber requests,
-- validar entrada,
-- retornar responses HTTP.
-
----
-
-### Service
-Responsável por:
-- regras de negócio,
-- cálculos,
-- autenticação,
-- batalhas.
-
----
-
-### Repository
-Responsável por:
-- comunicação com PostgreSQL,
-- queries,
-- persistência.
-
----
-
-# Segurança
-
-## Autenticação JWT
-O sistema utilizará:
-- Access Token
-- Refresh Token
-
----
-
-## Rate Limiting
-Será implementado:
-- limite de requests por IP
-- proteção contra spam e brute force
-
----
-
-## Hash de Senha
-As senhas serão criptografadas utilizando:
-- bcrypt
-
----
-
-# Cache e Leaderboard
-
-Redis será utilizado para:
-
-- armazenar leaderboard global,
-- acelerar consultas de ranking,
-- cachear dados frequentes,
-- controle de rate limit,
-- possível gerenciamento de sessões.
-
----
-
-# Fluxo do Usuário
-
-```text
-Registro
-↓
-Login
-↓
-Recebe JWT
-↓
-Cria personagem
-↓
-Entra em batalha
-↓
-Ganha/perde ranking
-↓
-Leaderboard atualizado
+```
+1. Acessa aplicação (localhost:3000)
+2. Não autenticado → Redireciona para Login
+3. Faz Register ou Login
+4. Recebe JWT, salvo em localStorage
+5. Acessa Dashboard
+6. Cria personagem
+7. Seleciona personagem
+8. Entra em batalha
+9. Vê resultado
+10. Ranking atualiza em tempo real
+11. Consulta Leaderboard
 ```
 
 ---
 
-# Roadmap de Desenvolvimento
+## Roadmap de Desenvolvimento
 
-## Fase 1 — Setup Inicial
-- Estrutura do projeto
-- Docker
-- PostgreSQL
-- Redis
-- Air
-- Configuração inicial
+### Fases 1-6: Backend
+- Setup inicial, Autenticação, CRUD, Batalhas, Ranking, Segurança
+- **Duração:** ~8-9h
 
----
+### Fases 7-9: Frontend
+- Setup React, UI Principal, Polish & Deploy
+- **Duração:** ~6h
 
-## Fase 2 — Autenticação
-- Registro
-- Login
-- JWT
-- Middleware
-- Refresh Token
+### Total: ~14-15h
 
 ---
 
-## Fase 3 — Personagens
-- CRUD de personagens
-- Relacionamento User → Character
+## Tecnologias por Fase
+
+### Fase 1-6 (Backend)
+- Go, Gin, PostgreSQL, Redis, JWT, Docker
+
+### Fase 7 (Frontend)
+- React, TypeScript, React Router, Axios, Context API
+
+### Fase 8 (UI)
+- TailwindCSS, Componentes React, Custom Hooks
+
+### Fase 9 (Polish)
+- Toast notifications, Loading states, Error handling
 
 ---
 
-## Fase 4 — Batalhas
-- Sistema PvP
-- Cálculo de dano
-- Histórico
+## Segurança
+
+- **Autenticação:** JWT com expiration curta
+- **Hash de Senha:** bcrypt
+- **CORS:** Configurado no Backend
+- **Rate Limiting:** Proteção contra brute force
+- **Validação:** Client-side (React) + Server-side (Go)
 
 ---
 
-## Fase 5 — Ranking
-- Redis Leaderboard
-- Top jogadores
+## Futuras Melhorias
 
----
-
-## Fase 6 — Segurança
-- Rate Limiting
-- Melhorias de middleware
-- Hardening
-
----
-
-# Objetivos Técnicos
-
-Ao finalizar o projeto, os principais conhecimentos desenvolvidos serão:
-
-- APIs REST profissionais em Go
-- Arquitetura em camadas
-- JWT Authentication
-- Refresh Tokens
-- Redis
-- Cache
-- Rate Limiting
-- PostgreSQL
-- Docker
-- Middleware
-- Relacionamentos entre entidades
-- Segurança backend
-- Estruturação de projetos escaláveis
-
----
-
-# Futuras Melhorias
-
-Possíveis evoluções futuras do projeto:
-
-- Matchmaking automático
-- Sistema de guildas
-- Sistema de inventário
-- Equipamentos e itens
+- Testes automatizados (Jest, Go testing)
+- CI/CD com GitHub Actions
 - WebSocket para batalhas em tempo real
-- Logs estruturados
-- Observabilidade
-- Testes automatizados
-- CI/CD
-- Deploy em nuvem
+- Sistema de guildas
+- Inventário e equipamentos
+- Logs estruturados e observabilidade
+- Deploy em nuvem (AWS, Vercel)
 
 ---
 
-# Objetivo Final
+## Objetivo Final
 
-Construir uma API backend moderna e escalável em Go, simulando um sistema PvP entre jogadores, utilizando autenticação segura, Redis para performance e arquitetura profissional para consolidar conhecimentos avançados de backend.
+Construir uma **aplicação fullstack moderna e escalável** que demonstre:
+- Conhecimento profundo de Go backend
+- Habilidades em React frontend
+- Arquitetura escalável
+- Boas práticas de segurança
+- Experiência pronta para vagas de Fullstack/Backend em React+Go

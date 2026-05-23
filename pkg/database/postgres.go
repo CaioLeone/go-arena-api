@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"os"
 
 	"github.com/caioLeone/go-arena-api/internal/config"
 	_ "github.com/lib/pq"
@@ -63,7 +62,7 @@ func RunMigrations(db *sql.DB, migrationsPath string) error {
 
 	//FILTRAR APENAS ARQUIVOS UP.SQL E ORDENA-LOS
 	var migrationFiles []string
-	for _, file := range files{
+	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".up.sql") {
 			migrationFiles = append(migrationFiles, file.Name())
 		}
@@ -71,20 +70,20 @@ func RunMigrations(db *sql.DB, migrationsPath string) error {
 	sort.Strings(migrationFiles)
 
 	//EXECUTAR CADA MIGRATION
-	for _, file := range migrationFiles{
+	for _, file := range migrationFiles {
 		version := strings.TrimSuffix(file, ".up.sql")
 
 		//Verificar se migration ja foi executada
-		var exists int 
+		var exists int
 		err := db.QueryRow(
 			"SELECT COUNT(*) FROM scheme_migrations WHERE = $1",
-			version,).Scan(&exists)
+			version).Scan(&exists)
 		if err != nil {
 			return fmt.Errorf("Erro ao verificar migration %s: %w", version, err)
 		}
 
 		//Se ja foi executado, pular
-		if exists > 0{
+		if exists > 0 {
 			log.Printf("Migrations aplicada: %s", version)
 			continue
 		}
@@ -103,8 +102,8 @@ func RunMigrations(db *sql.DB, migrationsPath string) error {
 
 		//REGISTRAR MIGRATION COMO APLICADA
 		_, err = db.Exec(
-			`INSERT INTO schema_migrations (version) VALUES ($1)`, 
-			version
+			`INSERT INTO schema_migrations (version) VALUES ($1)`,
+			version,
 		)
 		if err != nil {
 			return fmt.Errorf("Erro ao Registrar Migration %s: %w", version, err)

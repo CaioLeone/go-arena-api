@@ -30,7 +30,7 @@ func main() {
 	setupRoutes(router)
 
 	// Start server
-	log.Printf("🚀 Arena API starting on port %s (env: %s)\n", port, env)
+	log.Printf("Arena API starting on port %s (env: %s)\n", port, env)
 	if err := router.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

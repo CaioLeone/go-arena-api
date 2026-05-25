@@ -6,11 +6,14 @@ import (
 	"net/http"
 	"os"
 
+    "github.com/caioLeone/go-arena-api/internal/config"
+    "github.com/caioLeone/go-arena-api/internal/handler"
+    "github.com/caioLeone/go-arena-api/internal/middleware"
+    "github.com/caioLeone/go-arena-api/internal/repository"
+    "github.com/caioLeone/go-arena-api/internal/service"
+    "github.com/caioLeone/go-arena-api/pkg/database"
+    "github.com/caioLeone/go-arena-api/pkg/redis"
 	"github.com/gin-gonic/gin"
-
-	"github.com/caioLeone/go-arena-api/internal/config"
-	"github.com/caioLeone/go-arena-api/pkg/database"
-	"github.com/caioLeone/go-arena-api/pkg/redis"
 )
 
 func main() {

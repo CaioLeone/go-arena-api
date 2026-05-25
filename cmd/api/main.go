@@ -1,38 +1,94 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/caioLeone/go-arena-api/internal/config"
+	"github.com/caioLeone/go-arena-api/pkg/database"
+	"github.com/caioLeone/go-arena-api/pkg/redis"
 )
 
 func main() {
-	// Load environment variables
-	port := getEnv("SERVER_PORT", "8080")
-	env := getEnv("SERVER_ENV", "dev")
+	//1. Carregar Configuracao
+	cfg := config.Load()
+	log.Printf("Configuracoes Carregadas (env: %s)", cfg.ServerEnv)
 
-	// Setup Gin mode based on environment
-	if env == "prod" {
-		gin.SetMode(gin.ReleaseMode)
-	} else {
-		gin.SetMode(gin.DebugMode)
+	//2. Conectar PostgreSQL
+	db, err := database.Connect(cfg)
+	if err != nil {
+		log.Fatalf("Erro ao conectar PostgreSQL: %v", err)
+	}
+	defer db.Close()
+
+	//3. Rodar Migrations
+	if err := database.RunMigrations(db, "migrations/"); err != nil {
+		log.Fatalf("Erro ao rodar migrations: %v", err)
 	}
 
-	// Initialize router
+	//4. Conectar Redis
+	redisClient := redis.Connect(cfg)
+	defer redisClient.Close()
+
+	//5. Setup Gin
+	if cfg.ServerEnv == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router := gin.Default()
 
-	// Middleware
-	// TODO: Add CORS, JWT, Rate Limiting middleware in Fase 2
+	//6. Aplicar Middlewares Globais
+	router.Use(middleware.CORSMiddleware(cfg))
+	router.Use(middleware.LoggingMiddleware())
+	router.Use(gin.Recovery())
 
-	// Routes
-	setupRoutes(router)
+	//7. Inicializar dependencias
+	initializeDependencies(router, db, cfg)
 
-	// Start server
-	log.Printf("Arena API starting on port %s (env: %s)\n", port, env)
-	if err := router.Run(":" + port); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	//8. Iniciar Servidor
+	log.Printf("Arene API Iniciada na porta %s (env: %s)", cfg.ServerPort, cfg.ServerEnv)
+	if err := router.Run(":" + cfg.ServerPort); err != nil {
+		log.Fatalf("Erro ao iniciar servidor: %v", err)
+	}
+}
+
+func initializeDependencies(router gin.Engine, db *sql.DB, cfg *config.Config) {
+	//Health Check
+	router.GET("/health", func(ctx *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "ok",
+			"service": "arena-api",
+		})
+	})
+
+	//Repositories
+	userRepo := repository.NewUserRepository(db)
+
+	//Services
+	authService := service.NewAuthService(userRepo, cfg)
+
+	//Handlers
+	authHandler := handler.NewAuthHandler(authService)
+
+	//Routes - Auth (publicas)
+	auth := router.Group("/auth")
+	{
+		auth.POST("/register", authHandler.Register)
+		auth.POST("/login", authHandler.Login)
+	}
+
+	//Routes - Protegidas (Exemplo)
+	protected := router.Group("/api")
+	protected.Use(middleware.JWTMiddleware(cfg))
+	{
+		userID := c.GetString("user_id")
+		c.JSON(http.StatusOK, gin.H{
+			"user_id": userID,
+			"message": "Voce esta autenticado",
+		})
 	}
 }
 

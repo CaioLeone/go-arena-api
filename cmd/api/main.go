@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"os"
 
-    "github.com/caioLeone/go-arena-api/internal/config"
-    "github.com/caioLeone/go-arena-api/internal/handler"
-    "github.com/caioLeone/go-arena-api/internal/middleware"
-    "github.com/caioLeone/go-arena-api/internal/repository"
-    "github.com/caioLeone/go-arena-api/internal/service"
-    "github.com/caioLeone/go-arena-api/pkg/database"
-    "github.com/caioLeone/go-arena-api/pkg/redis"
+	"github.com/caioLeone/go-arena-api/internal/config"
+	"github.com/caioLeone/go-arena-api/internal/handler"
+	"github.com/caioLeone/go-arena-api/internal/middleware"
+	"github.com/caioLeone/go-arena-api/internal/repository"
+	"github.com/caioLeone/go-arena-api/internal/service"
+	"github.com/caioLeone/go-arena-api/pkg/database"
+	"github.com/caioLeone/go-arena-api/pkg/redis"
 	"github.com/gin-gonic/gin"
 )
 
@@ -58,9 +58,9 @@ func main() {
 	}
 }
 
-func initializeDependencies(router gin.Engine, db *sql.DB, cfg *config.Config) {
+func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 	//Health Check
-	router.GET("/health", func(ctx *gin.Context) {
+	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  "ok",
 			"service": "arena-api",
@@ -87,10 +87,12 @@ func initializeDependencies(router gin.Engine, db *sql.DB, cfg *config.Config) {
 	protected := router.Group("/api")
 	protected.Use(middleware.JWTMiddleware(cfg))
 	{
-		userID := c.GetString("user_id")
-		c.JSON(http.StatusOK, gin.H{
-			"user_id": userID,
-			"message": "Voce esta autenticado",
+		protected.GET("/me", func(c *gin.Context) {
+			userID := c.GetString("user_id")
+			c.JSON(http.StatusOK, gin.H{
+				"user_id": userID,
+				"message": "Voce esta autenticado",
+			})
 		})
 	}
 }

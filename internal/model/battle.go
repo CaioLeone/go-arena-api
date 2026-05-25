@@ -7,10 +7,10 @@ import (
 )
 
 type BattleModel struct {
-	id          uuid.UUID
-	attackerId  uuid.UUID
-	defenderId  uuid.UUID
-	winnerId    uuid.UUID
-	damageDealt int
-	createdAt   time.Time
+	ID          uuid.UUID
+	AttackerId  uuid.UUID
+	DefenderId  uuid.UUID
+	WinnerId    uuid.UUID
+	DamageDealt int
+	CreatedAt   time.Time
 }

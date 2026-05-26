@@ -26,6 +26,9 @@ WORKDIR /root/
 # Copy binary from builder
 COPY --from=builder /app/arena-api .
 
+# Copy migrations (IMPORTANTE!)
+COPY --from=builder /app/migrations ./migrations/
+
 # Copy .env (optional, será sobrescrito por docker-compose)
 COPY .env .
 

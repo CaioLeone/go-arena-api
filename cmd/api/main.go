@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/caioLeone/go-arena-api/internal/config"
 	"github.com/caioLeone/go-arena-api/internal/handler"
@@ -97,20 +96,6 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 	}
 }
 
-// setupRoutes configures all API routes
-func setupRoutes(router *gin.Engine) {
-	// Health check endpoint
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
-			"service": "arena-api",
-		})
-	})
-
-	// TODO: Add Auth routes (Fase 2)
-	// router.POST("/auth/register", authHandler.Register)
-	// router.POST("/auth/login", authHandler.Login)
-
 	// TODO: Add Character routes (Fase 3)
 	// router.POST("/characters", characterHandler.Create)
 	// router.GET("/characters", characterHandler.List)
@@ -125,12 +110,3 @@ func setupRoutes(router *gin.Engine) {
 	// TODO: Add Ranking routes (Fase 5)
 	// router.GET("/ranking", rankingHandler.GetUserRanking)
 	// router.GET("/ranking/top", rankingHandler.GetTopPlayers)
-}
-
-// getEnv retrieves environment variable or returns default value
-func getEnv(key, defaultVal string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return defaultVal
-}

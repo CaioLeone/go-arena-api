@@ -13,7 +13,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// CONECTA TUDO AO POSTGRESQL
+// Connect conecta ao banco de dados PostgreSQL
 func Connect(cfg *config.Config) (*sql.DB, error) {
 	// Montar DSN (Data Source Name)
 	dsn := fmt.Sprintf(
@@ -23,44 +23,50 @@ func Connect(cfg *config.Config) (*sql.DB, error) {
 		cfg.DBUser,
 		cfg.DBPassword,
 		cfg.DBName,
-		cfg.BDSSLMode,
+		cfg.DBSSLMode,
 	)
-	//ABRIR CONEXAO
+
+	// Abrir conexão
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return nil, fmt.Errorf("Erro ao abrir conexao com o PostgreSQL: %w", err)
+		return nil, fmt.Errorf("erro ao abrir conexão com PostgreSQL: %w", err)
 	}
-	//TESTAR CONEXAO COM PING
+
+	// Testar conexão com Ping
 	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("Erro ao conectar ao PostgreSQL: %w", err)
+		return nil, fmt.Errorf("erro ao conectar ao PostgreSQL: %w", err)
 	}
-	log.Println("Conectado ao PostgreSQL com Sucesso")
+
+	log.Println("Conectado ao PostgreSQL com sucesso")
+
+	// Configurar pool de conexões
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(5)
 
 	return db, nil
 }
 
-// RunMigrations executa todas as Migrations SQL na ordem correta
+// RunMigrations executa todas as migrations SQL na ordem correta
 func RunMigrations(db *sql.DB, migrationsPath string) error {
-	//Cria tabela de rastreamento de migrations(se nao existir)
+	// Criar tabela de rastreamento de migrations (se não existir)
 	createMigrationsTable := `
-		CREATE TABLE IF NOT EXISTS schema_migrations (
-			id SERIAL PRIMARY KEY,
-			version VARCHAR(255) UNIQUE NOT NULL,
-			applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);`
+    CREATE TABLE IF NOT EXISTS schema_migrations (
+        id SERIAL PRIMARY KEY,
+        version VARCHAR(255) UNIQUE NOT NULL,
+        applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`
+
 	if _, err := db.Exec(createMigrationsTable); err != nil {
-		return fmt.Errorf("Erro ao criar tabela scheme_migrations: %w", err)
+		return fmt.Errorf("erro ao criar tabela schema_migrations: %w", err)
 	}
 
-	//LISTAR TODOS OS ARQUIVOS .UP.SQL
+	// Listar todos os arquivos .up.sql
 	files, err := ioutil.ReadDir(migrationsPath)
 	if err != nil {
-		return fmt.Errorf("Erro ao Ler Diretorio de Migrations: %w", err)
+		return fmt.Errorf("erro ao ler diretório de migrations: %w", err)
 	}
 
-	//FILTRAR APENAS ARQUIVOS UP.SQL E ORDENA-LOS
+	// Filtrar apenas arquivos .up.sql e ordená-los
 	var migrationFiles []string
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".up.sql") {
@@ -69,52 +75,54 @@ func RunMigrations(db *sql.DB, migrationsPath string) error {
 	}
 	sort.Strings(migrationFiles)
 
-	//EXECUTAR CADA MIGRATION
+	// Executar cada migration
 	for _, file := range migrationFiles {
 		version := strings.TrimSuffix(file, ".up.sql")
 
-		//Verificar se migration ja foi executada
+		// Verificar se migration já foi executada
 		var exists int
 		err := db.QueryRow(
-			"SELECT COUNT(*) FROM scheme_migrations WHERE version = $1",
-			version).Scan(&exists)
+			"SELECT COUNT(*) FROM schema_migrations WHERE version = $1", version).Scan(&exists)
+
 		if err != nil {
-			return fmt.Errorf("Erro ao verificar migration %s: %w", version, err)
+			return fmt.Errorf("erro ao verificar migration %s: %w", version, err)
 		}
 
-		//Se ja foi executado, pular
+		// Se já foi executada, pular
 		if exists > 0 {
-			log.Printf("Migrations aplicada: %s", version)
+			log.Printf("⏭️  Migration já aplicada: %s", version)
 			continue
 		}
 
-		//LER CONTEUDO DO ARQUIVO SQL
-		filepath := filepath.Join(migrationsPath, file)
-		sqlContent, err := ioutil.ReadFile(filepath)
+		// Ler conteúdo do arquivo SQL
+		filePath := filepath.Join(migrationsPath, file)
+		sqlContent, err := ioutil.ReadFile(filePath)
 		if err != nil {
-			return fmt.Errorf("Erro ao ler arquivo %s: %w", file, err)
+			return fmt.Errorf("erro ao ler arquivo %s: %w", file, err)
 		}
 
-		//EXECUTAR SQL
+		// Executar SQL
 		if _, err := db.Exec(string(sqlContent)); err != nil {
-			return fmt.Errorf("Erro ao executar migration %s: %w", version, err)
+			return fmt.Errorf("erro ao executar migration %s: %w", version, err)
 		}
 
-		//REGISTRAR MIGRATION COMO APLICADA
+		// Registrar migration como aplicada
 		_, err = db.Exec(
-			`INSERT INTO schema_migrations (version) VALUES ($1)`,
+			"INSERT INTO schema_migrations (version) VALUES ($1)",
 			version,
 		)
 		if err != nil {
-			return fmt.Errorf("Erro ao Registrar Migration %s: %w", version, err)
+			return fmt.Errorf("erro ao registrar migration %s: %w", version, err)
 		}
-		log.Printf("Migration Aplicada: %s", version)
+
+		log.Printf("Migration aplicada: %s", version)
 	}
 
-	log.Println("Todas as Migrations Foram Executadas Com Sucesso")
+	log.Println("Todas as migrations foram executadas com sucesso")
 	return nil
 }
 
+// GetConnection retorna a conexão com o banco (para reutilização)
 func GetConnection(cfg *config.Config) (*sql.DB, error) {
 	return Connect(cfg)
 }

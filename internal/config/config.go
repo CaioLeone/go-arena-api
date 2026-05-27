@@ -14,7 +14,7 @@ type Config struct {
 	DBUser     string
 	DBPassword string
 	DBName     string
-	BDSSLMode  string
+	DBSSLMode  string
 
 	//REDIS
 	RedisHost string
@@ -46,7 +46,7 @@ func Load() *Config {
 		DBUser:     getEnv("DB_USER", "arena_user"),
 		DBPassword: getEnv("DB_PASSWORD", "arena_password"),
 		DBName:     getEnv("DB_NAME", "arena_db"),
-		BDSSLMode:  getEnv("DB_SSL_MODE", "disable"),
+		DBSSLMode:  getEnv("DB_SSL_MODE", "disable"),
 
 		//REDIS
 		RedisHost: getEnv("REDIS_HOST", "localhost"),

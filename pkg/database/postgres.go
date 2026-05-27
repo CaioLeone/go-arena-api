@@ -76,7 +76,7 @@ func RunMigrations(db *sql.DB, migrationsPath string) error {
 		//Verificar se migration ja foi executada
 		var exists int
 		err := db.QueryRow(
-			"SELECT COUNT(*) FROM scheme_migrations WHERE = $1",
+			"SELECT COUNT(*) FROM scheme_migrations WHERE version = $1",
 			version).Scan(&exists)
 		if err != nil {
 			return fmt.Errorf("Erro ao verificar migration %s: %w", version, err)

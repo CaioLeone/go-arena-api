@@ -80,6 +80,7 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 	{
 		auth.POST("/register", authHandler.Register)
 		auth.POST("/login", authHandler.Login)
+		auth.POST("/refresh", authHandler.Refresh)
 	}
 
 	//Routes - Protegidas (Exemplo)

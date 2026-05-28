@@ -108,3 +108,39 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		},
 	})
 }
+
+func (h *AuthHandler) Refresh(c *gin.Context) {
+	var req dto.RefreshTokenRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   "refresh_token obrigatorio",
+		})
+		return
+	}
+
+	if err := h.validator.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   "Validacao Falhou",
+		})
+		return
+	}
+
+	accessToken, err := h.authService.Refresh(req.RefreshToken)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"access_token": accessToken,
+		},
+	})
+}

@@ -16,6 +16,10 @@ type UserUpdateRequest struct {
 	Name string `json:"name" validate:"required,min=1,max=25"`
 }
 
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token" validate:"required"`
+}
+
 // RESPONSE
 
 type UserResponse struct {

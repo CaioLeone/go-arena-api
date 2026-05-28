@@ -15,6 +15,7 @@ type AuthService interface {
 	Register(req *dto.UserCreateRequest) (*dto.UserResponse, *dto.LoginResponse, error)
 	Login(req *dto.UserLoginRequest) (*dto.LoginResponse, error)
 	ValidateToken(token string) (string, error)
+	Refresh(refreshToken string) (string, error)
 }
 
 // authService implementa AuthService
@@ -118,4 +119,19 @@ func (s *authService) ValidateToken(token string) (string, error) {
 	}
 
 	return claims.UserID, nil
+}
+
+func (s *authService) Refresh(refreshToken string) (string, error) {
+	// Validar Refresh Token (aqui voce pode implementar uma logica para validar o refresh token, como armazenar no banco e verificar se ele existe e nao expirou)
+	claims, err := auth.ValidateToken(refreshToken, s.config)
+	if err != nil {
+		return "", fmt.Errorf("Refresh Token Invalido: %w", err)
+	}
+
+	accessToken, err := auth.GenerateAccessToken(claims.UserID, claims.Email, s.config)
+	if err != nil {
+		return "", fmt.Errorf("Erro ao Gerar Novo Access Token: %w", err)
+	}
+
+	return accessToken, nil
 }

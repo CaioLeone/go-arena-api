@@ -46,9 +46,9 @@
 * Implementar internal/auth/token.go
 
 ### Entregáveis:
-* POST /auth/register funciona
-* POST /auth/login retorna JWT
-* Middleware protege rotas privadas
+- [X] POST /auth/register funciona
+- [X] POST /auth/login retorna JWT
+- [X] Middleware protege rotas privadas
 
 ## FASE 3: CRUD DE PERSONAGENS (1.5h)
 * Objetivo: Criar, ler, editar, deletar personagens

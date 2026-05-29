@@ -31,19 +31,19 @@
 
 ### Tasks:
 
-* Implementar internal/repository/user_repository.go
-* GetUserByEmail()
-* CreateUser()
-* GetUserByID()
-* Implementar internal/service/auth_service.go
-* Register()
-* Login()
-* ValidateToken()
-* Implementar internal/handler/auth_handler.go
-* POST /auth/register
-* POST /auth/login
-* Implementar internal/middleware/jwt_middleware.go
-* Implementar internal/auth/token.go
+- [X] Implementar internal/repository/user_repository.go
+- [X] GetUserByEmail()
+- [X] CreateUser()
+- [X] GetUserByID()
+- [X] Implementar internal/service/auth_service.go
+- [X] Register()
+- [X] Login()
+- [X] ValidateToken()
+- [X] Implementar internal/handler/auth_handler.go
+- [X] POST /auth/register
+- [X] POST /auth/login
+- [X] Implementar internal/middleware/jwt_middleware.go
+- [X] Implementar internal/auth/token.go
 
 ### Entregáveis:
 - [X] POST /auth/register funciona

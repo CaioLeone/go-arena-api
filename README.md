@@ -5,26 +5,26 @@
 
 ### Tasks:
 
-* Corrigir packages (models e DTOs)
-* Criar estrutura de diretórios
-* Mover main.go para /cmd/api/
-* Setup go.mod com deps essenciais
-* Criar docker-compose.yml (PostgreSQL + Redis)
-* Criar .env template
-* Criar Dockerfile (simples, com Air para dev)
-* Criar migrations SQL básicas (users, characters, battles)
-* Implementar cmd/api/main.go MINIMALISTA:
-* Carregar config
-* Conectar PostgreSQL
-* Conectar Redis
-* Iniciar servidor (porta 8080)
-* Rotas básicas (apenas /health)
+- [X] Corrigir packages (models e DTOs)
+- [X] Criar estrutura de diretórios
+- [X] Mover main.go para /cmd/api/
+- [X] Setup go.mod com deps essenciais
+- [X] Criar docker-compose.yml (PostgreSQL + Redis)
+- [X] Criar .env template
+- [X] Criar Dockerfile (simples, com Air para dev)
+- [X] Criar migrations SQL básicas (users, characters, battles)
+- [X] Implementar cmd/api/main.go MINIMALISTA:
+- [X] Carregar config
+- [X] Conectar PostgreSQL
+- [X] Conectar Redis
+- [X] Iniciar servidor (porta 8080)
+- [X] Rotas básicas (apenas /health)
 
 ### Entregáveis:
-* [] Projeto compila com go build
-* Docker compila com docker-compose up
-* Endpoint /health retorna 200 OK
-* Database criado com migrations
+- [X] Projeto compila com go build
+- [X] Docker compila com docker-compose up
+- [X] Endpoint /health retorna 200 OK
+- [X] Database criado com migrations
 
 ## FASE 2: AUTENTICAÇÃO MINIMALISTA (2h)
 * Objetivo: Login/Register funcional + JWT middleware

@@ -68,12 +68,15 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 
 	//Repositories
 	userRepo := repository.NewUserRepository(db)
+	characterRepo := repository.NewCharacterRepository(db)
 
 	//Services
 	authService := service.NewAuthService(userRepo, cfg)
+	characterService := service.NewCharacterService(characterRepo)
 
 	//Handlers
 	authHandler := handler.NewAuthHandler(authService)
+	characterHandler := handler.NewCharacterHandler(characterService)
 
 	//Routes - Auth (publicas)
 	auth := router.Group("/auth")
@@ -95,14 +98,18 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 			})
 		})
 	}
-}
 
-	// TODO: Add Character routes (Fase 3)
-	// router.POST("/characters", characterHandler.Create)
-	// router.GET("/characters", characterHandler.List)
-	// router.GET("/characters/:id", characterHandler.GetByID)
-	// router.PUT("/characters/:id", characterHandler.Update)
-	// router.DELETE("/characters/:id", characterHandler.Delete)
+    characters := router.Group("/characters")
+    characters.Use(middleware.JWTMiddleware(cfg))
+    {
+        characters.POST("", characterHandler.Create)
+        characters.GET("", characterHandler.GetAll)
+        characters.GET("/:id", characterHandler.GetByID)
+        characters.PUT("/:id", characterHandler.Update)
+        characters.DELETE("/:id", characterHandler.Delete)
+    }
+}
+	
 
 	// TODO: Add Battle routes (Fase 4)
 	// router.POST("/battles", battleHandler.Create)

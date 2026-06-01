@@ -1,0 +1,129 @@
+package service
+
+import (
+	"fmt"
+
+	"github.com/caioLeone/go-arena-api/internal/dto"
+	"github.com/caioLeone/go-arena-api/internal/model"
+	"github.com/caioLeone/go-arena-api/internal/repository"
+	"github.com/google/uuid"
+)
+
+type CharacterService interface {
+	Create(userID string, req *dto.CharacterCreateRequest) (*dto.CharacterResponse, error)
+	GetByID(id string, userID string) (*dto.CharacterResponse, error)
+	GetAll(userID string) ([]*dto.CharacterResponse, error)
+	Update(id string, userID string, req *dto.CharacterUpdateRequest) (*dto.CharacterResponse, error)
+	Delete(id string, userID string) error
+}
+
+type characterService struct {
+	characterRepo repository.CharacterRepository
+}
+
+func NewCharacterService(characterRepo repository.CharacterRepository) CharacterService {
+	return &characterService{characterRepo: characterRepo}
+}
+
+func modelToDTO(char *model.CharacterModel) *dto.CharacterResponse {
+	return &dto.CharacterResponse{
+		ID:            char.ID,
+		UserID:        char.UserID,
+		Name:          char.Name,
+		Class:         char.Class,
+		Level:         char.Level,
+		HP:            char.HP,
+		Attack:        char.Attack,
+		Defense:       char.Defense,
+		RankingPoints: char.RankingPoints,
+		CreatedAt:     char.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:     char.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+	}
+}
+
+func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest) (*dto.CharacterResponse, error) {
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return nil, fmt.Errorf("ID do Usuario Invalido: %w", err)
+	}
+	existingChar, _ := s.characterRepo.GetByName(req.Name)
+	if existingChar != nil {
+		return nil, fmt.Errorf("Nome do Personagem Ja Existe")
+	}
+
+	level := req.Level
+	if level == 0 {
+		level = 1
+	}
+	hp := req.HP
+	if hp == 0 {
+		hp = 100
+	}
+	attack := req.Attack
+	if attack == 0 {
+		attack = 10
+	}
+	defense := req.Defense
+	if defense == 0 {
+		defense = 5
+	}
+
+	character := &model.CharacterModel{
+		UserID:  userUUID,
+		Name:    req.Name,
+		Class:   req.Class,
+		Level:   level,
+		HP:      hp,
+		Attack:  attack,
+		Defense: defense,
+	}
+
+	createdChar, err := s.characterRepo.Create(character)
+	if err != nil {
+		return nil, err
+	}
+
+	return modelToDTO(createdChar), nil
+}
+
+func (s *characterService) GetByID(id string, userID string) (*dto.CharacterResponse, error) {
+	character, err := s.characterRepo.GetByID(id, userID)
+	if err != nil {
+		return nil, err
+	}
+	return modelToDTO(character), nil
+}
+
+func (s *characterService) GetAll(userID string) ([]*dto.CharacterResponse, error) {
+	characters, err := s.characterRepo.GetAllByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var responses []*dto.CharacterResponse
+	for _, char := range characters {
+		responses = append(responses, modelToDTO(char))
+	}
+	return responses, nil
+}
+
+func (s *characterService) Update(id string, userID string, req *dto.CharacterUpdateRequest) (*dto.CharacterResponse, error) {
+	character := &model.CharacterModel{
+		Name:    req.Name,
+		Class:   req.Class,
+		Level:   req.Level,
+		HP:      req.HP,
+		Attack:  req.Attack,
+		Defense: req.Defense,
+	}
+
+	updatedChar, err := s.characterRepo.Update(id, userID, character)
+	if err != nil {
+		return nil, err
+	}
+	return modelToDTO(updatedChar), nil
+}
+
+func (s *characterService) Delete(id string, userID string) error {
+	return s.characterRepo.Delete(id, userID)
+}

@@ -1,6 +1,10 @@
 package model
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type CharacterModel struct {
 	ID            uuid.UUID
@@ -12,4 +16,6 @@ type CharacterModel struct {
 	Attack        int
 	Defense       int
 	RankingPoints int
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }

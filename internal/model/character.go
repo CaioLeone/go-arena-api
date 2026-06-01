@@ -8,11 +8,11 @@ import (
 
 type CharacterModel struct {
 	ID            uuid.UUID
-	UserId        uuid.UUID
+	UserID        uuid.UUID
 	Name          string
 	Class         string
 	Level         int
-	Hp            int
+	HP            int
 	Attack        int
 	Defense       int
 	RankingPoints int

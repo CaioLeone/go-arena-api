@@ -41,7 +41,7 @@ func (h *CharacterHandler) Create(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetString("userID")
+	userID := c.GetString("user_id")
 	character, err := h.characterService.Create(userID, &req)
 	if err != nil {
 		c.SecureJSON(http.StatusBadRequest, gin.H{
@@ -60,7 +60,7 @@ func (h *CharacterHandler) Create(c *gin.Context) {
 // GET ALL retorna todos os personagens do usuario
 // GET /characters
 func (h *CharacterHandler) GetAll(c *gin.Context) {
-	userID := c.GetString("userID")
+	userID := c.GetString("user_id")
 	characters, err := h.characterService.GetAll(userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -79,7 +79,7 @@ func (h *CharacterHandler) GetAll(c *gin.Context) {
 // GET /characters/:id
 func (h *CharacterHandler) GetByID(c *gin.Context) {
 	id := c.Param("id")
-	userID := c.GetString("userID")
+	userID := c.GetString("user_id")
 
 	character, err := h.characterService.GetByID(id, userID)
 	if err != nil {
@@ -118,7 +118,7 @@ func (h *CharacterHandler) Update(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetString("userID")
+	userID := c.GetString("user_id")
 
 	character, err := h.characterService.Update(id, userID, &req)
 	if err != nil {
@@ -139,7 +139,7 @@ func (h *CharacterHandler) Update(c *gin.Context) {
 // DELETE /characters/:id
 func (h *CharacterHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
-	userID := c.GetString("userID")
+	userID := c.GetString("user_id")
 
 	err := h.characterService.Delete(id, userID)
 	if err != nil {

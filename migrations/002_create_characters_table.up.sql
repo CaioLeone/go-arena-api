@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS characters (
     hp INT DEFAULT 100 CHECK (hp > 0),
     attack INT DEFAULT 10 CHECK (attack > 0),
     defense INT DEFAULT 5 CHECK (defense > 0),
+    critical_chance INT DEFAULT 10 CHECK (critical_chance >= 0 AND critical_chance <= 100),
 
     -- RANKING
     ranking_points INT DEFAULT 0 CHECK (ranking_points >= 0),
@@ -33,3 +34,4 @@ COMMENT ON COLUMN characters.user_id IS 'FK para usuário proprietário';
 COMMENT ON COLUMN characters.class IS 'Classe: Barbaro, Mago, Arqueiro, Assassino';
 COMMENT ON COLUMN characters.hp IS 'Health Points (vida do personagem)';
 COMMENT ON COLUMN characters.ranking_points IS 'Pontos acumulados em batalhas';
+COMMENT ON COLUMN characters.critical_chance IS 'Chance de acerto crítico';

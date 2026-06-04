@@ -67,15 +67,20 @@ func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest
 	if defense == 0 {
 		defense = 5
 	}
+	criticalChance := req.CriticalChance
+	if criticalChance == 0 {
+		criticalChance = 10 // Valor padrão
+	}
 
 	character := &model.CharacterModel{
-		UserID:  userUUID,
-		Name:    req.Name,
-		Class:   req.Class,
-		Level:   level,
-		HP:      hp,
-		Attack:  attack,
-		Defense: defense,
+		UserID:         userUUID,
+		Name:           req.Name,
+		Class:          req.Class,
+		Level:          level,
+		HP:             hp,
+		Attack:         attack,
+		Defense:        defense,
+		CriticalChance: criticalChance,
 	}
 
 	createdChar, err := s.characterRepo.Create(character)

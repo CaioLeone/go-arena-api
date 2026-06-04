@@ -9,6 +9,7 @@ type CharacterCreateRequest struct {
 	HP      int    `json:"hp" validate:"omitempty,required,min=1"`
 	Attack  int    `json:"attack" validate:"omitempty,required,min=1"`
 	Defense int    `json:"defense" validate:"omitempty,required,min=1"`
+	CriticalChance int    `json:"critical_chance" validate:"omitempty,min=0,max=100"`
 }
 
 type CharacterUpdateRequest struct {
@@ -18,6 +19,7 @@ type CharacterUpdateRequest struct {
 	HP      int    `json:"hp" validate:"omitempty,required,min=1"`
 	Attack  int    `json:"attack" validate:"omitempty,required,min=1"`
 	Defense int    `json:"defense" validate:"omitempty,required,min=1"`
+	CriticalChance int    `json:"critical_chance" validate:"omitempty,min=0,max=100"`
 }
 
 // RESPONSE

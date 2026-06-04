@@ -38,3 +38,4 @@ COMMENT ON COLUMN battles.attacker_id IS 'FK para personagem atacante';
 COMMENT ON COLUMN battles.defender_id IS 'FK para personagem defensor';
 COMMENT ON COLUMN battles.winner_id IS 'FK para personagem vencedor';
 COMMENT ON COLUMN battles.damage_dealt IS 'Dano total causado na batalha';
+COMMENT ON COLUMN battles.rounds_data IS 'Dados em JSON de cada round da batalha';

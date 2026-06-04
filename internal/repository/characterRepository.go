@@ -11,6 +11,7 @@ type CharacterRepository interface {
 	Create(character *model.CharacterModel) (*model.CharacterModel, error)
 	GetByID(id string, userID string) (*model.CharacterModel, error)
 	GetAllByUserID(userID string) ([]*model.CharacterModel, error)
+	GetByIDNoUserFilter(id string) (*model.CharacterModel, error)
 	Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error)
 	Delete(id string, userID string) error
 	GetByName(name string) (*model.CharacterModel, error)
@@ -138,6 +139,41 @@ func (r *characterRepository) GetAllByUserID(userID string) ([]*model.CharacterM
 		return nil, fmt.Errorf("Erro ao iterar personagens: %w", err)
 	}
 	return characters, nil
+}
+
+func (r *characterRepository) GetByIDNoUserFilter(id string) (*model.CharacterModel, error) {
+    query := `
+        SELECT id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+        FROM characters
+        WHERE id = $1
+    `
+
+    row := r.db.QueryRow(query, id)
+
+    var char model.CharacterModel
+    err := row.Scan(
+        &char.ID,
+        &char.UserID,
+        &char.Name,
+        &char.Class,
+        &char.Level,
+        &char.HP,
+        &char.Attack,
+        &char.Defense,
+        &char.RankingPoints,
+        &char.CriticalChance,
+        &char.CreatedAt,
+        &char.UpdatedAt,
+    )
+
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return nil, fmt.Errorf("Personagem não encontrado")
+        }
+        return nil, fmt.Errorf("Erro ao buscar personagem: %w", err)
+    }
+
+    return &char, nil
 }
 
 func (r *characterRepository) Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error) {

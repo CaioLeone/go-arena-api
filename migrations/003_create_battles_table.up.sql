@@ -3,8 +3,20 @@ CREATE TABLE IF NOT EXISTS battles (
 
     -- CHAVES ESTRANGEIRAS( QUEM ATACOU, QUEM DEFENDEU, QUEM VENCEU)
     attacker_id UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
+    attacker_name VARCHAR(100) NOT NULL,
+
     defender_id UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
+    defender_name VARCHAR(100) NOT NULL,
+
     winner_id UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
+    winner_name VARCHAR(100),
+
+    attacker_hp_final INT NOT NULL,
+    defender_hp_final INT NOT NULL,
+
+    -- DETALHES
+    rounds_count INT NOT NULL,
+    rounds_data JSONB NOT NULL,
 
     -- RESULTADO DA BATALHA
     damage_dealt INT NOT NULL CHECK (damage_dealt > 0),

@@ -1,10 +1,13 @@
 package battle
 
 import (
+	"encoding/json"
+	"fmt"
 	"math"
 	"math/rand"
 	"time"
 
+	"github.com/caioLeone/go-arena-api/internal/dto"
 	"github.com/caioLeone/go-arena-api/internal/model"
 )
 
@@ -18,6 +21,16 @@ type BattleRoundData struct {
 	DefenderHP     int    `json:"defender_hp"`
 	IsCritical     bool   `json:"is_critical"`
 	Message        string `json:"message"`
+}
+
+type BattleResult struct {
+	Winner          *model.CharacterModel
+	Loser           *model.CharacterModel
+	AttackerHPFinal int
+	DefenderHPFinal int
+	RoundsCount     int
+	Rounds          []BattleRoundData
+	IsDraw          bool
 }
 
 //CalcDamage Calcula o dano usando a formula especificada
@@ -40,4 +53,85 @@ func CalcDamage(attacker *model.CharacterModel, defender *model.CharacterModel) 
 	finalDamage := int(math.Max(float64(MinDamage), damage))
 
 	return finalDamage, isCritical
+}
+
+// DetermineBattle simula a batalha entre dois personagens e retorna o resultado
+func DetermineBattle(attacker, defender *model.CharacterModel) (*BattleResult, error) {
+	if attacker.ID == defender.ID {
+		return nil, fmt.Errorf("Um Personagem Nao Pode Lutar Contra Si Mesmo")
+	}
+
+	rounds := []BattleRoundData{}
+	attackerHP := attacker.HP
+	defenderHP := defender.HP
+
+	//Simular Rounds de Batalha
+	for round := 0; round < MaxRounds; round++ {
+		damage, isCritical := CalcDamage(attacker, defender)
+		defenderHP -= damage
+
+		message := fmt.Sprintf("%s Ataca com Dano de %d", attacker.Name, damage)
+		if isCritical {
+			message += " (CRITICO!)"
+		}
+
+		roundData := BattleRoundData{
+			AttackerDamage: damage,
+			DefenderHP:     defenderHP,
+			IsCritical:     isCritical,
+			Message:        message,
+		}
+
+		rounds = append(rounds, roundData)
+
+		if attackerHP <= 0 {
+			return &BattleResult{
+				Winner:          defender,
+				Loser:           attacker,
+				AttackerHPFinal: 0,
+				DefenderHPFinal: defenderHP,
+				RoundsCount:     round + 1,
+				Rounds:          rounds,
+			}, nil
+		}
+	}
+
+	//Se Chegou aqui, Empatou
+	return &BattleResult{
+		Winner:          nil,
+		Loser:           nil,
+		AttackerHPFinal: attackerHP,
+		DefenderHPFinal: defenderHP,
+		RoundsCount:     MaxRounds,
+		Rounds:          rounds,
+		IsDraw:          true,
+	}, nil
+}
+
+func UpdateRanking(winner, loser *model.CharacterModel, diff int) int {
+	pointsGained := 10 + (diff / 5)
+
+	if pointsGained < 1 {
+		pointsGained = 1
+	}
+	return pointsGained
+}
+
+// ToRoundsJSON Converte os dados dos rounds para JSON, facilitando a visualização e análise dos resultados da batalha.
+func (br *BattleResult) ToRoundsJSON() (string, error) {
+	data, err := json.Marshal(br.Rounds)
+	if err != nil {
+		return "", fmt.Errorf("Erro ao Serializar Rounds: %w", err)
+	}
+	return string(data), nil
+}
+
+// FromRoundsJSON desserialzia rounds de JSON
+func FromRoundsJSON(data string) ([]dto.BattleRound, error) {
+	var rounds []dto.BattleRound
+	err := json.Unmarshal([]byte(data), &rounds)
+	if err != nil {
+		return nil, fmt.Errorf("Erro ao Desserializar Rounds: %w", err)
+	}
+	return rounds, nil
 }

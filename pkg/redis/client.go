@@ -1,75 +1,88 @@
 package redis
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"time"
+    "context"
+    "fmt"
+    "log"
+    "time"
 
-	"github.com/caioLeone/go-arena-api/internal/config"
-	"github.com/redis/go-redis/v9"
+    "github.com/caioLeone/go-arena-api/internal/config"
+    "github.com/redis/go-redis/v9"
 )
 
 type Client struct {
-	client *redis.Client
+    client *redis.Client
 }
 
 func Connect(cfg *config.Config) *Client {
-	//Montar endereço
-	addr := fmt.Sprintf("%s:%s", cfg.RedisHost, cfg.RedisPort)
-	//Criar Cliente
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     addr,
-		DB:       0,
-		Password: "",
-	})
+    //Montar endereço
+    addr := fmt.Sprintf("%s:%s", cfg.RedisHost, cfg.RedisPort)
+    //Criar Cliente
+    rdb := redis.NewClient(&redis.Options{
+        Addr:     addr,
+        DB:       0,
+        Password: "",
+    })
 
-	//Testar conexao com Ping
-	ctx := context.Background()
-	if err := rdb.Ping(ctx).Err(); err != nil {
-		log.Fatalf("Erro ao conectar ao redis: %v", err)
-	}
-	log.Println("Conectado ao Redis com Sucesso")
-	return &Client{client: rdb}
+    //Testar conexao com Ping
+    ctx := context.Background()
+    if err := rdb.Ping(ctx).Err(); err != nil {
+        log.Fatalf("Erro ao conectar ao redis: %v", err)
+    }
+    log.Println("Conectado ao Redis com Sucesso")
+    return &Client{client: rdb}
 }
 
 // GET retorna valor por chave
 func (c *Client) Get(ctx context.Context, key string) (string, error) {
-	return c.client.Get(ctx, key).Result()
+    return c.client.Get(ctx, key).Result()
 }
 
 // SET define valor por chave
 func (c *Client) Set(ctx context.Context, key string, value interface{}, expiration int64) error {
-	return c.client.Set(ctx, key, value, time.Duration(expiration)).Err()
+    return c.client.Set(ctx, key, value, time.Duration(expiration)).Err()
 }
 
 // Delete chave
 func (c *Client) Del(ctx context.Context, key string) error {
-	return c.client.Del(ctx, key).Err()
+    return c.client.Del(ctx, key).Err()
 }
 
 // ZAdd adiciona elemento para sorted Set(para leaderboard)
 func (c *Client) ZAdd(ctx context.Context, key string, member string, score float64) error {
-	return c.client.ZAdd(ctx, key, redis.Z{
-		Score:  score,
-		Member: member,
-	}).Err()
+    return c.client.ZAdd(ctx, key, redis.Z{
+        Score:  score,
+        Member: member,
+    }).Err()
 }
 
 // ZRange retorna range de elementos do sorted set (para top players)
-func (c *Client) Zrange(ctx context.Context, key string, start, stop int64, reverse bool) ([]string, error) {
-	if reverse {
-		return c.client.ZRevRange(ctx, key, start, stop).Result()
-	}
-	return c.client.ZRange(ctx, key, start, stop).Result()
+func (c *Client) ZRange(ctx context.Context, key string, start, stop int64, reverse bool) ([]string, error) {
+    if reverse {
+        return c.client.ZRevRange(ctx, key, start, stop).Result()
+    }
+    return c.client.ZRange(ctx, key, start, stop).Result()
+}
+
+// ZScore retorna score de um membro
+func (c *Client) ZScore(ctx context.Context, key string, member string) (float64, error) {
+    return c.client.ZScore(ctx, key, member).Result()
+}
+
+// ZRangeWithScores retorna elementos com scores
+func (c *Client) ZRangeWithScores(ctx context.Context, key string, start, stop int64, reverse bool) ([]redis.Z, error) {
+    if reverse {
+        return c.client.ZRevRangeWithScores(ctx, key, start, stop).Result()
+    }
+    return c.client.ZRangeWithScores(ctx, key, start, stop).Result()
 }
 
 // Fecha Conexao com Redis
 func (c *Client) Close() error {
-	return c.client.Close()
+    return c.client.Close()
 }
 
 // GetRawClient retorna o cliente bruto (se necessário acesso direto)
 func (c *Client) GetRawClient() *redis.Client {
-	return c.client
+    return c.client
 }

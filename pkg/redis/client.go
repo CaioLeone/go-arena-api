@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/caioLeone/go-arena-api/internal/config"
 	"github.com/redis/go-redis/v9"
@@ -39,12 +40,12 @@ func (c *Client) Get(ctx context.Context, key string) (string, error) {
 
 // SET define valor por chave
 func (c *Client) Set(ctx context.Context, key string, value interface{}, expiration int64) error {
-	return c.client.Set(ctx, key, value, 0).Err()
+	return c.client.Set(ctx, key, value, time.Duration(expiration)).Err()
 }
 
 // Delete chave
 func (c *Client) Del(ctx context.Context, key string) error {
-	return c.client.Get(ctx, key).Err()
+	return c.client.Del(ctx, key).Err()
 }
 
 // ZAdd adiciona elemento para sorted Set(para leaderboard)

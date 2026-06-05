@@ -69,14 +69,17 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 	//Repositories
 	userRepo := repository.NewUserRepository(db)
 	characterRepo := repository.NewCharacterRepository(db)
+	battleRepo := repository.NewBattleRepository(db)
 
 	//Services
 	authService := service.NewAuthService(userRepo, cfg)
 	characterService := service.NewCharacterService(characterRepo)
+	battleService := service.NewBattleService(battleRepo, characterRepo)
 
 	//Handlers
 	authHandler := handler.NewAuthHandler(authService)
 	characterHandler := handler.NewCharacterHandler(characterService)
+	battleHandler := handler.NewBattleHandler(battleService)
 
 	//Routes - Auth (publicas)
 	auth := router.Group("/auth")
@@ -99,22 +102,23 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 		})
 	}
 
-    characters := router.Group("/characters")
-    characters.Use(middleware.JWTMiddleware(cfg))
-    {
-        characters.POST("", characterHandler.Create)
-        characters.GET("", characterHandler.GetAll)
-        characters.GET("/:id", characterHandler.GetByID)
-        characters.PUT("/:id", characterHandler.Update)
-        characters.DELETE("/:id", characterHandler.Delete)
-    }
+	characters := router.Group("/characters")
+	characters.Use(middleware.JWTMiddleware(cfg))
+	{
+		characters.POST("", characterHandler.Create)
+		characters.GET("", characterHandler.GetAll)
+		characters.GET("/:id", characterHandler.GetByID)
+		characters.PUT("/:id", characterHandler.Update)
+		characters.DELETE("/:id", characterHandler.Delete)
+	}
+
+	battles := router.Group("/battles")
+	battles.Use(middleware.JWTMiddleware(cfg))
+	{
+		battles.POST("", battleHandler.StartBattle)
+		battles.GET("/history", battleHandler.GetHistory)
+	}
 }
-	
-
-	// TODO: Add Battle routes (Fase 4)
-	// router.POST("/battles", battleHandler.Create)
-	// router.GET("/battles/history", battleHandler.GetHistory)
-
-	// TODO: Add Ranking routes (Fase 5)
-	// router.GET("/ranking", rankingHandler.GetUserRanking)
-	// router.GET("/ranking/top", rankingHandler.GetTopPlayers)
+// TODO: Add Ranking routes (Fase 5)
+// router.GET("/ranking", rankingHandler.GetUserRanking)
+// router.GET("/ranking/top", rankingHandler.GetTopPlayers)

@@ -3,22 +3,22 @@ package dto
 import "github.com/google/uuid"
 
 type CharacterCreateRequest struct {
-	Name    string `json:"name" validate:"required,min=1,max=25"`
-	Class   string `json:"class" validate:"required,oneof=Barbaro Mago Arqueiro Assassino"`
-	Level   int    `json:"level" validate:"omitempty,required,min=1,max=100"`
-	HP      int    `json:"hp" validate:"omitempty,required,min=1"`
-	Attack  int    `json:"attack" validate:"omitempty,required,min=1"`
-	Defense int    `json:"defense" validate:"omitempty,required,min=1"`
+	Name           string `json:"name" validate:"required,min=1,max=25"`
+	Class          string `json:"class" validate:"required,oneof=Barbaro Mago Arqueiro Assassino"`
+	Level          int    `json:"level" validate:"omitempty,required,min=1,max=100"`
+	HP             int    `json:"hp" validate:"omitempty,required,min=1"`
+	Attack         int    `json:"attack" validate:"omitempty,required,min=1"`
+	Defense        int    `json:"defense" validate:"omitempty,required,min=1"`
 	CriticalChance int    `json:"critical_chance" validate:"omitempty,min=0,max=100"`
 }
 
 type CharacterUpdateRequest struct {
-	Name    string `json:"name" validate:"required,min=1,max=25"`
-	Class   string `json:"class" validate:"required,oneof=Barbaro Mago Arqueiro Assassino"`
-	Level   int    `json:"level" validate:"omitempty,required,min=1,max=100"`
-	HP      int    `json:"hp" validate:"omitempty,required,min=1"`
-	Attack  int    `json:"attack" validate:"omitempty,required,min=1"`
-	Defense int    `json:"defense" validate:"omitempty,required,min=1"`
+	Name           string `json:"name" validate:"required,min=1,max=25"`
+	Class          string `json:"class" validate:"required,oneof=Barbaro Mago Arqueiro Assassino"`
+	Level          int    `json:"level" validate:"omitempty,required,min=1,max=100"`
+	HP             int    `json:"hp" validate:"omitempty,required,min=1"`
+	Attack         int    `json:"attack" validate:"omitempty,required,min=1"`
+	Defense        int    `json:"defense" validate:"omitempty,required,min=1"`
 	CriticalChance int    `json:"critical_chance" validate:"omitempty,min=0,max=100"`
 }
 

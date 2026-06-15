@@ -6,6 +6,7 @@ import (
 	"github.com/caioLeone/go-arena-api/internal/battle"
 	"github.com/caioLeone/go-arena-api/internal/dto"
 	"github.com/caioLeone/go-arena-api/internal/model"
+	"github.com/caioLeone/go-arena-api/internal/ranking"
 	"github.com/caioLeone/go-arena-api/internal/repository"
 	"github.com/google/uuid"
 )
@@ -17,29 +18,31 @@ type BattleService interface {
 }
 
 type battleService struct {
-	battleRepo    repository.BattleRepository
-	characterRepo repository.CharacterRepository
+	battleRepo         repository.BattleRepository
+	characterRepo      repository.CharacterRepository
+	leaderboardService *ranking.LeaderboardService
 }
 
-func NewBattleService(battleRepo repository.BattleRepository, characterRepo repository.CharacterRepository) BattleService {
+func NewBattleService(battleRepo repository.BattleRepository, characterRepo repository.CharacterRepository, leaderboardService *ranking.LeaderboardService) BattleService {
 	return &battleService{
-		battleRepo:    battleRepo,
-		characterRepo: characterRepo,
+		battleRepo:         battleRepo,
+		characterRepo:      characterRepo,
+		leaderboardService: leaderboardService,
 	}
 }
 
 func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
 	//Busca atacante
-    attacker, err := s.characterRepo.GetByID(req.AttackerCharacterID, userID)
-    if err != nil {
-        return nil, fmt.Errorf("Personagem atacante não encontrado")
-    }
+	attacker, err := s.characterRepo.GetByID(req.AttackerCharacterID, userID)
+	if err != nil {
+		return nil, fmt.Errorf("Personagem atacante não encontrado")
+	}
 
 	//Busca Defensor(qualquer usuario)
-    defender, err := s.characterRepo.GetByIDNoUserFilter(req.DefenderCharacterID)
-    if err != nil {
-        return nil, fmt.Errorf("Personagem defensor não encontrado")
-    }
+	defender, err := s.characterRepo.GetByIDNoUserFilter(req.DefenderCharacterID)
+	if err != nil {
+		return nil, fmt.Errorf("Personagem defensor não encontrado")
+	}
 
 	//Simular Batalha
 	battleResult, err := battle.DetermineBattle(attacker, defender)
@@ -80,19 +83,31 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	}
 
 	if !battleResult.IsDraw && battleResult.Winner != nil {
-    winnerRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Winner.ID.String())
-    loserRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Loser.ID.String())
+		winnerRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Winner.ID.String())
+		loserRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Loser.ID.String())
 
-    rankingDiff := winnerRanking - loserRanking
-    pointsGained := battle.UpdateRanking(battleResult.Winner, battleResult.Loser, rankingDiff)
+		rankingDiff := winnerRanking - loserRanking
+		pointsGained := battle.UpdateRanking(battleResult.Winner, battleResult.Loser, rankingDiff)
 
-    // Atualizar no banco
-    s.battleRepo.UpdateCharacterRanking(battleResult.Winner.ID.String(), pointsGained)
-    s.battleRepo.UpdateCharacterRanking(battleResult.Loser.ID.String(), -5)
+		// Atualizar no banco
+		s.battleRepo.UpdateCharacterRanking(battleResult.Winner.ID.String(), pointsGained)
+		s.battleRepo.UpdateCharacterRanking(battleResult.Loser.ID.String(), -5)
 
-    // ← ADICIONAR: Atualizar no Redis Leaderboard
-    // leaderboardService.UpdatePlayerScore(winner.ID, winner.Name, newScore)
-}
+		// ✅ ADICIONADO: Atualizar no Redis Leaderboard
+		newWinnerScore := float64(winnerRanking + pointsGained)
+		newLoserScore := float64(loserRanking - 5)
+
+		s.leaderboardService.UpdatePlayerScore(
+			battleResult.Winner.ID.String(),
+			battleResult.Winner.Name,
+			newWinnerScore,
+		)
+		s.leaderboardService.UpdatePlayerScore(
+			battleResult.Loser.ID.String(),
+			battleResult.Loser.Name,
+			newLoserScore,
+		)
+	}
 
 	//Atualizar Ranking se nao foi empate
 	if !battleResult.IsDraw && battleResult.Winner != nil {

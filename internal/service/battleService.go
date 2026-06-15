@@ -79,6 +79,21 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		return nil, fmt.Errorf("Erro ao Salvar Batalha: %w", err)
 	}
 
+	if !battleResult.IsDraw && battleResult.Winner != nil {
+    winnerRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Winner.ID.String())
+    loserRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Loser.ID.String())
+
+    rankingDiff := winnerRanking - loserRanking
+    pointsGained := battle.UpdateRanking(battleResult.Winner, battleResult.Loser, rankingDiff)
+
+    // Atualizar no banco
+    s.battleRepo.UpdateCharacterRanking(battleResult.Winner.ID.String(), pointsGained)
+    s.battleRepo.UpdateCharacterRanking(battleResult.Loser.ID.String(), -5)
+
+    // ← ADICIONAR: Atualizar no Redis Leaderboard
+    // leaderboardService.UpdatePlayerScore(winner.ID, winner.Name, newScore)
+}
+
 	//Atualizar Ranking se nao foi empate
 	if !battleResult.IsDraw && battleResult.Winner != nil {
 		winnerRanking, _ := s.battleRepo.GetCharacterRanking(string(battleResult.Winner.ID.String()))

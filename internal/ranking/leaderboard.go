@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/caioLeone/go-arena-api/pkg/redis"
-	"github.com/redis/go-redis/v9"
+	redisclient "github.com/caioLeone/go-arena-api/pkg/redis"
+	goredis "github.com/redis/go-redis/v9"
 )
 
 const LeaderboardKey = "leaderboard"
 
 type LeaderboardService struct {
-	redisClient *redis.Client
+	redisClient *redisclient.Client
 }
 
-func NewLeaderboardService(redisClient *redis.Client) *LeaderboardService {
+func NewLeaderboardService(redisClient *redisclient.Client) *LeaderboardService {
 	return &LeaderboardService{
 		redisClient: redisClient,
 	}
@@ -51,7 +51,7 @@ func (ls *LeaderboardService) GetPlayerRank(characterID string, characterName st
 	rawClient := ls.redisClient.GetRawClient()
 	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, memberKey).Result()
 	if err != nil {
-		if err == redis.Nil {
+		if err == goredis.Nil {
 			return -1, nil // Jogador não encontrado
 		}
 		return -1, fmt.Errorf("Erro ao buscar rank: %w", err)
@@ -67,7 +67,7 @@ func (ls *LeaderboardService) GetPlayerScore(characterID string, characterName s
 
 	score, err := ls.redisClient.ZScore(ctx, LeaderboardKey, memberKey)
 	if err != nil {
-		if err == redis.Nil {
+		if err == goredis.Nil {
 			return 0, nil
 		}
 		return 0, fmt.Errorf("Erro ao buscar score: %w", err)

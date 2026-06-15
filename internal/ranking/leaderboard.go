@@ -101,7 +101,7 @@ func (ls *LeaderboardService) GetTopPlayers(limit int64) ([]PlayerRanking, error
 	return players, nil
 }
 
-func (ls *LeaderboardService) GetLeaderBoardJSON(limit int64) (string, error) {
+func (ls *LeaderboardService) GetLeaderboardJSON(limit int64) (string, error) {
 	players, err := ls.GetTopPlayers(limit)
 	if err != nil {
 		return "", err
@@ -109,7 +109,7 @@ func (ls *LeaderboardService) GetLeaderBoardJSON(limit int64) (string, error) {
 
 	data, err := json.Marshal(players)
 	if err != nil {
-		return "", fmt.Errorf("Erro ao serialziar leaderboard: %w", err)
+		return "", fmt.Errorf("Erro ao serializar leaderboard: %w", err)
 	}
 	return string(data), nil
 }

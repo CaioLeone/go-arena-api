@@ -8,6 +8,7 @@ import (
 	"github.com/caioLeone/go-arena-api/internal/config"
 	"github.com/caioLeone/go-arena-api/internal/handler"
 	"github.com/caioLeone/go-arena-api/internal/middleware"
+	"github.com/caioLeone/go-arena-api/internal/ranking"
 	"github.com/caioLeone/go-arena-api/internal/repository"
 	"github.com/caioLeone/go-arena-api/internal/service"
 	"github.com/caioLeone/go-arena-api/pkg/database"
@@ -75,11 +76,13 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 	authService := service.NewAuthService(userRepo, cfg)
 	characterService := service.NewCharacterService(characterRepo)
 	battleService := service.NewBattleService(battleRepo, characterRepo)
+	leaderboardService := ranking.NewLeaderboardService(redisClient) // ← ADICIONAR
 
 	//Handlers
 	authHandler := handler.NewAuthHandler(authService)
 	characterHandler := handler.NewCharacterHandler(characterService)
 	battleHandler := handler.NewBattleHandler(battleService)
+	rankingHandler := handler.NewRankingHandler(leaderboardService, characterRepo) // ← ADICIONAR
 
 	//Routes - Auth (publicas)
 	auth := router.Group("/auth")
@@ -118,7 +121,15 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) 
 		battles.POST("", battleHandler.StartBattle)
 		battles.GET("/history", battleHandler.GetHistory)
 	}
+
+	//Routes - Ranking (públicas)
+	rankingRoutes := router.Group("/ranking")
+	{
+		rankingRoutes.GET("", middleware.JWTMiddleware(cfg), rankingHandler.GetUserRanking)
+		rankingRoutes.GET("/top", rankingHandler.GetTopPlayers) // Pública
+	}
 }
+
 // TODO: Add Ranking routes (Fase 5)
 // router.GET("/ranking", rankingHandler.GetUserRanking)
 // router.GET("/ranking/top", rankingHandler.GetTopPlayers)

@@ -91,10 +91,15 @@ func (ls *LeaderboardService) GetTopPlayers(limit int64) ([]PlayerRanking, error
 	}
 	var players []PlayerRanking
 	for i, z := range scores {
+		memberName, ok := z.Member.(string)
+		if !ok {
+			log.Printf("Aviso: Membro do leaderboard nao e string: %v", z.Member)
+			continue
+		}
 		player := PlayerRanking{
 			Rank:  int64(i + 1),
 			Score: int64(z.Score),
-			Name:  z.Member.(string),
+			Name:  memberName,
 		}
 		players = append(players, player)
 	}

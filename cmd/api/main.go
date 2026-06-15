@@ -49,7 +49,7 @@ func main() {
 	router.Use(gin.Recovery())
 
 	//7. Inicializar dependencias
-	initializeDependencies(router, db, cfg)
+	initializeDependencies(router, db, cfg, redisClient)
 
 	//8. Iniciar Servidor
 	log.Printf("Arene API Iniciada na porta %s (env: %s)", cfg.ServerPort, cfg.ServerEnv)
@@ -58,7 +58,7 @@ func main() {
 	}
 }
 
-func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config) {
+func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, redisClient *redis.Client) {
 	//Health Check
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

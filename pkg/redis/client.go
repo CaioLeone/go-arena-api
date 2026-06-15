@@ -51,8 +51,8 @@ func (c *Client) Del(ctx context.Context, key string) error {
 // ZAdd adiciona elemento para sorted Set(para leaderboard)
 func (c *Client) ZAdd(ctx context.Context, key string, member string, score float64) error {
     return c.client.ZAdd(ctx, key, redis.Z{
-        Score:  score,
         Member: member,
+        Score:  score,
     }).Err()
 }
 

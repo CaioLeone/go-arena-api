@@ -62,7 +62,7 @@ func (l *Logger) Info(message string, args ...interface{}) {
 }
 
 // Regristra Mensagem de Debug
-func (l *Logger) Warm(message string, args ...interface{}) {
+func (l *Logger) Warn(message string, args ...interface{}) {
 	if l.level <= WARN {
 		fmt.Println(l.formatLog(WARN, message, args...))
 	}

@@ -81,7 +81,8 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	if err != nil {
 		return nil, fmt.Errorf("Erro ao Salvar Batalha: %w", err)
 	}
-
+	
+	//Atualizar Ranking se nao foi empate
 	if !battleResult.IsDraw && battleResult.Winner != nil {
 		winnerRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Winner.ID.String())
 		loserRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Loser.ID.String())
@@ -109,7 +110,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		)
 	}
 
-	//Atualizar Ranking se nao foi empate
+
 	if !battleResult.IsDraw && battleResult.Winner != nil {
 		winnerRanking, _ := s.battleRepo.GetCharacterRanking(string(battleResult.Winner.ID.String()))
 		loserRanking, _ := s.battleRepo.GetCharacterRanking(string(battleResult.Loser.ID.String()))

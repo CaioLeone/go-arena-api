@@ -71,18 +71,18 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 	userRepo := repository.NewUserRepository(db)
 	characterRepo := repository.NewCharacterRepository(db)
 	battleRepo := repository.NewBattleRepository(db)
+	leaderboardService := ranking.NewLeaderboardService(redisClient)
 
 	//Services
 	authService := service.NewAuthService(userRepo, cfg)
 	characterService := service.NewCharacterService(characterRepo)
-	battleService := service.NewBattleService(battleRepo, characterRepo)
-	leaderboardService := ranking.NewLeaderboardService(redisClient) // ← ADICIONAR
+	battleService := service.NewBattleService(battleRepo, characterRepo, leaderboardService)
 
 	//Handlers
 	authHandler := handler.NewAuthHandler(authService)
 	characterHandler := handler.NewCharacterHandler(characterService)
 	battleHandler := handler.NewBattleHandler(battleService)
-	rankingHandler := handler.NewRankingHandler(leaderboardService, characterRepo) // ← ADICIONAR
+	rankingHandler := handler.NewRankingHandler(leaderboardService, characterRepo)
 
 	//Routes - Auth (publicas)
 	auth := router.Group("/auth")

@@ -34,7 +34,23 @@ func LoggingMiddlewareWithLogger(log *logger.Logger) gin.HandlerFunc {
 		)
 
 		if statusCode >= 400 {
-			log.Warm()
+			log.Warn("Erro na Requisicao: %s %s - status: %d", method, path, statusCode)
 		}
 	}
+}
+
+// LoggingMiddleware versão original (compatibilidade)
+func LoggingMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        startTime := time.Now()
+        method := c.Request.Method
+        path := c.Request.RequestURI
+
+        c.Next()
+
+        statusCode := c.Writer.Status()
+        duration := time.Since(startTime)
+
+        print("[", method, "] ", path, " - Status: ", statusCode, " - Duração: ", duration, "\n")
+    }
 }

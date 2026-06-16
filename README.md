@@ -127,7 +127,7 @@
 * Logs básicos
 * Erros são tratados graciosamente
 
-## FASE 7: SETUP REACT + AUTENTICAÇÃÕ FRONTEND(2H)
+## FASE 7: SETUP REACT + AUTENTICAÇÃO FRONTEND(2H)
 * Objetivo: setup, autenticação, CRUD, batalhas, ranking, Segurança
 
 ### Task:

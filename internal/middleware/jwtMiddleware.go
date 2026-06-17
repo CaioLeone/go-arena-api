@@ -71,8 +71,8 @@ func CORSMiddleware(cfg *config.Config) gin.HandlerFunc {
 	}
 }
 
-func LoggingMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Next()
-	}
-}
+// func LoggingMiddleware() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		c.Next()
+// 	}
+// }

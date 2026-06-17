@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/caioLeone/go-arena-api/internal/dto"
+	"github.com/caioLeone/go-arena-api/internal/middleware"
 	"github.com/caioLeone/go-arena-api/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -81,13 +82,18 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	//Validar
-	if err := h.validator.Struct(req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"error":   "Email e Senha Obrigatorios",
-		})
+	erros := middleware.ValidRequest(h.validator, req)
+	if len(erros) > 0 {
+		middleware.ValidationErrorResponse(c, erros)
 		return
 	}
+	// if err := h.validator.Struct(req); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"success": false,
+	// 		"error":   "Email e Senha Obrigatorios",
+	// 	})
+	// 	return
+	// }
 
 	//Chamar Service
 	loginResp, err := h.authService.Login(&req)

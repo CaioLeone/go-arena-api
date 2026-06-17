@@ -31,6 +31,9 @@ type Config struct {
 
 	//CORS
 	CORSAllowedOrigins string
+
+	//LOGGING
+	LogLevel string
 }
 
 // CARREGA AS CONFIGURACOES DO .ENV
@@ -63,6 +66,9 @@ func Load() *Config {
 
 		//CORS
 		CORSAllowedOrigins: getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173"),
+
+		//LOGGING
+		LogLevel: getEnv("LOG_ENV", "info"),
 	}
 
 	if cfg.JWTSecret == "dev-secret-key" {
@@ -90,3 +96,19 @@ func getEnvInt(key string, defaultVal int) int {
 
 	return defaultVal
 }
+
+// func atoi(value string) int {
+// 	var result int
+// 	_, err := os.Environ() // dummy read to avoid unused import
+// 	if err != nil {
+// 		return 0
+// 	}
+
+// 	// Simple string to int conversion
+// 	for _, char := range value {
+// 		if char >= '0' && char <= '9' {
+// 			result = result*10 + int(char-'0')
+// 		}
+// 	}
+// 	return result
+// }

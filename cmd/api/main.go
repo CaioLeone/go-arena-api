@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/caioLeone/go-arena-api/internal/config"
 	"github.com/caioLeone/go-arena-api/internal/handler"
@@ -12,30 +12,37 @@ import (
 	"github.com/caioLeone/go-arena-api/internal/repository"
 	"github.com/caioLeone/go-arena-api/internal/service"
 	"github.com/caioLeone/go-arena-api/pkg/database"
+	"github.com/caioLeone/go-arena-api/pkg/logger"
 	"github.com/caioLeone/go-arena-api/pkg/redis"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	//0. Criar Logger
+	log := logger.NewLogger(logger.INFO)
+	log.Info("Iniciando Arena API")
+
 	//1. Carregar Configuracao
 	cfg := config.Load()
-	log.Printf("Configuracoes Carregadas (env: %s)", cfg.ServerEnv)
+	log.Info("Configuracoes Carregadas (env: %s)", cfg.ServerEnv)
 
 	//2. Conectar PostgreSQL
 	db, err := database.Connect(cfg)
 	if err != nil {
-		log.Fatalf("Erro ao conectar PostgreSQL: %v", err)
+		log.Fatal("Erro ao conectar PostgreSQL: %v", err)
 	}
 	defer db.Close()
 
 	//3. Rodar Migrations
 	if err := database.RunMigrations(db, "migrations/"); err != nil {
-		log.Fatalf("Erro ao rodar migrations: %v", err)
+		log.Fatal("Erro ao rodar migrations: %v", err)
 	}
+	log.Info("Migrations Executadas Com Sucesso")
 
 	//4. Conectar Redis
 	redisClient := redis.Connect(cfg)
 	defer redisClient.Close()
+	log.Info("Conectado Ao Redis Com Sucesso")
 
 	//5. Setup Gin
 	if cfg.ServerEnv == "prod" {
@@ -46,19 +53,25 @@ func main() {
 	//6. Aplicar Middlewares Globais
 	router.Use(middleware.CORSMiddleware(cfg))
 	router.Use(middleware.LoggingMiddleware())
+	router.Use(middleware.ErrorHandlingMiddleware(log))
+
+	//Rate Limiting: 100 Requisicoes por minuto
+	rateLimiter := middleware.NewRateLimiter(100, 1*time.Minute)
+	router.Use(rateLimiter.Middleware())
+
 	router.Use(gin.Recovery())
 
 	//7. Inicializar dependencias
-	initializeDependencies(router, db, cfg, redisClient)
+	initializeDependencies(router, db, cfg, redisClient, log)
 
 	//8. Iniciar Servidor
-	log.Printf("Arene API Iniciada na porta %s (env: %s)", cfg.ServerPort, cfg.ServerEnv)
+	log.Info("Arene API Iniciada na porta %s (env: %s)", cfg.ServerPort, cfg.ServerEnv)
 	if err := router.Run(":" + cfg.ServerPort); err != nil {
-		log.Fatalf("Erro ao iniciar servidor: %v", err)
+		log.Fatal("Erro ao iniciar servidor: %v", err)
 	}
 }
 
-func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, redisClient *redis.Client) {
+func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, redisClient *redis.Client, log *logger.Logger) {
 	//Health Check
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -71,11 +84,11 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 	userRepo := repository.NewUserRepository(db)
 	characterRepo := repository.NewCharacterRepository(db)
 	battleRepo := repository.NewBattleRepository(db)
-	leaderboardService := ranking.NewLeaderboardService(redisClient)
 
 	//Services
 	authService := service.NewAuthService(userRepo, cfg)
 	characterService := service.NewCharacterService(characterRepo)
+	leaderboardService := ranking.NewLeaderboardService(redisClient)
 	battleService := service.NewBattleService(battleRepo, characterRepo, leaderboardService)
 
 	//Handlers
@@ -105,6 +118,7 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 		})
 	}
 
+	//Routes - Characters
 	characters := router.Group("/characters")
 	characters.Use(middleware.JWTMiddleware(cfg))
 	{
@@ -115,6 +129,7 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 		characters.DELETE("/:id", characterHandler.Delete)
 	}
 
+	//Routes - Battles
 	battles := router.Group("/battles")
 	battles.Use(middleware.JWTMiddleware(cfg))
 	{
@@ -128,6 +143,8 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 		rankingRoutes.GET("", middleware.JWTMiddleware(cfg), rankingHandler.GetUserRanking)
 		rankingRoutes.GET("/top", rankingHandler.GetTopPlayers) // Pública
 	}
+
+	log.Info("Todas As Rotas Registradas Com Sucesso")
 }
 
 // TODO: Add Ranking routes (Fase 5)

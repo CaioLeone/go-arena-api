@@ -93,7 +93,7 @@
 * Ranking atualiza
 * Histórico registra tudo
 
-## FASE 5: RANKING + LEADERBOARD (REDIS) (1h)
+## OK FASE 5: RANKING + LEADERBOARD (REDIS) (1h)
 * Objetivo: Leaderboard em tempo real
 
 ### Tasks:

@@ -26,7 +26,7 @@
 - [X] Endpoint /health retorna 200 OK
 - [X] Database criado com migrations
 
-## FASE 2: AUTENTICAÇÃO MINIMALISTA (2h)
+## OK FASE 2: AUTENTICAÇÃO MINIMALISTA (2h)
 * Objetivo: Login/Register funcional + JWT middleware
 
 ### Tasks:

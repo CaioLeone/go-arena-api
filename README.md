@@ -1,6 +1,6 @@
 # FASES DE IMPLEMENTAÇÃO
 
-## FASE 1: SETUP INICIAL (1-2h)
+## OK FASE 1: SETUP INICIAL (1-2h)
 * Objetivo: Projeto compilável + Docker rodando
 
 ### Tasks:

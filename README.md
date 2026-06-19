@@ -72,7 +72,7 @@
 * CRUD completo de personagens
 * Apenas usuário autenticado pode acessar
 
-## FASE 4: SISTEMA DE BATALHA (1.5h)
+## OK FASE 4: SISTEMA DE BATALHA (1.5h)
 * Objetivo: Iniciar e resolver batalhas PvP
 
 ### Tasks:

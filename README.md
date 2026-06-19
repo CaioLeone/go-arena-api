@@ -112,7 +112,7 @@
 * Redis atualiza após cada batalha
 * Leaderboard consultável
 
-## FASE 6: SEGURANÇA + HARDENING (1h)
+## OK FASE 6: SEGURANÇA + HARDENING (1h)
 * Objetivo: Rate limiting, logs, error handling
 
 ### Tasks:

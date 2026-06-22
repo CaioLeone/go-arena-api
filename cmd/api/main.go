@@ -146,7 +146,3 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 
 	log.Info("Todas As Rotas Registradas Com Sucesso")
 }
-
-// TODO: Add Ranking routes (Fase 5)
-// router.GET("/ranking", rankingHandler.GetUserRanking)
-// router.GET("/ranking/top", rankingHandler.GetTopPlayers)

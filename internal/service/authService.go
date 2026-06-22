@@ -2,11 +2,13 @@ package service
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/caioLeone/go-arena-api/internal/auth"
 	"github.com/caioLeone/go-arena-api/internal/config"
 	"github.com/caioLeone/go-arena-api/internal/dto"
 	"github.com/caioLeone/go-arena-api/internal/repository"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -134,4 +136,19 @@ func (s *authService) Refresh(refreshToken string) (string, error) {
 	}
 
 	return accessToken, nil
+}
+
+func GenerateRefreshToken(userID string, email string, cfg *config.Config) (string, error) {
+	expiration := time.Now().Add(time.Hour * 24 * time.Duration(cfg.JWTRefreshExpirationDays))
+
+	claims := &Claims{
+		UserID: userID,
+		Email:  email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expiration),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	return token.SignedString([]byte(cfg.JWTSecret))
 }

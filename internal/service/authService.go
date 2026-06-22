@@ -57,7 +57,15 @@ func (s *authService) Register(req *dto.UserCreateRequest) (*dto.UserResponse, *
 		return nil, nil, fmt.Errorf("Erro ao Gerar Access Token: %w", err)
 	}
 
-	refreshToken := auth.GenerateRefreshToken()
+	//GERAR REFRESH TOKEN
+	refreshToken, err := auth.GenerateRefreshToken(
+		user.ID.String(),
+		user.Email,
+		s.config,
+	)
+	if err != nil {
+		return nil, nil, fmt.Errorf("erro ao gerar refresh token: %w", err)
+	}
 
 	//Response
 	userResp := &dto.UserResponse{
@@ -94,7 +102,11 @@ func (s *authService) Login(req *dto.UserLoginRequest) (*dto.LoginResponse, erro
 		return nil, fmt.Errorf("Erro ao Gerar Access Token: %w", err)
 	}
 
-	refreshToken := auth.GenerateRefreshtToken()
+	//GERAR REFRESH TOKEN
+	refreshToken, err := auth.GenerateRefreshToken(user.ID.String(), user.Email, s.config)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao gerar refresh token: %w", err)
+	}
 
 	// Response
 	userResp := &dto.UserResponse{

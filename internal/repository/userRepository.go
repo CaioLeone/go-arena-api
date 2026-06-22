@@ -31,7 +31,7 @@ func (r *userRepository) CreateUser(email, name, hashedPassword string) (*model.
 
 	query := `
 		INSERT INTO users (id, email, name, password, created_at)
-		VALUE ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+		VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
 		RETURNING id, email, name, password, created_at
 	`
 

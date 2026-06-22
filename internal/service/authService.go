@@ -141,7 +141,7 @@ func (s *authService) Refresh(refreshToken string) (string, error) {
 func GenerateRefreshToken(userID string, email string, cfg *config.Config) (string, error) {
 	expiration := time.Now().Add(time.Hour * 24 * time.Duration(cfg.JWTRefreshExpirationDays))
 
-	claims := &Claims{
+	claims := &auth.Claims{
 		UserID: userID,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{

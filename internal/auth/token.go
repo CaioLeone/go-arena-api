@@ -69,5 +69,11 @@ func GenerateRefreshToken(userID string, email string, cfg *config.Config) (stri
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(cfg.JWTSecret))
+
+	tokenString, err := token.SignedString([]byte(cfg.JWTSecret))
+	if err != nil {
+		return "", fmt.Errorf("Erro ao Gerar Refresh Token: %w", err)
+	}
+
+	return tokenString, nil
 }

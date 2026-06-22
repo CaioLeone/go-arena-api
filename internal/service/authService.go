@@ -2,13 +2,11 @@ package service
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/caioLeone/go-arena-api/internal/auth"
 	"github.com/caioLeone/go-arena-api/internal/config"
 	"github.com/caioLeone/go-arena-api/internal/dto"
 	"github.com/caioLeone/go-arena-api/internal/repository"
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,7 +57,7 @@ func (s *authService) Register(req *dto.UserCreateRequest) (*dto.UserResponse, *
 		return nil, nil, fmt.Errorf("Erro ao Gerar Access Token: %w", err)
 	}
 
-	refreshToken := auth.GenerateRefreshtToken()
+	refreshToken := auth.GenerateRefreshToken()
 
 	//Response
 	userResp := &dto.UserResponse{
@@ -137,5 +135,3 @@ func (s *authService) Refresh(refreshToken string) (string, error) {
 
 	return accessToken, nil
 }
-
-

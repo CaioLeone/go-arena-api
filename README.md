@@ -179,3 +179,33 @@
 * app polido e pronto
 * Deploy em localhost testado
 * Readme com instruções
+
+## DOCKER COMMANDS
+
+```
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+```
+
+## Ordem oficial de testes da Arena dos Bárbaros
+- [X] 1. Health
+- [X] 2. Register
+- [X] 3. Login
+- [X] 4. Refresh
+- [ ] 5. JWT (/api/me)
+
+- [ ] 6. Create Character
+- [ ] 7. Get All Characters
+- [ ] 8. Get Character By ID
+- [ ] 9. Update Character
+
+- [ ] 10. Create Second Character
+
+- [ ] 11. Battle
+- [ ] 12. Battle History
+
+- [ ] 13. Ranking User
+- [ ] 14. Ranking Top
+
+- [ ] 15. Delete Character

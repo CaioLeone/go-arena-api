@@ -193,7 +193,7 @@ docker compose up -d
 - [X] 2. Register
 - [X] 3. Login
 - [X] 4. Refresh
-- [ ] 5. JWT (/api/me)
+- [X] 5. JWT (/api/me)
 
 - [ ] 6. Create Character
 - [ ] 7. Get All Characters

@@ -25,9 +25,9 @@ func NewBattleRepository(db *sql.DB) BattleRepository {
 
 func (r *battleRepository) Create(battle *model.BattleModel) (*model.BattleModel, error) {
 	query := `
-        INSERT INTO battles (attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, attacker_hp_final, defender_hp_final, rounds_count, rounds_data)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        RETURNING id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
+        INSERT INTO battles (attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
     `
 
 	row := r.db.QueryRow(
@@ -38,6 +38,7 @@ func (r *battleRepository) Create(battle *model.BattleModel) (*model.BattleModel
 		battle.DefenderName,
 		battle.WinnerID,
 		battle.WinnerName,
+		battle.DamageDealt,
 		battle.AttackerHPFinal,
 		battle.DefenderHPFinal,
 		battle.RoundsCount,
@@ -53,6 +54,7 @@ func (r *battleRepository) Create(battle *model.BattleModel) (*model.BattleModel
 		&createdBattle.DefenderName,
 		&createdBattle.WinnerID,
 		&createdBattle.WinnerName,
+		&createdBattle.DamageDealt,
 		&createdBattle.AttackerHPFinal,
 		&createdBattle.DefenderHPFinal,
 		&createdBattle.RoundsCount,
@@ -69,7 +71,7 @@ func (r *battleRepository) Create(battle *model.BattleModel) (*model.BattleModel
 
 func (r *battleRepository) GetByID(id string) (*model.BattleModel, error) {
 	query := `
-        SELECT id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
+        SELECT id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
         FROM battles
         WHERE id = $1
     `
@@ -85,6 +87,7 @@ func (r *battleRepository) GetByID(id string) (*model.BattleModel, error) {
 		&battle.DefenderName,
 		&battle.WinnerID,
 		&battle.WinnerName,
+		&battle.DamageDealt,
 		&battle.AttackerHPFinal,
 		&battle.DefenderHPFinal,
 		&battle.RoundsCount,
@@ -104,7 +107,7 @@ func (r *battleRepository) GetByID(id string) (*model.BattleModel, error) {
 
 func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset int) ([]*model.BattleModel, error) {
 	query := `
-        SELECT id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
+        SELECT id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
         FROM battles
         WHERE attacker_id = $1 OR defender_id = $2
         ORDER BY created_at DESC
@@ -128,6 +131,7 @@ func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset i
 			&battle.DefenderName,
 			&battle.WinnerID,
 			&battle.WinnerName,
+			&battle.DamageDealt,
 			&battle.AttackerHPFinal,
 			&battle.DefenderHPFinal,
 			&battle.RoundsCount,
@@ -146,24 +150,24 @@ func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset i
 }
 
 func (r *battleRepository) UpdateCharacterRanking(characterID string, points int) error {
-    query := `UPDATE characters SET ranking_points = ranking_points + $1 WHERE id = $2`
+	query := `UPDATE characters SET ranking_points = ranking_points + $1 WHERE id = $2`
 
-    _, err := r.db.Exec(query, points, characterID)
-    if err != nil {
-        return fmt.Errorf("Erro ao atualizar ranking: %w", err)
-    }
+	_, err := r.db.Exec(query, points, characterID)
+	if err != nil {
+		return fmt.Errorf("Erro ao atualizar ranking: %w", err)
+	}
 
-    return nil
+	return nil
 }
 
 func (r *battleRepository) GetCharacterRanking(characterID string) (int, error) {
-    query := `SELECT ranking_points FROM characters WHERE id = $1`
+	query := `SELECT ranking_points FROM characters WHERE id = $1`
 
-    var ranking int
-    err := r.db.QueryRow(query, characterID).Scan(&ranking)
-    if err != nil {
-        return 0, fmt.Errorf("Erro ao buscar ranking: %w", err)
-    }
+	var ranking int
+	err := r.db.QueryRow(query, characterID).Scan(&ranking)
+	if err != nil {
+		return 0, fmt.Errorf("Erro ao buscar ranking: %w", err)
+	}
 
-    return ranking, nil
+	return ranking, nil
 }

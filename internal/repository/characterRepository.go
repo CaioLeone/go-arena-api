@@ -27,8 +27,8 @@ func NewCharacterRepository(db *sql.DB) CharacterRepository {
 
 func (r *characterRepository) Create(character *model.CharacterModel) (*model.CharacterModel, error) {
 	query := `
-        INSERT INTO characters (user_id, name, class, level, hp, attack, defense)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO characters (user_id, name, class, level, hp, attack, defense, critical_chance)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
     `
 

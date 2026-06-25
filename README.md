@@ -195,12 +195,12 @@ docker compose up -d
 - [X] 4. Refresh
 - [X] 5. JWT (/api/me)
 
-- [ ] 6. Create Character
-- [ ] 7. Get All Characters
-- [ ] 8. Get Character By ID
-- [ ] 9. Update Character
+- [X] 6. Create Character
+- [X] 7. Get All Characters
+- [X] 8. Get Character By ID
+- [X] 9. Update Character
 
-- [ ] 10. Create Second Character
+- [X] 10. Create Second Character
 
 - [ ] 11. Battle
 - [ ] 12. Battle History
@@ -208,4 +208,4 @@ docker compose up -d
 - [ ] 13. Ranking User
 - [ ] 14. Ranking Top
 
-- [ ] 15. Delete Character
+- [X] 15. Delete Character

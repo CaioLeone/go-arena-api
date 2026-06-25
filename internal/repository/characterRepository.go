@@ -29,7 +29,7 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 	query := `
         INSERT INTO characters (user_id, name, class, level, hp, attack, defense)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+        RETURNING id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
     `
 
 	row := r.db.QueryRow(
@@ -41,6 +41,7 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 		character.HP,
 		character.Attack,
 		character.Defense,
+		character.CriticalChance,
 	)
 
 	var char model.CharacterModel
@@ -53,6 +54,7 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.CriticalChance,
 		&char.RankingPoints,
 		&char.CreatedAt,
 		&char.UpdatedAt,
@@ -69,7 +71,7 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 
 func (r *characterRepository) GetByID(id string, userID string) (*model.CharacterModel, error) {
 	query := `
-        SELECT id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+        SELECT id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
         FROM characters
         WHERE id = $1 AND user_id = $2
     `
@@ -86,6 +88,7 @@ func (r *characterRepository) GetByID(id string, userID string) (*model.Characte
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.CriticalChance,
 		&char.RankingPoints,
 		&char.CreatedAt,
 		&char.UpdatedAt,
@@ -102,7 +105,7 @@ func (r *characterRepository) GetByID(id string, userID string) (*model.Characte
 
 func (r *characterRepository) GetAllByUserID(userID string) ([]*model.CharacterModel, error) {
 	query := `
-        SELECT id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+        SELECT id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
         FROM characters
         WHERE user_id = $1
         ORDER BY created_at DESC
@@ -125,6 +128,7 @@ func (r *characterRepository) GetAllByUserID(userID string) ([]*model.CharacterM
 			&char.HP,
 			&char.Attack,
 			&char.Defense,
+			&char.CriticalChance,
 			&char.RankingPoints,
 			&char.CreatedAt,
 			&char.UpdatedAt,
@@ -143,7 +147,7 @@ func (r *characterRepository) GetAllByUserID(userID string) ([]*model.CharacterM
 
 func (r *characterRepository) GetByIDNoUserFilter(id string) (*model.CharacterModel, error) {
 	query := `
-        SELECT id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+        SELECT id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
         FROM characters
         WHERE id = $1
     `
@@ -160,8 +164,8 @@ func (r *characterRepository) GetByIDNoUserFilter(id string) (*model.CharacterMo
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
-		&char.RankingPoints,
 		&char.CriticalChance,
+		&char.RankingPoints,
 		&char.CreatedAt,
 		&char.UpdatedAt,
 	)
@@ -188,7 +192,7 @@ func (r *characterRepository) Update(id string, userID string, character *model.
         critical_chance = CASE WHEN $7 > 0 THEN $7 ELSE critical_chance END,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = $8 AND user_id = $9
-    RETURNING id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+    RETURNING id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
 `
 
 	row := r.db.QueryRow(
@@ -199,6 +203,7 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 		character.HP,
 		character.Attack,
 		character.Defense,
+		character.CriticalChance,
 		id,
 		userID,
 	)
@@ -213,6 +218,7 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.CriticalChance,
 		&char.RankingPoints,
 		&char.CreatedAt,
 		&char.UpdatedAt,
@@ -246,7 +252,7 @@ func (r *characterRepository) Delete(id string, userID string) error {
 
 func (r *characterRepository) GetByName(name string) (*model.CharacterModel, error) {
 	query := `
-		SELECT id, user_id, name, class, level, hp, attack, defense, ranking_points, critical_chance, created_at, updated_at
+		SELECT id, user_id, name, class, level, hp, attack, defense, critical_chance, ranking_points, created_at, updated_at
 		FROM characters
 		WHERE name = $1
 	`
@@ -263,6 +269,7 @@ func (r *characterRepository) GetByName(name string) (*model.CharacterModel, err
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.CriticalChance,
 		&char.RankingPoints,
 		&char.CreatedAt,
 		&char.UpdatedAt,

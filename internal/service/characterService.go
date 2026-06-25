@@ -27,18 +27,18 @@ func NewCharacterService(characterRepo repository.CharacterRepository) Character
 
 func modelToDTO(char *model.CharacterModel) *dto.CharacterResponse {
 	return &dto.CharacterResponse{
-		ID:            char.ID,
-		UserID:        char.UserID,
-		Name:          char.Name,
-		Class:         char.Class,
-		Level:         char.Level,
-		HP:            char.HP,
-		Attack:        char.Attack,
-		Defense:       char.Defense,
+		ID:             char.ID,
+		UserID:         char.UserID,
+		Name:           char.Name,
+		Class:          char.Class,
+		Level:          char.Level,
+		HP:             char.HP,
+		Attack:         char.Attack,
+		Defense:        char.Defense,
 		CriticalChance: char.CriticalChance,
-		RankingPoints: char.RankingPoints,
-		CreatedAt:     char.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-		UpdatedAt:     char.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		RankingPoints:  char.RankingPoints,
+		CreatedAt:      char.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:      char.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	}
 }
 
@@ -115,12 +115,12 @@ func (s *characterService) GetAll(userID string) ([]*dto.CharacterResponse, erro
 
 func (s *characterService) Update(id string, userID string, req *dto.CharacterUpdateRequest) (*dto.CharacterResponse, error) {
 	character := &model.CharacterModel{
-		Name:    req.Name,
-		Class:   req.Class,
-		Level:   req.Level,
-		HP:      req.HP,
-		Attack:  req.Attack,
-		Defense: req.Defense,
+		Name:           req.Name,
+		Class:          req.Class,
+		Level:          req.Level,
+		HP:             req.HP,
+		Attack:         req.Attack,
+		Defense:        req.Defense,
 		CriticalChance: req.CriticalChance,
 	}
 

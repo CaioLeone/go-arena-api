@@ -35,6 +35,7 @@ func modelToDTO(char *model.CharacterModel) *dto.CharacterResponse {
 		HP:            char.HP,
 		Attack:        char.Attack,
 		Defense:       char.Defense,
+		CriticalChance: char.CriticalChance,
 		RankingPoints: char.RankingPoints,
 		CreatedAt:     char.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
 		UpdatedAt:     char.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
@@ -120,6 +121,7 @@ func (s *characterService) Update(id string, userID string, req *dto.CharacterUp
 		HP:      req.HP,
 		Attack:  req.Attack,
 		Defense: req.Defense,
+		CriticalChance: req.CriticalChance,
 	}
 
 	updatedChar, err := s.characterRepo.Update(id, userID, character)

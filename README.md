@@ -199,13 +199,31 @@ docker compose up -d
 - [X] 7. Get All Characters
 - [X] 8. Get Character By ID
 - [X] 9. Update Character
+- [X] 10. Delete Character
+- [X] 11. Create Second Character
 
-- [X] 10. Create Second Character
+- [ ] 12. Battle
+- [ ] 13. Battle History
 
-- [ ] 11. Battle
-- [ ] 12. Battle History
+- [ ] 14. Ranking User
+- [ ] 15. Ranking Top
 
-- [ ] 13. Ranking User
-- [ ] 14. Ranking Top
 
-- [X] 15. Delete Character
+
+## Teste Insomnia
+
+* usuario1:
+```
+{
+  "email": "barbaro2@example.com",
+  "password": "123456"
+}
+``` 
+
+* Usuario2:
+```
+{
+  "email": "mago1@example.com",
+  "password": "567890"
+}
+```

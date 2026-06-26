@@ -23,7 +23,7 @@ type BattleResponse struct {
 	AttackerName    string        `json:"attacker_name"`
 	DefenderID      uuid.UUID     `json:"defender_id"`
 	DefenderName    string        `json:"defender_name"`
-	WinnerID        uuid.UUID     `json:"winner_id"`
+	WinnerID        *uuid.UUID    `json:"winner_id"`
 	WinnerName      string        `json:"winner_name"`
 	DamageDealt     int           `json:"damage_dealt"`
 	AttackerHPFinal int           `json:"attacker_hp_final"`
@@ -34,16 +34,16 @@ type BattleResponse struct {
 }
 
 type BattleHistoryResponse struct {
-	ID              uuid.UUID `json:"id"`
-	AttackerID      uuid.UUID `json:"attacker_id"`
-	AttackerName    string    `json:"attacker_name"`
-	DefenderID      uuid.UUID `json:"defender_id"`
-	DefenderName    string    `json:"defender_name"`
-	WinnerID        uuid.UUID `json:"winner_id"`
-	WinnerName      string    `json:"winner_name"`
-	DamageDealt     int       `json:"damage_dealt"`
-	AttackerHPFinal int       `json:"attacker_hp_final"`
-	DefenderHPFinal int       `json:"defender_hp_final"`
-	RoundsCount     int       `json:"rounds_count"`
-	CreatedAt       string    `json:"created_at"`
+	ID              uuid.UUID  `json:"id"`
+	AttackerID      uuid.UUID  `json:"attacker_id"`
+	AttackerName    string     `json:"attacker_name"`
+	DefenderID      uuid.UUID  `json:"defender_id"`
+	DefenderName    string     `json:"defender_name"`
+	WinnerID        *uuid.UUID `json:"winner_id"`
+	WinnerName      string     `json:"winner_name"`
+	DamageDealt     int        `json:"damage_dealt"`
+	AttackerHPFinal int        `json:"attacker_hp_final"`
+	DefenderHPFinal int        `json:"defender_hp_final"`
+	RoundsCount     int        `json:"rounds_count"`
+	CreatedAt       string     `json:"created_at"`
 }

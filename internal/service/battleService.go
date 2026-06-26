@@ -56,11 +56,20 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		return nil, fmt.Errorf("Erro ao Serializar Rounds: %w", err)
 	}
 
-	winnerID := uuid.Nil
+	var winnerID *uuid.UUID
 	winnerName := "Empate"
 	if battleResult.Winner != nil {
-		winnerID = battleResult.Winner.ID
+		winnerID = &battleResult.Winner.ID
 		winnerName = battleResult.Winner.Name
+	} else {
+		winnerID = nil
+		winnerName = "Empate"
+	}
+
+	damageDealt := defender.HP - battleResult.DefenderHPFinal
+
+	if damageDealt < 0 {
+		damageDealt = 0
 	}
 
 	//Salvar Batalha no Banco
@@ -71,6 +80,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		DefenderName:    defender.Name,
 		WinnerID:        winnerID,
 		WinnerName:      winnerName,
+		DamageDealt:     damageDealt,
 		AttackerHPFinal: battleResult.AttackerHPFinal,
 		DefenderHPFinal: battleResult.DefenderHPFinal,
 		RoundsCount:     battleResult.RoundsCount,
@@ -94,7 +104,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		s.battleRepo.UpdateCharacterRanking(battleResult.Winner.ID.String(), pointsGained)
 		s.battleRepo.UpdateCharacterRanking(battleResult.Loser.ID.String(), -5)
 
-		// ✅ ADICIONADO: Atualizar no Redis Leaderboard
+		//ADICIONADO: Atualizar no Redis Leaderboard
 		newWinnerScore := float64(winnerRanking + pointsGained)
 		newLoserScore := float64(loserRanking - 5)
 
@@ -119,6 +129,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		DefenderName:    savedBattle.DefenderName,
 		WinnerID:        savedBattle.WinnerID,
 		WinnerName:      savedBattle.WinnerName,
+		DamageDealt:     savedBattle.DamageDealt,
 		AttackerHPFinal: savedBattle.AttackerHPFinal,
 		DefenderHPFinal: savedBattle.DefenderHPFinal,
 		RoundsCount:     savedBattle.RoundsCount,
@@ -153,6 +164,7 @@ func (s *battleService) GetBattleHistory(userID string, limit int, offset int) (
 			DefenderName:    b.DefenderName,
 			WinnerID:        b.WinnerID,
 			WinnerName:      b.WinnerName,
+			DamageDealt:     b.DamageDealt,
 			AttackerHPFinal: b.AttackerHPFinal,
 			DefenderHPFinal: b.DefenderHPFinal,
 			RoundsCount:     b.RoundsCount,
@@ -179,6 +191,7 @@ func (s *battleService) GetBattleByID(battleID string) (*dto.BattleResponse, err
 		DefenderName:    b.DefenderName,
 		WinnerID:        b.WinnerID,
 		WinnerName:      b.WinnerName,
+		DamageDealt:     b.DamageDealt,
 		AttackerHPFinal: b.AttackerHPFinal,
 		DefenderHPFinal: b.DefenderHPFinal,
 		RoundsCount:     b.RoundsCount,

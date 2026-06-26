@@ -21,7 +21,7 @@ type BattleRoundData struct {
 	AttackerName string `json:"attacker_name"`
 	DefenderName string `json:"defender_name"`
 	Damage       int    `json:"damage"`
-	RemainingHP  int    `json:"Remaining_hp"`
+	RemainingHP  int    `json:"remaining_hp"`
 	IsCritical   bool   `json:"is_critical"`
 	Message      string `json:"message"`
 }

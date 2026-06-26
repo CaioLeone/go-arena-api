@@ -63,7 +63,6 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		winnerName = battleResult.Winner.Name
 	} else {
 		winnerID = nil
-		winnerName = "Empate"
 	}
 
 	attackerDamage := attacker.HP - battleResult.AttackerHPFinal

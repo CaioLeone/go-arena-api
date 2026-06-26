@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS battles (
     defender_id UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
     defender_name VARCHAR(100) NOT NULL,
 
-    winner_id UUID NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
+    winner_id UUID REFERENCES characters(id) ON DELETE CASCADE,
     winner_name VARCHAR(100),
 
     attacker_hp_final INT NOT NULL,

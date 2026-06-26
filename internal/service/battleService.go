@@ -119,7 +119,11 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		)
 	}
 
-	rounds, _ := battle.FromRoundsJSON(roundsJSON)
+	//rounds, _ := battle.FromRoundsJSON(roundsJSON)
+	rounds, err := battle.FromRoundsJSON(savedBattle.RoundsData)
+	if err != nil {
+		return nil, fmt.Errorf("Erro ao desserializar rounds: %w", err)
+	}
 	return &dto.BattleResponse{
 		ID:              savedBattle.ID,
 		AttackerID:      savedBattle.AttackerID,

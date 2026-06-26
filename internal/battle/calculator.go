@@ -113,8 +113,8 @@ func DetermineBattle(attacker, defender *model.CharacterModel) (*BattleResult, e
 		}
 		rounds = append(rounds, BattleRoundData{
 			Round:        round + 1,
-			AttackerName: attacker.Name,
-			DefenderName: defender.Name,
+			AttackerName: defender.Name,
+			DefenderName: attacker.Name,
 			Damage:       damage,
 			RemainingHP:  attackerHP,
 			IsCritical:   isCritical,

@@ -107,11 +107,30 @@ func (r *battleRepository) GetByID(id string) (*model.BattleModel, error) {
 
 func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset int) ([]*model.BattleModel, error) {
 	query := `
-        SELECT id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
-        FROM battles
-        WHERE attacker_id = $1 OR defender_id = $2
-        ORDER BY created_at DESC
-        LIMIT $3 OFFSET $4
+        SELECT 
+			b.id,  
+			b.attacker_id,  
+			b.attacker_name,  
+			b.defender_id,  
+			b.defender_name,  
+			b.winner_id, 
+			b.winner_name, 
+			b.damage_dealt, 
+			b.attacker_hp_final, 
+			b.defender_hp_final, 
+			b.rounds_count, 
+			b.rounds_data, 
+			b.created_at
+        FROM battles b
+		JOIN 
+			characters ca ON ca.id = b.attacker_id
+		JOIN 
+			characters cd ON cd.id = b.defender_id
+        WHERE 
+			ca.user_id = $1 
+			OR cd.user_id = $1
+        ORDER BY b.created_at DESC
+        LIMIT $2 OFFSET $3
     `
 
 	rows, err := r.db.Query(query, userID, userID, limit, offset)

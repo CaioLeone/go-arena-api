@@ -21,7 +21,7 @@ type BattleRoundData struct {
 	AttackerName string `json:"attacker_name"`
 	DefenderName string `json:"defender_name"`
 	Damage       int    `json:"damage"`
-	DefenderHP   int    `json:"defender_hp"`
+	RemainingHP  int    `json:"Remaining_hp"`
 	IsCritical   bool   `json:"is_critical"`
 	Message      string `json:"message"`
 }
@@ -85,7 +85,7 @@ func DetermineBattle(attacker, defender *model.CharacterModel) (*BattleResult, e
 			AttackerName: attacker.Name,
 			DefenderName: defender.Name,
 			Damage:       damage,
-			DefenderHP:   defenderHP,
+			RemainingHP:  defenderHP,
 			IsCritical:   isCritical,
 			Message:      fmt.Sprintf("%s causou %d de dano em %s", attacker.Name, damage, defender.Name),
 		})
@@ -116,7 +116,7 @@ func DetermineBattle(attacker, defender *model.CharacterModel) (*BattleResult, e
 			AttackerName: attacker.Name,
 			DefenderName: defender.Name,
 			Damage:       damage,
-			DefenderHP:   attackerHP,
+			RemainingHP:  attackerHP,
 			IsCritical:   isCritical,
 			Message:      fmt.Sprintf("%s causou %d de dano em %s", defender.Name, damage, attacker.Name),
 		})

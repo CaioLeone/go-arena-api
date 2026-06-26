@@ -67,7 +67,6 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	}
 
 	damageDealt := defender.HP - battleResult.DefenderHPFinal
-
 	if damageDealt < 0 {
 		damageDealt = 0
 	}

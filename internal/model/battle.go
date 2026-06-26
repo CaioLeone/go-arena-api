@@ -13,7 +13,7 @@ type BattleModel struct {
 	DefenderID      uuid.UUID
 	DefenderName    string
 	DamageDealt     int
-	WinnerID        uuid.UUID
+	WinnerID        *uuid.UUID
 	WinnerName      string
 	AttackerHPFinal int
 	DefenderHPFinal int

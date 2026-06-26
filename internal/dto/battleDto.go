@@ -10,10 +10,13 @@ type BattleCreateRequest struct {
 }
 
 type BattleRound struct {
-	AttackerDamage int    `json:"attacker_damage"`
-	DefenderHP     int    `json:"defender_hp"`
-	IsCritical     bool   `json:"is_critical"`
-	Message        string `json:"message"`
+	Round        int    `json:"round"`
+	AttackerName string `json:"attacker_name"`
+	DefenderName string `json:"defender_name"`
+	Damage       int    `json:"damage"`
+	RemainingHP  int    `json:"remaining_hp"`
+	IsCritical   bool   `json:"is_critical"`
+	Message      string `json:"message"`
 }
 
 // RESPONSE

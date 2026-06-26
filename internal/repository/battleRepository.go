@@ -123,17 +123,17 @@ func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset i
 			b.created_at
         FROM battles b
 		JOIN 
-			characters ca ON ca.id = b.attacker_id
+			characters attacker ON attacker.id = b.attacker_id
 		JOIN 
-			characters cd ON cd.id = b.defender_id
+			characters defender ON defender.id = b.defender_id
         WHERE 
-			ca.user_id = $1 
-			OR cd.user_id = $1
+			attacker.user_id = $1 
+			OR defender.user_id = $1
         ORDER BY b.created_at DESC
         LIMIT $2 OFFSET $3
     `
 
-	rows, err := r.db.Query(query, userID, userID, limit, offset)
+	rows, err := r.db.Query(query, userID, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("Erro ao buscar histórico de batalhas: %w", err)
 	}

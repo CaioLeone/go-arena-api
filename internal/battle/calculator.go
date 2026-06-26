@@ -70,24 +70,58 @@ func DetermineBattle(attacker, defender *model.CharacterModel) (*BattleResult, e
 
 	//Simular Rounds de Batalha
 	for round := 0; round < MaxRounds; round++ {
+		//-------------------------
+		//Atacante Ataca
+		//-------------------------
 		damage, isCritical := CalcDamage(attacker, defender)
 		defenderHP -= damage
 
-		message := fmt.Sprintf("%s Ataca com Dano de %d", attacker.Name, damage)
-		if isCritical {
-			message += " (CRITICO!)"
+		if defenderHP < 0 {
+			defenderHP = 0
 		}
 
-		roundData := BattleRoundData{
-			AttackerDamage: damage,
-			DefenderHP:     defenderHP,
-			IsCritical:     isCritical,
-			Message:        message,
+		rounds = append(rounds, BattleRoundData{
+			Round:        round + 1,
+			AttackerName: attacker.Name,
+			DefenderName: defender.Name,
+			Damage:       damage,
+			DefenderHP:   defenderHP,
+			IsCritical:   isCritical,
+			Message:      fmt.Sprintf("%s causou %d de dano em %s", attacker.Name, damage, defender.Name),
+		})
+
+		if defenderHP == 0 {
+			return &BattleResult{
+				Winner:          attacker,
+				Loser:           defender,
+				AttackerHPFinal: attackerHP,
+				DefenderHPFinal: 0,
+				RoundsCount:     round + 1,
+				Rounds:          rounds,
+				IsDraw:          false,
+			}, nil
 		}
 
-		rounds = append(rounds, roundData)
+		//-------------------------
+		//Defender Contra-Ataca
+		//-------------------------
 
-		if attackerHP <= 0 {
+		damage, isCritical = CalcDamage(defender, attacker)
+		attackerHP -= damage
+		if attackerHP < 0 {
+			attackerHP = 0
+		}
+		rounds = append(rounds, BattleRoundData{
+			Round:        round + 1,
+			AttackerName: attacker.Name,
+			DefenderName: defender.Name,
+			Damage:       damage,
+			DefenderHP:   attackerHP,
+			IsCritical:   isCritical,
+			Message:      fmt.Sprintf("%s causou %d de dano em %s", defender.Name, damage, attacker.Name),
+		})
+
+		if attackerHP == 0 {
 			return &BattleResult{
 				Winner:          defender,
 				Loser:           attacker,
@@ -95,6 +129,7 @@ func DetermineBattle(attacker, defender *model.CharacterModel) (*BattleResult, e
 				DefenderHPFinal: defenderHP,
 				RoundsCount:     round + 1,
 				Rounds:          rounds,
+				IsDraw:          false,
 			}, nil
 		}
 	}

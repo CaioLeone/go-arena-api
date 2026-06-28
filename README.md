@@ -203,7 +203,7 @@ docker compose up -d
 - [X] 11. Create Second Character
 
 - [X] 12. Battle
-- [ ] 13. Battle History
+- [X] 13. Battle History
 
 - [ ] 14. Ranking User
 - [ ] 15. Ranking Top

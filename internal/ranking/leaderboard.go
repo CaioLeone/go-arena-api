@@ -49,6 +49,7 @@ func (ls *LeaderboardService) GetPlayerRank(characterID string, characterName st
 	memberKey := fmt.Sprintf("%s:%s", characterID, characterName)
 
 	rawClient := ls.redisClient.GetRawClient()
+	
 	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, memberKey).Result()
 	if err != nil {
 		if err == goredis.Nil {

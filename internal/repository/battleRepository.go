@@ -25,9 +25,31 @@ func NewBattleRepository(db *sql.DB) BattleRepository {
 
 func (r *battleRepository) Create(battle *model.BattleModel) (*model.BattleModel, error) {
 	query := `
-        INSERT INTO battles (attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data)
+        INSERT INTO battles (attacker_id, 
+			attacker_name, 
+			defender_id, 
+			defender_name, 
+			winner_id, 
+			winner_name, 
+			damage_dealt, 
+			attacker_hp_final, 
+			defender_hp_final, 
+			rounds_count, 
+			rounds_data)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        RETURNING id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
+        RETURNING id, 
+			attacker_id, 
+			attacker_name, 
+			defender_id, 
+			defender_name, 
+			winner_id, 
+			winner_name, 
+			damage_dealt, 
+			attacker_hp_final, 
+			defender_hp_final, 
+			rounds_count, 
+			rounds_data, 
+			created_at
     `
 
 	row := r.db.QueryRow(
@@ -71,7 +93,19 @@ func (r *battleRepository) Create(battle *model.BattleModel) (*model.BattleModel
 
 func (r *battleRepository) GetByID(id string) (*model.BattleModel, error) {
 	query := `
-        SELECT id, attacker_id, attacker_name, defender_id, defender_name, winner_id, winner_name, damage_dealt, attacker_hp_final, defender_hp_final, rounds_count, rounds_data, created_at
+        SELECT id, 
+			attacker_id, 
+			attacker_name, 
+			defender_id, 
+			defender_name, 
+			winner_id, 
+			winner_name, 
+			damage_dealt, 
+			attacker_hp_final, 
+			defender_hp_final, 
+			rounds_count, 
+			rounds_data, 
+			created_at
         FROM battles
         WHERE id = $1
     `

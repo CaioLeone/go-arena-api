@@ -77,6 +77,10 @@ func (c *Client) ZRangeWithScores(ctx context.Context, key string, start, stop i
     return c.client.ZRangeWithScores(ctx, key, start, stop).Result()
 }
 
+func (c *Client) ZRevRank(ctx context.Context, key, member string) (int64, error) {
+	return c.client.ZRevRank(ctx, key, member).Result()
+}
+
 // Fecha Conexao com Redis
 func (c *Client) Close() error {
     return c.client.Close()

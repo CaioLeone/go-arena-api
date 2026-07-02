@@ -42,24 +42,55 @@ func (ls *LeaderboardService) UpdatePlayerScore(characterID string, characterNam
 	return nil
 }
 
-// GetPlayerRank retorna o rank de um jogador
-func (ls *LeaderboardService) GetPlayerRank(characterID string, characterName string) (int64, error) {
+func (ls *LeaderboardService) GetPlayerRank(characterID, characterName string) (int64, error) {
 	ctx := context.Background()
 
 	memberKey := fmt.Sprintf("%s:%s", characterID, characterName)
 
-	rawClient := ls.redisClient.GetRawClient()
-	
-	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, memberKey).Result()
+	log.Println("Procurando:", memberKey)
+
+	score, err := ls.redisClient.ZScore(ctx, LeaderboardKey, memberKey)
 	if err != nil {
-		if err == goredis.Nil {
-			return -1, nil // Jogador não encontrado
-		}
-		return -1, fmt.Errorf("Erro ao buscar rank: %w", err)
+		log.Println("Score não encontrado:", err)
+		return -1, err
 	}
 
-	return rank + 1, nil // Redis retorna 0-indexed, convertemos para 1-indexed
+	log.Println("Score encontrado:", score)
+
+	rawClient := ls.redisClient.GetRawClient()
+
+	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, memberKey).Result()
+	if err != nil {
+		log.Println("Rank não encontrado:", err)
+		return -1, err
+	}
+
+	log.Println("Rank:", rank+1)
+
+	return rank + 1, nil
 }
+
+// GetPlayerRank retorna o rank de um jogador
+// func (ls *LeaderboardService) GetPlayerRank(characterID string, characterName string) (int64, error) {
+// 	ctx := context.Background()
+
+// 	memberKey := fmt.Sprintf("%s:%s", characterID, characterName)
+
+// 	//TEST
+// 	log.Printf("BUSCANDO: %s", memberKey)
+
+// 	rawClient := ls.redisClient.GetRawClient()
+
+// 	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, memberKey).Result()
+// 	if err != nil {
+// 		if err == goredis.Nil {
+// 			return -1, nil // Jogador não encontrado
+// 		}
+// 		return -1, fmt.Errorf("Erro ao buscar rank: %w", err)
+// 	}
+
+// 	return rank + 1, nil // Redis retorna 0-indexed, convertemos para 1-indexed
+// }
 
 func (ls *LeaderboardService) GetPlayerScore(characterID string, characterName string) (float64, error) {
 	ctx := context.Background()

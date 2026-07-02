@@ -205,8 +205,8 @@ docker compose up -d
 - [X] 12. Battle
 - [X] 13. Battle History
 
-- [ ] 14. Ranking User
-- [ ] 15. Ranking Top
+- [X] 14. Ranking User
+- [X] 15. Ranking Top
 
 
 

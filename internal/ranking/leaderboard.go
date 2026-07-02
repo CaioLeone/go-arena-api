@@ -57,9 +57,9 @@ func (ls *LeaderboardService) GetPlayerRank(characterID, characterName string) (
 
 	log.Println("Score encontrado:", score)
 
-	rawClient := ls.redisClient.GetRawClient()
+	//rawClient := ls.redisClient.GetRawClient()
 
-	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, memberKey).Result()
+	rank, err := ls.redisClient.ZRevRank(ctx, LeaderboardKey, memberKey)
 	if err != nil {
 		log.Println("Rank não encontrado:", err)
 		return -1, err

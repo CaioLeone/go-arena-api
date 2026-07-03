@@ -10,6 +10,7 @@ import (
 type CharacterRepository interface {
 	Create(character *model.CharacterModel) (*model.CharacterModel, error)
 	GetByID(id string, userID string) (*model.CharacterModel, error)
+	GetByIDWithoutUser(id string) (*model.CharacterModel, error)
 	GetAllByUserID(userID string) ([]*model.CharacterModel, error)
 	GetByIDNoUserFilter(id string) (*model.CharacterModel, error)
 	Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error)
@@ -81,7 +82,52 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 }
 
 //func (r *characterRepository) GetByID(id string, userID string) (*model.CharacterModel, error)
-func (r *characterRepository) GetByID(id string) (*model.CharacterModel, error) {
+func (r *characterRepository) GetByID(id string, userID string) (*model.CharacterModel, error) {
+	query := `
+        SELECT id, 
+			user_id, 
+			name, 
+			class, 
+			level, 
+			hp, 
+			attack, 
+			defense, 
+			critical_chance, 
+			ranking_points, 
+			created_at, 
+			updated_at
+        FROM characters
+        WHERE id = $1 ON AND user_id = $2
+    `
+
+	//row := r.db.QueryRow(query, id, userID)
+	row := r.db.QueryRow(query, id, userID)
+	var char model.CharacterModel
+	err := row.Scan(
+		&char.ID,
+		&char.UserID,
+		&char.Name,
+		&char.Class,
+		&char.Level,
+		&char.HP,
+		&char.Attack,
+		&char.Defense,
+		&char.CriticalChance,
+		&char.RankingPoints,
+		&char.CreatedAt,
+		&char.UpdatedAt,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Personagem não encontrado")
+		}
+		return nil, fmt.Errorf("Erro ao buscar personagem: %v", err)
+	}
+	return &char, nil
+
+}
+
+func (r *characterRepository) GetByIDWithoutUser(id string) (*model.CharacterModel, error) {
 	query := `
         SELECT id, 
 			user_id, 
@@ -99,7 +145,6 @@ func (r *characterRepository) GetByID(id string) (*model.CharacterModel, error) 
         WHERE id = $1 
     `
 
-	//row := r.db.QueryRow(query, id, userID)
 	row := r.db.QueryRow(query, id)
 	var char model.CharacterModel
 	err := row.Scan(

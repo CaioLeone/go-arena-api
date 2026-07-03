@@ -81,7 +81,7 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 	return &char, nil
 }
 
-//func (r *characterRepository) GetByID(id string, userID string) (*model.CharacterModel, error)
+// func (r *characterRepository) GetByID(id string, userID string) (*model.CharacterModel, error)
 func (r *characterRepository) GetByID(id string, userID string) (*model.CharacterModel, error) {
 	query := `
         SELECT id, 
@@ -97,10 +97,9 @@ func (r *characterRepository) GetByID(id string, userID string) (*model.Characte
 			created_at, 
 			updated_at
         FROM characters
-        WHERE id = $1 ON AND user_id = $2
+        WHERE id = $1 AND user_id = $2
     `
 
-	//row := r.db.QueryRow(query, id, userID)
 	row := r.db.QueryRow(query, id, userID)
 	var char model.CharacterModel
 	err := row.Scan(

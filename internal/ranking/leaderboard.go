@@ -113,10 +113,12 @@ func (ls *LeaderboardService) GetPlayerRank(characterID string, characterName st
 	return rank + 1, nil // Redis retorna 0-indexed, convertemos para 1-indexed
 }
 
-func (ls *LeaderboardService) GetPlayerScore(characterID string) (float64, error) {
+func (ls *LeaderboardService) GetPlayerScore(characterID string, characterName string) (float64, error) {
 	ctx := context.Background()
 
-	score, err := ls.redisClient.ZScore(ctx, LeaderboardKey, characterID)
+	memberKey := fmt.Sprintf("%s:%s", characterID, characterName)
+
+	score, err := ls.redisClient.ZScore(ctx, LeaderboardKey, memberKey)
 	if err != nil {
 		if err == goredis.Nil {
 			return 0, nil

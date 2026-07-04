@@ -45,12 +45,12 @@ func (h *RankingHandler) GetUserRanking(c *gin.Context) {
 
 	var rankings []gin.H
 	for _, char := range characters {
-		rank, err := h.leaderboardService.GetPlayerRank(char.ID.String())
+		rank, err := h.leaderboardService.GetPlayerRank(char.ID.String(), char.Name)
 		if err != nil {
 			rank = -1
 		}
 
-		score, err := h.leaderboardService.GetPlayerScore(char.ID.String())
+		score, err := h.leaderboardService.GetPlayerScore(char.ID.String(), char.Name)
 		if err != nil {
 			score = 0
 		}

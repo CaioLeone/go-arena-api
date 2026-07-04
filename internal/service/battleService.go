@@ -118,12 +118,12 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 
 		s.leaderboardService.UpdatePlayerScore(
 			battleResult.Winner.ID.String(),
-			//battleResult.Winner.Name,
+			battleResult.Winner.Name,
 			newWinnerScore,
 		)
 		s.leaderboardService.UpdatePlayerScore(
 			battleResult.Loser.ID.String(),
-			//battleResult.Loser.Name,
+			battleResult.Loser.Name,
 			newLoserScore,
 		)
 	}

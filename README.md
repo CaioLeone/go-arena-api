@@ -213,7 +213,7 @@ docker compose up -d
 
 ## Teste Insomnia
 
-* usuario1:
+* usuario 1:
 ```
 {
   "email": "barbaro2@example.com",
@@ -221,7 +221,7 @@ docker compose up -d
 }
 ``` 
 
-* Usuario2:
+* Usuario 2:
 ```
 {
   "email": "mago1@example.com",

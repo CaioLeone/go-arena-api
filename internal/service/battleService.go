@@ -47,14 +47,7 @@ func (s *battleService) loadCharacters(userID string, req *dto.BattleCreateReque
 	return attacker, defender, nil
 }
 
-func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
-
-	//Simular Batalha
-	battleResult, err := battle.DetermineBattle(attacker, defender)
-	if err != nil {
-		return nil, fmt.Errorf("Erro ao Simular Batalha: %w", err)
-	}
-
+func (s *battleService) buildBattleModel(attacker *model.CharacterModel, defender *model.CharacterModel, battleResult *battle.BattleResult) (*model.BattleModel, error) {
 	//Serializar Rounds
 	roundsJSON, err := battleResult.ToRoundsJSON()
 	if err != nil {
@@ -63,6 +56,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 
 	var winnerID *uuid.UUID
 	winnerName := "Empate"
+	
 	if battleResult.Winner != nil {
 		winnerID = &battleResult.Winner.ID
 		winnerName = battleResult.Winner.Name
@@ -86,7 +80,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	}
 
 	//Salvar Batalha no Banco
-	battleModel := &model.BattleModel{
+	return &model.BattleModel{
 		AttackerID:      attacker.ID,
 		AttackerName:    attacker.Name,
 		DefenderID:      defender.ID,
@@ -98,6 +92,15 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		DefenderHPFinal: battleResult.DefenderHPFinal,
 		RoundsCount:     battleResult.RoundsCount,
 		RoundsData:      roundsJSON,
+	}, nil
+}
+
+func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
+
+	//Simular Batalha
+	battleResult, err := battle.DetermineBattle(attacker, defender)
+	if err != nil {
+		return nil, fmt.Errorf("Erro ao Simular Batalha: %w", err)
 	}
 
 	savedBattle, err := s.battleRepo.Create(battleModel)

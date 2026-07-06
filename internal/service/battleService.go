@@ -99,7 +99,7 @@ func (s *battleService) updateRanking(result *battle.BattleResult) {
 	if result.IsDraw || result.Winner == nil {
 		return
 	}
-	
+
 	winnerRanking, _ := s.battleRepo.GetCharacterRanking(result.Winner.ID.String())
 	loserRanking, _ := s.battleRepo.GetCharacterRanking(result.Loser.ID.String())
 	rankingDiff := winnerRanking - loserRanking
@@ -129,6 +129,29 @@ func (s *battleService) updateRanking(result *battle.BattleResult) {
 	)
 }
 
+func (s *battleService) buildBattleResponse(battleModel *model.BattleModel) (*dto.BattleResponse, error) {
+	rounds, err := battle.FromRoundsJSON(battleModel.RoundsData)
+	if err != nil {
+		return nil, fmt.Errorf("Erro ao desserializar rounds: %w", err)
+	}
+
+	return &dto.BattleResponse{
+		ID:              battleModel.ID,
+		AttackerID:      battleModel.AttackerID,
+		AttackerName:    battleModel.AttackerName,
+		DefenderID:      battleModel.DefenderID,
+		DefenderName:    battleModel.DefenderName,
+		WinnerID:        battleModel.WinnerID,
+		WinnerName:      battleModel.WinnerName,
+		DamageDealt:     battleModel.DamageDealt,
+		AttackerHPFinal: battleModel.AttackerHPFinal,
+		DefenderHPFinal: battleModel.DefenderHPFinal,
+		RoundsCount:     battleModel.RoundsCount,
+		Rounds:          rounds,
+		CreatedAt:       battleModel.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+	}, nil
+}
+
 func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
 
 	//Simular Batalha
@@ -148,25 +171,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	}
 
 	//rounds, _ := battle.FromRoundsJSON(roundsJSON)
-	rounds, err := battle.FromRoundsJSON(savedBattle.RoundsData)
-	if err != nil {
-		return nil, fmt.Errorf("Erro ao desserializar rounds: %w", err)
-	}
-	return &dto.BattleResponse{
-		ID:              savedBattle.ID,
-		AttackerID:      savedBattle.AttackerID,
-		AttackerName:    savedBattle.AttackerName,
-		DefenderID:      savedBattle.DefenderID,
-		DefenderName:    savedBattle.DefenderName,
-		WinnerID:        savedBattle.WinnerID,
-		WinnerName:      savedBattle.WinnerName,
-		DamageDealt:     savedBattle.DamageDealt,
-		AttackerHPFinal: savedBattle.AttackerHPFinal,
-		DefenderHPFinal: savedBattle.DefenderHPFinal,
-		RoundsCount:     savedBattle.RoundsCount,
-		Rounds:          rounds,
-		CreatedAt:       savedBattle.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-	}, nil
+
 }
 
 func (s *battleService) GetBattleHistory(userID string, limit int, offset int) ([]*dto.BattleHistoryResponse, error) {

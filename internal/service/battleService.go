@@ -56,7 +56,7 @@ func (s *battleService) buildBattleModel(attacker *model.CharacterModel, defende
 
 	var winnerID *uuid.UUID
 	winnerName := "Empate"
-	
+
 	if battleResult.Winner != nil {
 		winnerID = &battleResult.Winner.ID
 		winnerName = battleResult.Winner.Name
@@ -95,6 +95,40 @@ func (s *battleService) buildBattleModel(attacker *model.CharacterModel, defende
 	}, nil
 }
 
+func (s *battleService) updateRanking(result *battle.BattleResult) {
+	if result.IsDraw || result.Winner == nil {
+		return
+	}
+	
+	winnerRanking, _ := s.battleRepo.GetCharacterRanking(result.Winner.ID.String())
+	loserRanking, _ := s.battleRepo.GetCharacterRanking(result.Loser.ID.String())
+	rankingDiff := winnerRanking - loserRanking
+
+	pointsGained := battle.UpdateRanking(result.Winner, result.Loser, rankingDiff)
+
+	newWinnerScore := winnerRanking + pointsGained
+	newLoserScore := loserRanking - 5
+
+	if newLoserScore < 0 {
+		newLoserScore = 0
+	}
+
+	// Atualizar no banco
+	s.battleRepo.UpdateCharacterRanking(result.Winner.ID.String(), pointsGained)
+	s.battleRepo.UpdateCharacterRanking(result.Loser.ID.String(), newLoserScore-loserRanking)
+
+	s.leaderboardService.UpdatePlayerScore(
+		result.Winner.ID.String(),
+		result.Winner.Name,
+		float64(newWinnerScore),
+	)
+	s.leaderboardService.UpdatePlayerScore(
+		result.Loser.ID.String(),
+		result.Loser.Name,
+		float64(newLoserScore),
+	)
+}
+
 func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
 
 	//Simular Batalha
@@ -110,30 +144,7 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 
 	//Atualizar Ranking se nao foi empate
 	if !battleResult.IsDraw && battleResult.Winner != nil {
-		winnerRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Winner.ID.String())
-		loserRanking, _ := s.battleRepo.GetCharacterRanking(battleResult.Loser.ID.String())
 
-		rankingDiff := winnerRanking - loserRanking
-		pointsGained := battle.UpdateRanking(battleResult.Winner, battleResult.Loser, rankingDiff)
-
-		// Atualizar no banco
-		s.battleRepo.UpdateCharacterRanking(battleResult.Winner.ID.String(), pointsGained)
-		s.battleRepo.UpdateCharacterRanking(battleResult.Loser.ID.String(), -5)
-
-		//ADICIONADO: Atualizar no Redis Leaderboard
-		newWinnerScore := float64(winnerRanking + pointsGained)
-		newLoserScore := float64(loserRanking - 5)
-
-		s.leaderboardService.UpdatePlayerScore(
-			battleResult.Winner.ID.String(),
-			battleResult.Winner.Name,
-			newWinnerScore,
-		)
-		s.leaderboardService.UpdatePlayerScore(
-			battleResult.Loser.ID.String(),
-			battleResult.Loser.Name,
-			newLoserScore,
-		)
 	}
 
 	//rounds, _ := battle.FromRoundsJSON(roundsJSON)

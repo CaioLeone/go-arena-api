@@ -31,18 +31,23 @@ func NewBattleService(battleRepo repository.BattleRepository, characterRepo repo
 	}
 }
 
-func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
+func (s *battleService) loadCharacters(userID string, req *dto.BattleCreateRequest) (*model.CharacterModel, *model.CharacterModel, error) {
 	//Busca atacante
 	attacker, err := s.characterRepo.GetByID(req.AttackerCharacterID, userID)
 	if err != nil {
-		return nil, fmt.Errorf("Personagem atacante não encontrado")
+		return nil, nil, fmt.Errorf("Personagem atacante não encontrado")
 	}
 
 	//Busca Defensor(qualquer usuario)
 	defender, err := s.characterRepo.GetByIDNoUserFilter(req.DefenderCharacterID)
 	if err != nil {
-		return nil, fmt.Errorf("Personagem defensor não encontrado")
+		return nil, nil, fmt.Errorf("Personagem defensor não encontrado")
 	}
+
+	return attacker, defender, nil
+}
+
+func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
 
 	//Simular Batalha
 	battleResult, err := battle.DetermineBattle(attacker, defender)

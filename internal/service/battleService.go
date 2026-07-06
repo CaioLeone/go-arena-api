@@ -154,10 +154,21 @@ func (s *battleService) buildBattleResponse(battleModel *model.BattleModel) (*dt
 
 func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest) (*dto.BattleResponse, error) {
 
+	//Carrega Jogadores
+	attacker, defender, err := s.loadCharacters(userID, req)
+	if err != nil {
+		return nil, err
+	}
+
 	//Simular Batalha
 	battleResult, err := battle.DetermineBattle(attacker, defender)
 	if err != nil {
 		return nil, fmt.Errorf("Erro ao Simular Batalha: %w", err)
+	}
+
+	battleModel, err := s.buildBattleModel(attacker, defender, battleResult)
+	if err != nil {
+		return nil, fmt.Errorf("Erro ao Construir Modelo de Batalha: %w", err)
 	}
 
 	savedBattle, err := s.battleRepo.Create(battleModel)
@@ -165,13 +176,8 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 		return nil, fmt.Errorf("Erro ao Salvar Batalha: %w", err)
 	}
 
-	//Atualizar Ranking se nao foi empate
-	if !battleResult.IsDraw && battleResult.Winner != nil {
-
-	}
-
-	//rounds, _ := battle.FromRoundsJSON(roundsJSON)
-
+	s.updateRanking(battleResult)
+	return s.buildBattleResponse(savedBattle)
 }
 
 func (s *battleService) GetBattleHistory(userID string, limit int, offset int) ([]*dto.BattleHistoryResponse, error) {

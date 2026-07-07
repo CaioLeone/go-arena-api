@@ -26,6 +26,18 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 
 // Register Registra novo usuario
 // POST /auth/register
+
+// Register godoc
+//
+// @Summary Registrar usuário
+// @Description Cria um novo usuário e retorna os tokens JWT.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body dto.UserCreateRequest true "Dados do usuário"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /auth/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req dto.UserCreateRequest
 
@@ -70,6 +82,17 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 // Login faz login do Usuario
 // POST /auth/login
+// Login godoc
+//
+// @Summary Login
+// @Description Autentica um usuário.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body dto.UserLoginRequest true "Credenciais"
+// @Success 200 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Router /auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req dto.UserLoginRequest
 
@@ -117,6 +140,17 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	})
 }
 
+// Refresh godoc
+//
+// @Summary Renovar Access Token
+// @Description Gera um novo Access Token usando Refresh Token.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body dto.RefreshTokenRequest true "Refresh Token"
+// @Success 200 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Router /auth/refresh [post]
 func (h *AuthHandler) Refresh(c *gin.Context) {
 	var req dto.RefreshTokenRequest
 

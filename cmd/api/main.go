@@ -15,6 +15,11 @@ import (
 	"github.com/caioLeone/go-arena-api/pkg/logger"
 	"github.com/caioLeone/go-arena-api/pkg/redis"
 	"github.com/gin-gonic/gin"
+
+	_ "github.com/caioLeone/go-arena-api/cmd/api/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -60,6 +65,8 @@ func main() {
 	router.Use(rateLimiter.Middleware())
 
 	router.Use(gin.Recovery())
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//7. Inicializar dependencias
 	initializeDependencies(router, db, cfg, redisClient, log)

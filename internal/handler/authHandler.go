@@ -24,9 +24,6 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 	}
 }
 
-// Register Registra novo usuario
-// POST /auth/register
-
 // Register godoc
 //
 // @Summary Registrar usuário
@@ -80,8 +77,6 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	})
 }
 
-// Login faz login do Usuario
-// POST /auth/login
 // Login godoc
 //
 // @Summary Login
@@ -112,13 +107,6 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		middleware.ValidationErrorResponse(c, erros)
 		return
 	}
-	// if err := h.validator.Struct(req); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"success": false,
-	// 		"error":   "Email e Senha Obrigatorios",
-	// 	})
-	// 	return
-	// }
 
 	//Chamar Service
 	loginResp, err := h.authService.Login(&req)

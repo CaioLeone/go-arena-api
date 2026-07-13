@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest"
+                            "$ref": "#/definitions/dto.UserLoginRequest"
                         }
                     }
                 ],
@@ -77,7 +77,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest"
+                            "$ref": "#/definitions/dto.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -119,7 +119,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest"
+                            "$ref": "#/definitions/dto.UserCreateRequest"
                         }
                     }
                 ],
@@ -140,10 +140,515 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/battles": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Inicia uma batalha entre dois personagens e salva o resultado.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Battles"
+                ],
+                "summary": "Iniciar batalha",
+                "parameters": [
+                    {
+                        "description": "Dados da batalha",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BattleCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/battles/history": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna o histórico de batalhas do usuário autenticado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Battles"
+                ],
+                "summary": "Histórico de batalhas",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Quantidade de registros",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset da paginação",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/characters": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todos os personagens do usuário autenticado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Listar personagens",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cria um novo personagem para o usuário autenticado.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Criar personagem",
+                "parameters": [
+                    {
+                        "description": "Dados do personagem",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CharacterCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/characters/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna um personagem específico do usuário autenticado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Buscar personagem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do personagem",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Atualiza os dados de um personagem.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Atualizar personagem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do personagem",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Novos dados do personagem",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CharacterUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Remove um personagem do usuário autenticado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Deletar personagem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do personagem",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/ranking": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna o ranking de todos os personagens pertencentes ao usuário autenticado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ranking"
+                ],
+                "summary": "Ranking do usuário",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/ranking/top": {
+            "get": {
+                "description": "Retorna os jogadores com maior pontuação no leaderboard.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ranking"
+                ],
+                "summary": "Top Ranking",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Quantidade de jogadores (máximo 100)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest": {
+        "dto.BattleCreateRequest": {
+            "type": "object",
+            "required": [
+                "attacker_character_id",
+                "defender_character_id"
+            ],
+            "properties": {
+                "attacker_character_id": {
+                    "type": "string"
+                },
+                "defender_character_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CharacterCreateRequest": {
+            "type": "object",
+            "required": [
+                "attack",
+                "class",
+                "defense",
+                "hp",
+                "level",
+                "name"
+            ],
+            "properties": {
+                "attack": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "class": {
+                    "type": "string",
+                    "enum": [
+                        "Barbaro",
+                        "Mago",
+                        "Arqueiro",
+                        "Assassino"
+                    ]
+                },
+                "critical_chance": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "defense": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "hp": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "level": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 1
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 1
+                }
+            }
+        },
+        "dto.CharacterUpdateRequest": {
+            "type": "object",
+            "required": [
+                "attack",
+                "class",
+                "defense",
+                "hp",
+                "level",
+                "name"
+            ],
+            "properties": {
+                "attack": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "class": {
+                    "type": "string",
+                    "enum": [
+                        "Barbaro",
+                        "Mago",
+                        "Arqueiro",
+                        "Assassino"
+                    ]
+                },
+                "critical_chance": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "defense": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "hp": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "level": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 1
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 1
+                }
+            }
+        },
+        "dto.RefreshTokenRequest": {
             "type": "object",
             "required": [
                 "refresh_token"
@@ -154,7 +659,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest": {
+        "dto.UserCreateRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -170,7 +675,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest": {
+        "dto.UserLoginRequest": {
             "type": "object",
             "required": [
                 "email",

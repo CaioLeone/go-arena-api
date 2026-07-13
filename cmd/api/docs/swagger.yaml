@@ -1,12 +1,98 @@
 definitions:
-  github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest:
+  dto.BattleCreateRequest:
+    properties:
+      attacker_character_id:
+        type: string
+      defender_character_id:
+        type: string
+    required:
+    - attacker_character_id
+    - defender_character_id
+    type: object
+  dto.CharacterCreateRequest:
+    properties:
+      attack:
+        minimum: 1
+        type: integer
+      class:
+        enum:
+        - Barbaro
+        - Mago
+        - Arqueiro
+        - Assassino
+        type: string
+      critical_chance:
+        maximum: 100
+        minimum: 0
+        type: integer
+      defense:
+        minimum: 1
+        type: integer
+      hp:
+        minimum: 1
+        type: integer
+      level:
+        maximum: 100
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 25
+        minLength: 1
+        type: string
+    required:
+    - attack
+    - class
+    - defense
+    - hp
+    - level
+    - name
+    type: object
+  dto.CharacterUpdateRequest:
+    properties:
+      attack:
+        minimum: 1
+        type: integer
+      class:
+        enum:
+        - Barbaro
+        - Mago
+        - Arqueiro
+        - Assassino
+        type: string
+      critical_chance:
+        maximum: 100
+        minimum: 0
+        type: integer
+      defense:
+        minimum: 1
+        type: integer
+      hp:
+        minimum: 1
+        type: integer
+      level:
+        maximum: 100
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 25
+        minLength: 1
+        type: string
+    required:
+    - attack
+    - class
+    - defense
+    - hp
+    - level
+    - name
+    type: object
+  dto.RefreshTokenRequest:
     properties:
       refresh_token:
         type: string
     required:
     - refresh_token
     type: object
-  github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest:
+  dto.UserCreateRequest:
     properties:
       email:
         type: string
@@ -17,7 +103,7 @@ definitions:
     - email
     - password
     type: object
-  github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest:
+  dto.UserLoginRequest:
     properties:
       email:
         type: string
@@ -41,7 +127,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest'
+          $ref: '#/definitions/dto.UserLoginRequest'
       produces:
       - application/json
       responses:
@@ -69,7 +155,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest'
+          $ref: '#/definitions/dto.RefreshTokenRequest'
       produces:
       - application/json
       responses:
@@ -97,7 +183,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest'
+          $ref: '#/definitions/dto.UserCreateRequest'
       produces:
       - application/json
       responses:
@@ -114,4 +200,260 @@ paths:
       summary: Registrar usuário
       tags:
       - Auth
+  /battles:
+    post:
+      consumes:
+      - application/json
+      description: Inicia uma batalha entre dois personagens e salva o resultado.
+      parameters:
+      - description: Dados da batalha
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.BattleCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Iniciar batalha
+      tags:
+      - Battles
+  /battles/history:
+    get:
+      description: Retorna o histórico de batalhas do usuário autenticado.
+      parameters:
+      - default: 10
+        description: Quantidade de registros
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset da paginação
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Histórico de batalhas
+      tags:
+      - Battles
+  /characters:
+    get:
+      description: Retorna todos os personagens do usuário autenticado.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Listar personagens
+      tags:
+      - Characters
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo personagem para o usuário autenticado.
+      parameters:
+      - description: Dados do personagem
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CharacterCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Criar personagem
+      tags:
+      - Characters
+  /characters/{id}:
+    delete:
+      description: Remove um personagem do usuário autenticado.
+      parameters:
+      - description: ID do personagem
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Deletar personagem
+      tags:
+      - Characters
+    get:
+      description: Retorna um personagem específico do usuário autenticado.
+      parameters:
+      - description: ID do personagem
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Buscar personagem
+      tags:
+      - Characters
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um personagem.
+      parameters:
+      - description: ID do personagem
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Novos dados do personagem
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CharacterUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Atualizar personagem
+      tags:
+      - Characters
+  /ranking:
+    get:
+      description: Retorna o ranking de todos os personagens pertencentes ao usuário
+        autenticado.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Ranking do usuário
+      tags:
+      - Ranking
+  /ranking/top:
+    get:
+      description: Retorna os jogadores com maior pontuação no leaderboard.
+      parameters:
+      - default: 10
+        description: Quantidade de jogadores (máximo 100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Top Ranking
+      tags:
+      - Ranking
 swagger: "2.0"

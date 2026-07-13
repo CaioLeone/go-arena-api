@@ -22,8 +22,19 @@ func NewBattleHandler(battleService service.BattleService) *BattleHandler {
 	}
 }
 
-// StartBattle incia uma nova batalha
-// POST /battles
+// StartBattle godoc
+//
+// @Summary Iniciar batalha
+// @Description Inicia uma batalha entre dois personagens e salva o resultado.
+// @Tags Battles
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.BattleCreateRequest true "Dados da batalha"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Router /battles [post]
 func (h *BattleHandler) StartBattle(c *gin.Context) {
 	var req dto.BattleCreateRequest
 
@@ -60,8 +71,19 @@ func (h *BattleHandler) StartBattle(c *gin.Context) {
 	})
 }
 
-// GetHistory retorna histórico de batalhas do usuário
-// GET /battles/history
+// GetHistory godoc
+//
+// @Summary Histórico de batalhas
+// @Description Retorna o histórico de batalhas do usuário autenticado.
+// @Tags Battles
+// @Produce json
+// @Security BearerAuth
+// @Param limit query int false "Quantidade de registros" default(10)
+// @Param offset query int false "Offset da paginação" default(0)
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Router /battles/history [get]
 func (h *BattleHandler) GetHistory(c *gin.Context) {
 	userID := c.GetString("user_id")
 

@@ -1,12 +1,12 @@
 definitions:
-  dto.RefreshTokenRequest:
+  github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest:
     properties:
       refresh_token:
         type: string
     required:
     - refresh_token
     type: object
-  dto.UserCreateRequest:
+  github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest:
     properties:
       email:
         type: string
@@ -17,7 +17,7 @@ definitions:
     - email
     - password
     type: object
-  dto.UserLoginRequest:
+  github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest:
     properties:
       email:
         type: string
@@ -41,7 +41,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.UserLoginRequest'
+          $ref: '#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest'
       produces:
       - application/json
       responses:
@@ -69,7 +69,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.RefreshTokenRequest'
+          $ref: '#/definitions/github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest'
       produces:
       - application/json
       responses:
@@ -97,7 +97,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.UserCreateRequest'
+          $ref: '#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest'
       produces:
       - application/json
       responses:

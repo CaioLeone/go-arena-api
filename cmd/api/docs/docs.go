@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserLoginRequest"
+                            "$ref": "#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest"
                         }
                     }
                 ],
@@ -77,7 +77,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.RefreshTokenRequest"
+                            "$ref": "#/definitions/github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -119,7 +119,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserCreateRequest"
+                            "$ref": "#/definitions/github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest"
                         }
                     }
                 ],
@@ -143,7 +143,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.RefreshTokenRequest": {
+        "github_com_caioLeone_go-arena-api_internal_dto.RefreshTokenRequest": {
             "type": "object",
             "required": [
                 "refresh_token"
@@ -154,7 +154,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserCreateRequest": {
+        "github_com_caioLeone_go-arena-api_internal_dto.UserCreateRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -170,7 +170,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserLoginRequest": {
+        "github_com_caioLeone_go-arena-api_internal_dto.UserLoginRequest": {
             "type": "object",
             "required": [
                 "email",

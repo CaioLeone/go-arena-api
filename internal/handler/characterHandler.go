@@ -21,8 +21,18 @@ func NewCharacterHandler(characterService service.CharacterService) *CharacterHa
 	}
 }
 
-// CREATE CRIA NOVO PERSONAGEM
-// POST /characters
+// Create godoc
+//
+// @Summary Criar personagem
+// @Description Cria um novo personagem para o usuário autenticado.
+// @Tags Characters
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.CharacterCreateRequest true "Dados do personagem"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /characters [post]
 func (h *CharacterHandler) Create(c *gin.Context) {
 	var req dto.CharacterCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -57,8 +67,16 @@ func (h *CharacterHandler) Create(c *gin.Context) {
 	})
 }
 
-// GET ALL retorna todos os personagens do usuario
-// GET /characters
+// GetAll godoc
+//
+// @Summary Listar personagens
+// @Description Retorna todos os personagens do usuário autenticado.
+// @Tags Characters
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /characters [get]
 func (h *CharacterHandler) GetAll(c *gin.Context) {
 	userID := c.GetString("user_id")
 	characters, err := h.characterService.GetAll(userID)
@@ -75,8 +93,17 @@ func (h *CharacterHandler) GetAll(c *gin.Context) {
 	})
 }
 
-// GET BY ID retorna um personagem especifico do usuario
-// GET /characters/:id
+// GetByID godoc
+//
+// @Summary Buscar personagem
+// @Description Retorna um personagem específico do usuário autenticado.
+// @Tags Characters
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "ID do personagem"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Router /characters/{id} [get]
 func (h *CharacterHandler) GetByID(c *gin.Context) {
 	id := c.Param("id")
 	userID := c.GetString("user_id")
@@ -96,8 +123,19 @@ func (h *CharacterHandler) GetByID(c *gin.Context) {
 	})
 }
 
-// Update atualiza um personagem
-// PUT /characters/:id
+// Update godoc
+//
+// @Summary Atualizar personagem
+// @Description Atualiza os dados de um personagem.
+// @Tags Characters
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "ID do personagem"
+// @Param request body dto.CharacterUpdateRequest true "Novos dados do personagem"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /characters/{id} [put]
 func (h *CharacterHandler) Update(c *gin.Context) {
 	id := c.Param("id")
 	var req dto.CharacterUpdateRequest
@@ -135,8 +173,17 @@ func (h *CharacterHandler) Update(c *gin.Context) {
 	})
 }
 
-// Delete deleta um personagem
-// DELETE /characters/:id
+// Delete godoc
+//
+// @Summary Deletar personagem
+// @Description Remove um personagem do usuário autenticado.
+// @Tags Characters
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "ID do personagem"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /characters/{id} [delete]
 func (h *CharacterHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
 	userID := c.GetString("user_id")

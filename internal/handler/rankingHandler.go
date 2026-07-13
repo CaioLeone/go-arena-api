@@ -21,8 +21,16 @@ func NewRankingHandler(leaderboardService *ranking.LeaderboardService, character
 	}
 }
 
-// GetUserRanking retorna ranking do usuário
-// GET /ranking
+// GetUserRanking godoc
+//
+// @Summary Ranking do usuário
+// @Description Retorna o ranking de todos os personagens pertencentes ao usuário autenticado.
+// @Tags Ranking
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /ranking [get]
 func (h *RankingHandler) GetUserRanking(c *gin.Context) {
 	userID := c.GetString("user_id")
 
@@ -70,8 +78,16 @@ func (h *RankingHandler) GetUserRanking(c *gin.Context) {
 	})
 }
 
-// GetTopPlayers retorna top players
-// GET /ranking/top
+// GetTopPlayers godoc
+//
+// @Summary Top Ranking
+// @Description Retorna os jogadores com maior pontuação no leaderboard.
+// @Tags Ranking
+// @Produce json
+// @Param limit query int false "Quantidade de jogadores (máximo 100)" default(10)
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /ranking/top [get]
 func (h *RankingHandler) GetTopPlayers(c *gin.Context) {
 	limitStr := c.DefaultQuery("limit", "10")
 

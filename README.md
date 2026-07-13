@@ -188,6 +188,11 @@ docker compose build --no-cache
 docker compose up -d
 ```
 
+## SWAGGER COMMANDS
+```
+swag init -g cmd/api/main.go -o cmd/api/docs
+```
+
 ## Ordem oficial de testes da Arena dos Bárbaros
 - [X] 1. Health
 - [X] 2. Register

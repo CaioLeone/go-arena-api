@@ -17,7 +17,7 @@ type CharacterRepository interface {
 	Delete(id string, userID string) error
 	GetByName(name string) (*model.CharacterModel, error)
 	AddExperience(characterID string, experience int) error
-	SpendAttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error
+	AttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error
 }
 
 type characterRepository struct {
@@ -455,7 +455,7 @@ func (r *characterRepository) AddExperience(characterID string, experience int) 
 	return nil
 }
 
-func (r *characterRepository) SpendAttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error {
+func (r *characterRepository) AttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error {
 	totalSpent := hp + attack + defense + criticalChance
 
 	query := `

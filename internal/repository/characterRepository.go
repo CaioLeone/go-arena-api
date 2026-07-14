@@ -71,9 +71,9 @@ func (r *characterRepository) Create(character *model.CharacterModel) (*model.Ch
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.AttributePoints,
 		&char.CriticalChance,
 		&char.RankingPoints,
-		&char.AttributePoints,
 		&char.CreatedAt,
 		&char.UpdatedAt,
 	)

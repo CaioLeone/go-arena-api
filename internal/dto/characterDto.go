@@ -33,8 +33,8 @@ type CharacterResponse struct {
 	Experience      int       `json:"experience"`
 	HP              int       `json:"hp"`
 	Attack          int       `json:"attack"`
-	AttributePoints int       `json:"attribute_points"`
 	Defense         int       `json:"defense"`
+	AttributePoints int       `json:"attribute_points"`
 	RankingPoints   int       `json:"ranking_points"`
 	CriticalChance  int       `json:"critical_chance"`
 	CreatedAt       string    `json:"created_at"`

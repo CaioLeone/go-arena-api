@@ -300,12 +300,25 @@ func (r *characterRepository) Update(id string, userID string, character *model.
         hp = CASE WHEN $4 > 0 THEN $4 ELSE hp END,
         attack = CASE WHEN $5 > 0 THEN $5 ELSE attack END,
         defense = CASE WHEN $6 > 0 THEN $6 ELSE defense END,
-        critical_chance = CASE WHEN $7 > 0 THEN $7 ELSE critical_chance END,
+		experience = CASE WHEN $7 > 0 THEN $7 ELSE experience END,
         attribute_points = CASE WHEN $8 > 0 THEN $8 ELSE attribute_points END,
-        experience = CASE WHEN $9 > 0 THEN $9 ELSE experience END,
+        critical_chance = CASE WHEN $9 > 0 THEN $9 ELSE critical_chance END,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = $10 AND user_id = $11
-    RETURNING id, user_id, name, class, level, hp, attack, defense, experience, attribute_points, critical_chance, ranking_points, created_at, updated_at
+    RETURNING id, 
+			user_id, 
+			name, 
+			class, 
+			level, 
+			hp, 
+			attack, 
+			defense, 
+			experience, 
+			attribute_points, 
+			critical_chance, 
+			ranking_points, 
+			created_at, 
+			updated_at
 `
 
 	row := r.db.QueryRow(
@@ -316,9 +329,9 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 		character.HP,
 		character.Attack,
 		character.Defense,
-		character.CriticalChance,
 		character.Experience,
 		character.AttributePoints,
+		character.CriticalChance,
 		id,
 		userID,
 	)
@@ -330,10 +343,10 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 		&char.Name,
 		&char.Class,
 		&char.Level,
-		&char.Experience,
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.Experience,
 		&char.AttributePoints,
 		&char.CriticalChance,
 		&char.RankingPoints,
@@ -396,10 +409,10 @@ func (r *characterRepository) GetByName(name string) (*model.CharacterModel, err
 		&char.Name,
 		&char.Class,
 		&char.Level,
-		&char.Experience,
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
+		&char.Experience,
 		&char.AttributePoints,
 		&char.CriticalChance,
 		&char.RankingPoints,

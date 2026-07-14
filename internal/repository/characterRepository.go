@@ -16,6 +16,8 @@ type CharacterRepository interface {
 	Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error)
 	Delete(id string, userID string) error
 	GetByName(name string) (*model.CharacterModel, error)
+	AddExperience(characterID string, experience int) error
+	SpendAttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error
 }
 
 type characterRepository struct {
@@ -116,8 +118,8 @@ func (r *characterRepository) GetByID(id string, userID string) (*model.Characte
 		&char.Name,
 		&char.Class,
 		&char.Level,
-		&char.Experience,
 		&char.HP,
+		&char.Experience,
 		&char.Attack,
 		&char.Defense,
 		&char.AttributePoints,
@@ -310,10 +312,10 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 			name, 
 			class, 
 			level, 
+			experience, 
 			hp, 
 			attack, 
 			defense, 
-			experience, 
 			attribute_points, 
 			critical_chance, 
 			ranking_points, 
@@ -326,10 +328,10 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 		character.Name,
 		character.Class,
 		character.Level,
+		character.Experience,
 		character.HP,
 		character.Attack,
 		character.Defense,
-		character.Experience,
 		character.AttributePoints,
 		character.CriticalChance,
 		id,
@@ -343,10 +345,10 @@ func (r *characterRepository) Update(id string, userID string, character *model.
 		&char.Name,
 		&char.Class,
 		&char.Level,
+		&char.Experience,
 		&char.HP,
 		&char.Attack,
 		&char.Defense,
-		&char.Experience,
 		&char.AttributePoints,
 		&char.CriticalChance,
 		&char.RankingPoints,
@@ -427,4 +429,61 @@ func (r *characterRepository) GetByName(name string) (*model.CharacterModel, err
 	}
 
 	return &char, nil
+}
+
+func (r *characterRepository) AddExperience(characterID string, experience int) error {
+	query := `
+		UPDATE characters
+		SET experience = experience + $1,
+			updated_at = CURRENT_TIMESTAMP
+		WHERE id = $2
+	`
+
+	result, err := r.db.Exec(query, experience, characterID)
+	if err != nil {
+		return fmt.Errorf("Erro ao adicionar experiência: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Erro ao verificar atualização de experiência: %w", err)
+	}
+
+	if rows == 0 {
+		return fmt.Errorf("Personagem não encontrado")
+	}
+	return nil
+}
+
+func (r *characterRepository) SpendAttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error {
+	totalSpent := hp + attack + defense + criticalChance
+
+	query := `
+		UPDATE characters 
+		SET 
+			hp = hp + $1,
+			attack = attack + $2,
+			defense = defense + $3,
+			critical_chance = critical_chance + $4,
+			attribute_points = attribute_points - $5,
+			updated_at = CURRENT_TIMESTAMP
+		WHERE id = $6
+	`
+
+	result, err := r.db.Exec(query, hp, attack, defense, criticalChance, totalSpent, characterID)
+
+	if err != nil {
+		return fmt.Errorf("Erro ao gastar pontos de atributo: %w", err)
+
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Erro ao verificar atualização de pontos de atributo: %w", err)
+	}
+
+	if rows == 0 {
+		return fmt.Errorf("Personagem não encontrado")
+	}
+	return nil
 }

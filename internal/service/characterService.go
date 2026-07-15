@@ -31,18 +31,20 @@ func NewCharacterService(characterRepo repository.CharacterRepository) Character
 
 func modelToDTO(char *model.CharacterModel) *dto.CharacterResponse {
 	return &dto.CharacterResponse{
-		ID:             char.ID,
-		UserID:         char.UserID,
-		Name:           char.Name,
-		Class:          char.Class,
-		Level:          char.Level,
-		HP:             char.HP,
-		Attack:         char.Attack,
-		Defense:        char.Defense,
-		CriticalChance: char.CriticalChance,
-		RankingPoints:  char.RankingPoints,
-		CreatedAt:      char.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-		UpdatedAt:      char.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		ID:              char.ID,
+		UserID:          char.UserID,
+		Name:            char.Name,
+		Class:           char.Class,
+		Level:           char.Level,
+		Experience:      char.Experience,
+		AttributePoints: char.AttributePoints,
+		HP:              char.HP,
+		Attack:          char.Attack,
+		Defense:         char.Defense,
+		CriticalChance:  char.CriticalChance,
+		RankingPoints:   char.RankingPoints,
+		CreatedAt:       char.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:       char.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	}
 }
 
@@ -56,38 +58,38 @@ func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest
 		return nil, fmt.Errorf("Nome do Personagem Ja Existe")
 	}
 
-	level := req.Level
-	if level == 0 {
-		level = 1
-	}
-	hp := req.HP
-	if hp == 0 {
-		hp = 100
-	}
-	attack := req.Attack
-	if attack == 0 {
-		attack = 10
-	}
-	defense := req.Defense
-	if defense == 0 {
-		defense = 5
-	}
-	criticalChance := req.CriticalChance
-	if criticalChance == 0 {
-		criticalChance = 10 // Valor padrão
-	}
+	// level := req.Level
+	// if level == 0 {
+	// 	level = 1
+	// }
+	// hp := req.HP
+	// if hp == 0 {
+	// 	hp = 100
+	// }
+	// attack := req.Attack
+	// if attack == 0 {
+	// 	attack = 10
+	// }
+	// defense := req.Defense
+	// if defense == 0 {
+	// 	defense = 5
+	// }
+	// criticalChance := req.CriticalChance
+	// if criticalChance == 0 {
+	// 	criticalChance = 10 // Valor padrão
+	//}
 
 	character := &model.CharacterModel{
 		UserID:          userUUID,
 		Name:            req.Name,
 		Class:           req.Class,
-		Level:           level,
+		Level:           1,
 		Experience:      0,
 		AttributePoints: 0,
-		HP:              hp,
-		Attack:          attack,
-		Defense:         defense,
-		CriticalChance:  criticalChance,
+		HP:              100,
+		Attack:          10,
+		Defense:         5,
+		CriticalChance:  10,
 	}
 
 	createdChar, err := s.characterRepo.Create(character)
@@ -121,13 +123,13 @@ func (s *characterService) GetAll(userID string) ([]*dto.CharacterResponse, erro
 
 func (s *characterService) Update(id string, userID string, req *dto.CharacterUpdateRequest) (*dto.CharacterResponse, error) {
 	character := &model.CharacterModel{
-		Name:           req.Name,
-		Class:          req.Class,
-		Level:          req.Level,
-		HP:             req.HP,
-		Attack:         req.Attack,
-		Defense:        req.Defense,
-		CriticalChance: req.CriticalChance,
+		Name: req.Name,
+		// Class:          req.Class,
+		// Level:          req.Level,
+		// HP:             req.HP,
+		// Attack:         req.Attack,
+		// Defense:        req.Defense,
+		// CriticalChance: req.CriticalChance,
 	}
 
 	updatedChar, err := s.characterRepo.Update(id, userID, character)
@@ -139,4 +141,40 @@ func (s *characterService) Update(id string, userID string, req *dto.CharacterUp
 
 func (s *characterService) Delete(id string, userID string) error {
 	return s.characterRepo.Delete(id, userID)
+}
+
+func (s *characterService) AddExperience(characterID string, experience int) error {
+	character, err := s.characterRepo.GetByIDNoUserFilter(characterID)
+	if err != nil {
+		return err
+	}
+
+	totalExperience := character.Experience + experience
+	levelUps := 0
+
+	for totalExperience >= ExperienceToLevelUp {
+		totalExperience -= ExperienceToLevelUp
+		levelUps++
+	}
+
+	return s.characterRepo.AddExperience(characterID, totalExperience, levelUps, levelUps)
+}
+
+func (s *characterService) SpendAttributePoints(characterID string, req *dto.SpendAttributePointsRequest) error {
+	character, err := s.characterRepo.GetByIDNoUserFilter(characterID)
+	if err != nil {
+		return err
+	}
+
+	total := req.HP + req.Attack + req.Defense + req.CriticalChance
+
+	if total == 0 {
+		return fmt.Errorf("Nenhum ponto de atributo foi gasto")
+	}
+
+	if total > character.AttributePoints {
+		return fmt.Errorf("Pontos de atributo insuficientes")
+	}
+
+	return s.characterRepo.SpendAttributePoints(characterID, req.HP, req.Attack, req.Defense, req.CriticalChance)
 }

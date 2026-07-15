@@ -177,6 +177,17 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	}
 
 	s.updateRanking(battleResult)
+
+	const (
+		WinnerExperience = 20
+		LoserExperience  = 10
+	)
+
+	if !battleResult.IsDraw {
+		s.characterService.AddExperience(battleResult.Winner.ID.String(), WinnerExperience)
+		s.characterService.AddExperience(battleResult.Loser.ID.String(), LoserExperience)
+	}
+
 	return s.buildBattleResponse(savedBattle)
 }
 

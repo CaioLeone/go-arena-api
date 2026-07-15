@@ -15,7 +15,11 @@ type CharacterService interface {
 	GetAll(userID string) ([]*dto.CharacterResponse, error)
 	Update(id string, userID string, req *dto.CharacterUpdateRequest) (*dto.CharacterResponse, error)
 	Delete(id string, userID string) error
+	AddExperience(characterID string, experience int) error
+	SpendAttributePoints(characterID string, req *dto.SpendAttributePointsRequest) error
 }
+
+const ExperienceToLevelUp = 100 // Define a quantidade de experiência necessária para subir de nível
 
 type characterService struct {
 	characterRepo repository.CharacterRepository
@@ -74,14 +78,16 @@ func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest
 	}
 
 	character := &model.CharacterModel{
-		UserID:         userUUID,
-		Name:           req.Name,
-		Class:          req.Class,
-		Level:          level,
-		HP:             hp,
-		Attack:         attack,
-		Defense:        defense,
-		CriticalChance: criticalChance,
+		UserID:          userUUID,
+		Name:            req.Name,
+		Class:           req.Class,
+		Level:           level,
+		Experience:      0,
+		AttributePoints: 0,
+		HP:              hp,
+		Attack:          attack,
+		Defense:         defense,
+		CriticalChance:  criticalChance,
 	}
 
 	createdChar, err := s.characterRepo.Create(character)

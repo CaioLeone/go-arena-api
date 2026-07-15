@@ -16,7 +16,7 @@ type CharacterRepository interface {
 	Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error)
 	Delete(id string, userID string) error
 	GetByName(name string) (*model.CharacterModel, error)
-	AddExperience(characterID string, experience int) error
+	AddExperience(characterID string, experience int, level int, attributePoints int) error
 	AttributePoints(characterID string, hp int, attack int, defense int, criticalChance int) error
 }
 
@@ -431,15 +431,17 @@ func (r *characterRepository) GetByName(name string) (*model.CharacterModel, err
 	return &char, nil
 }
 
-func (r *characterRepository) AddExperience(characterID string, experience int) error {
+func (r *characterRepository) AddExperience(characterID string, experience int, level int, attributePoints int) error {
 	query := `
 		UPDATE characters
 		SET experience = experience + $1,
+			level = level + $2,
+			attribute_points = attribute_points + $3,
 			updated_at = CURRENT_TIMESTAMP
-		WHERE id = $2
+		WHERE id = $4
 	`
 
-	result, err := r.db.Exec(query, experience, characterID)
+	result, err := r.db.Exec(query, experience, level, attributePoints, characterID)
 	if err != nil {
 		return fmt.Errorf("Erro ao adicionar experiência: %w", err)
 	}

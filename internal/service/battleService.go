@@ -20,13 +20,15 @@ type BattleService interface {
 type battleService struct {
 	battleRepo         repository.BattleRepository
 	characterRepo      repository.CharacterRepository
+	characterService   CharacterService
 	leaderboardService *ranking.LeaderboardService
 }
 
-func NewBattleService(battleRepo repository.BattleRepository, characterRepo repository.CharacterRepository, leaderboardService *ranking.LeaderboardService) BattleService {
+func NewBattleService(battleRepo repository.BattleRepository, characterRepo repository.CharacterRepository, characterServ CharacterService, leaderboardService *ranking.LeaderboardService) BattleService {
 	return &battleService{
 		battleRepo:         battleRepo,
 		characterRepo:      characterRepo,
+		characterService:   characterServ,
 		leaderboardService: leaderboardService,
 	}
 }

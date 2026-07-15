@@ -96,7 +96,7 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 	authService := service.NewAuthService(userRepo, cfg)
 	characterService := service.NewCharacterService(characterRepo)
 	leaderboardService := ranking.NewLeaderboardService(redisClient)
-	battleService := service.NewBattleService(battleRepo, characterRepo, leaderboardService)
+	battleService := service.NewBattleService(battleRepo, characterRepo, characterService, leaderboardService)
 
 	//Handlers
 	authHandler := handler.NewAuthHandler(authService)

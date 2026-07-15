@@ -176,5 +176,5 @@ func (s *characterService) SpendAttributePoints(characterID string, req *dto.Spe
 		return fmt.Errorf("Pontos de atributo insuficientes")
 	}
 
-	return s.characterRepo.SpendAttributePoints(characterID, req.HP, req.Attack, req.Defense, req.CriticalChance)
+	return s.characterRepo.AttributePoints(characterID, req.HP, req.Attack, req.Defense, req.CriticalChance)
 }

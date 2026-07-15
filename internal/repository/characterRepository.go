@@ -434,7 +434,7 @@ func (r *characterRepository) GetByName(name string) (*model.CharacterModel, err
 func (r *characterRepository) AddExperience(characterID string, experience int, level int, attributePoints int) error {
 	query := `
 		UPDATE characters
-		SET experience = experience + $1,
+		SET experience = $1,
 			level = level + $2,
 			attribute_points = attribute_points + $3,
 			updated_at = CURRENT_TIMESTAMP

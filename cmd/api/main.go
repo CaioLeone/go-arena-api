@@ -130,7 +130,7 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 	characters.Use(middleware.JWTMiddleware(cfg))
 	{
 		characters.POST("", characterHandler.Create)
-		characters.POST("/:id/experience", characterHandler.AddExperience)
+		//characters.POST("/:id/experience", characterHandler.AddExperience)
 		characters.POST("/:id/attributes", characterHandler.SpendAttributePoints)
 		characters.GET("", characterHandler.GetAll)
 		characters.GET("/:id", characterHandler.GetByID)

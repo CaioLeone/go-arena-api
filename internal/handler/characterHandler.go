@@ -202,3 +202,42 @@ func (h *CharacterHandler) Delete(c *gin.Context) {
 		"message": "Personagem Deletado Com Sucesso",
 	})
 }
+
+// AddExperience godoc
+//
+// @Summary Adicionar experiência
+// @Description Adiciona experiência ao personagem e realiza level up automaticamente.
+// @Tags Characters
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "ID do personagem"
+// @Param request body dto.AddExperienceRequest true "Experiência"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /characters/{id}/experience [post]
+func (h *CharacterHandler) AddExperience(c *gin.Context) {
+	id := c.Param("id")
+
+	var req dto.AddExperienceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   "Dados Invalidos",
+		})
+		return
+	}
+
+	if err := h.characterService.AddExperience(id, req.Experience); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Experiencia adicionada com sucesso",
+	})
+}

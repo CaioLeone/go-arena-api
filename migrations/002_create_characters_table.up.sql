@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS characters (
 
     -- DADOS DO PERSONAGEM
     name VARCHAR(100) UNIQUE NOT NULL,
-    class VARCHAR(50) NOT NULL,
+    class VARCHAR(50) NOT NULL CHECK (class IN ('Barbaro', 'Mago', 'Arqueiro', 'Assassino')),
 
     -- PROGRESSAO
     level INT DEFAULT 1 CHECK (level >= 1 AND level <= 100),

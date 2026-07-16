@@ -1,4 +1,12 @@
 definitions:
+  dto.AddExperienceRequest:
+    properties:
+      experience:
+        minimum: 1
+        type: integer
+    required:
+    - experience
+    type: object
   dto.BattleCreateRequest:
     properties:
       attacker_character_id:
@@ -11,9 +19,6 @@ definitions:
     type: object
   dto.CharacterCreateRequest:
     properties:
-      attack:
-        minimum: 1
-        type: integer
       class:
         enum:
         - Barbaro
@@ -21,68 +26,21 @@ definitions:
         - Arqueiro
         - Assassino
         type: string
-      critical_chance:
-        maximum: 100
-        minimum: 0
-        type: integer
-      defense:
-        minimum: 1
-        type: integer
-      hp:
-        minimum: 1
-        type: integer
-      level:
-        maximum: 100
-        minimum: 1
-        type: integer
       name:
         maxLength: 25
         minLength: 1
         type: string
     required:
-    - attack
     - class
-    - defense
-    - hp
-    - level
     - name
     type: object
   dto.CharacterUpdateRequest:
     properties:
-      attack:
-        minimum: 1
-        type: integer
-      class:
-        enum:
-        - Barbaro
-        - Mago
-        - Arqueiro
-        - Assassino
-        type: string
-      critical_chance:
-        maximum: 100
-        minimum: 0
-        type: integer
-      defense:
-        minimum: 1
-        type: integer
-      hp:
-        minimum: 1
-        type: integer
-      level:
-        maximum: 100
-        minimum: 1
-        type: integer
       name:
         maxLength: 25
         minLength: 1
         type: string
     required:
-    - attack
-    - class
-    - defense
-    - hp
-    - level
     - name
     type: object
   dto.RefreshTokenRequest:
@@ -91,6 +49,25 @@ definitions:
         type: string
     required:
     - refresh_token
+    type: object
+  dto.SpendAttributePointsRequest:
+    properties:
+      attack:
+        maximum: 100
+        minimum: 0
+        type: integer
+      critical_chance:
+        maximum: 100
+        minimum: 0
+        type: integer
+      defense:
+        maximum: 100
+        minimum: 0
+        type: integer
+      hp:
+        maximum: 100
+        minimum: 0
+        type: integer
     type: object
   dto.UserCreateRequest:
     properties:
@@ -407,6 +384,76 @@ paths:
       security:
       - BearerAuth: []
       summary: Atualizar personagem
+      tags:
+      - Characters
+  /characters/{id}/attributes:
+    post:
+      consumes:
+      - application/json
+      description: Gasta pontos de atributo obtidos ao subir de nível.
+      parameters:
+      - description: ID do personagem
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Distribuição dos pontos
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SpendAttributePointsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Distribuir pontos de atributo
+      tags:
+      - Characters
+  /characters/{id}/experience:
+    post:
+      consumes:
+      - application/json
+      description: Adiciona experiência ao personagem e realiza level up automaticamente.
+      parameters:
+      - description: ID do personagem
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Experiência
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Adicionar experiência
       tags:
       - Characters
   /ranking:

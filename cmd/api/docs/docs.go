@@ -463,6 +463,114 @@ const docTemplate = `{
                 }
             }
         },
+        "/characters/{id}/attributes": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Gasta pontos de atributo obtidos ao subir de nível.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Distribuir pontos de atributo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do personagem",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Distribuição dos pontos",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SpendAttributePointsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/characters/{id}/experience": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Adiciona experiência ao personagem e realiza level up automaticamente.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Adicionar experiência",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do personagem",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Experiência",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddExperienceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/ranking": {
             "get": {
                 "security": [
@@ -535,6 +643,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.AddExperienceRequest": {
+            "type": "object",
+            "required": [
+                "experience"
+            ],
+            "properties": {
+                "experience": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
         "dto.BattleCreateRequest": {
             "type": "object",
             "required": [
@@ -553,18 +673,10 @@ const docTemplate = `{
         "dto.CharacterCreateRequest": {
             "type": "object",
             "required": [
-                "attack",
                 "class",
-                "defense",
-                "hp",
-                "level",
                 "name"
             ],
             "properties": {
-                "attack": {
-                    "type": "integer",
-                    "minimum": 1
-                },
                 "class": {
                     "type": "string",
                     "enum": [
@@ -573,24 +685,6 @@ const docTemplate = `{
                         "Arqueiro",
                         "Assassino"
                     ]
-                },
-                "critical_chance": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 0
-                },
-                "defense": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "hp": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "level": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
                 },
                 "name": {
                     "type": "string",
@@ -602,45 +696,9 @@ const docTemplate = `{
         "dto.CharacterUpdateRequest": {
             "type": "object",
             "required": [
-                "attack",
-                "class",
-                "defense",
-                "hp",
-                "level",
                 "name"
             ],
             "properties": {
-                "attack": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "class": {
-                    "type": "string",
-                    "enum": [
-                        "Barbaro",
-                        "Mago",
-                        "Arqueiro",
-                        "Assassino"
-                    ]
-                },
-                "critical_chance": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 0
-                },
-                "defense": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "hp": {
-                    "type": "integer",
-                    "minimum": 1
-                },
-                "level": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
-                },
                 "name": {
                     "type": "string",
                     "maxLength": 25,
@@ -656,6 +714,31 @@ const docTemplate = `{
             "properties": {
                 "refresh_token": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.SpendAttributePointsRequest": {
+            "type": "object",
+            "properties": {
+                "attack": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "critical_chance": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "defense": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "hp": {
+                    "type": "integer",
+                    "maximum": 100,
+                    "minimum": 0
                 }
             }
         },

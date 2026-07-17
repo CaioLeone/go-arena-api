@@ -77,7 +77,7 @@ func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest
 	// if criticalChance == 0 {
 	// 	criticalChance = 10 // Valor padrão
 	//}
-	
+
 	stats := game.InitialStats[req.Class]
 
 	character := &model.CharacterModel{
@@ -150,15 +150,27 @@ func (s *characterService) AddExperience(characterID string, experience int) err
 		return err
 	}
 
+	//Personagem Nivel Maximo
+	if character.Level >= game.MaxCharacterLevel {
+		return nil
+	}
+
 	totalExperience := character.Experience + experience
 	levelUps := 0
 
-	for totalExperience >= ExperienceToLevelUp {
-		totalExperience -= ExperienceToLevelUp
+	for totalExperience >= game.ExperienceToLevelUp && character.Level+levelUps < game.MaxCharacterLevel {
+		totalExperience -= game.ExperienceToLevelUp
 		levelUps++
 	}
 
-	return s.characterRepo.AddExperience(characterID, totalExperience, levelUps, levelUps)
+	//Ao atingir level maximo, zera a experiencia
+	if character.Level+levelUps >= game.MaxCharacterLevel {
+		totalExperience = 0
+	}
+
+	attributePointsGained := levelUps * game.AttributePointsPerLevel
+
+	return s.characterRepo.AddExperience(characterID, totalExperience, levelUps, attributePointsGained)
 }
 
 func (s *characterService) SpendAttributePoints(characterID string, req *dto.SpendAttributePointsRequest) error {

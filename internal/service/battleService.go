@@ -5,6 +5,7 @@ import (
 
 	"github.com/caioLeone/go-arena-api/internal/battle"
 	"github.com/caioLeone/go-arena-api/internal/dto"
+	"github.com/caioLeone/go-arena-api/internal/game"
 	"github.com/caioLeone/go-arena-api/internal/model"
 	"github.com/caioLeone/go-arena-api/internal/ranking"
 	"github.com/caioLeone/go-arena-api/internal/repository"
@@ -181,8 +182,8 @@ func (s *battleService) StartBattle(userID string, req *dto.BattleCreateRequest)
 	s.updateRanking(battleResult)
 
 	if !battleResult.IsDraw {
-		s.characterService.AddExperience(battleResult.Winner.ID.String(), WinnerExperience)
-		s.characterService.AddExperience(battleResult.Loser.ID.String(), LoserExperience)
+		s.characterService.AddExperience(battleResult.Winner.ID.String(), game.WinnerExperience)
+		s.characterService.AddExperience(battleResult.Loser.ID.String(), game.LoserExperience)
 	}
 
 	return s.buildBattleResponse(savedBattle)

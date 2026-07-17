@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/caioLeone/go-arena-api/internal/dto"
+	"github.com/caioLeone/go-arena-api/internal/game"
 	"github.com/caioLeone/go-arena-api/internal/model"
 	"github.com/caioLeone/go-arena-api/internal/repository"
 	"github.com/google/uuid"
@@ -76,6 +77,8 @@ func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest
 	// if criticalChance == 0 {
 	// 	criticalChance = 10 // Valor padrão
 	//}
+	
+	stats := game.InitialStats[req.Class]
 
 	character := &model.CharacterModel{
 		UserID:          userUUID,
@@ -84,10 +87,10 @@ func (s *characterService) Create(userID string, req *dto.CharacterCreateRequest
 		Level:           1,
 		Experience:      0,
 		AttributePoints: 0,
-		HP:              100,
-		Attack:          10,
-		Defense:         5,
-		CriticalChance:  10,
+		HP:              stats.HP,
+		Attack:          stats.Attack,
+		Defense:         stats.Defense,
+		CriticalChance:  stats.CriticalChance,
 	}
 
 	createdChar, err := s.characterRepo.Create(character)

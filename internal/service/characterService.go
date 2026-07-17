@@ -19,8 +19,6 @@ type CharacterService interface {
 	SpendAttributePoints(characterID string, req *dto.SpendAttributePointsRequest) error
 }
 
-const ExperienceToLevelUp = 100 // Define a quantidade de experiência necessária para subir de nível
-
 type characterService struct {
 	characterRepo repository.CharacterRepository
 }

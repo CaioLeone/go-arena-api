@@ -221,7 +221,7 @@ swag init -g cmd/api/main.go -o cmd/api/docs
 * usuario 1:
 ```
 {
-  "email": "barbaro2@example.com",
+  "email": "barbaro1@example.com",
   "password": "123456"
 }
 ``` 
@@ -236,36 +236,43 @@ swag init -g cmd/api/main.go -o cmd/api/docs
 
 * Character 1
 ```
-		{
-			"id": "9c000bc9-eebf-42ef-9dcc-2f0a20d89edc",
-			"user_id": "784836e4-ef3c-472b-a388-b4c43cdff9f0",
-			"name": "Thulsa",
-			"class": "Assassino",
-			"level": 11,
-			"hp": 100,
-			"attack": 40,
-			"defense": 15,
-			"ranking_points": 0,
-			"critical_chance": 25,
-			"created_at": "2026-06-25T14:26:04Z",
-			"updated_at": "2026-06-25T14:31:16Z"
-		}
+{
+	"data": {
+		"id": "c58ca8a1-e795-4d62-a333-0590082d95a4",
+		"user_id": "a12b329b-0c22-462d-a4c2-41c7b93f987e",
+		"name": "Maulgul",
+		"class": "Barbaro",
+		"level": 1,
+		"experience": 0,
+		"hp": 100,
+		"attack": 10,
+		"defense": 5,
+		"attribute_points": 0,
+		"ranking_points": 0,
+		"critical_chance": 10,
+		"created_at": "2026-07-17T11:43:58Z",
+		"updated_at": "2026-07-17T11:43:58Z"
+	},
+	"success": true
+}
 ```
 
 * Character 2
 ```
 		{
-			"id": "78f1aa8e-c7ce-4fd9-8fdb-d602891c27fb",
-			"user_id": "337bbe1d-b68f-4506-97b3-0d3521c237c3",
-			"name": "Khalidoomn",
-			"class": "Mago",
-			"level": 10,
-			"hp": 110,
-			"attack": 35,
-			"defense": 25,
+			"id": "338c82c2-3bc5-4634-9b3a-3392978bc10a",
+			"user_id": "a12b329b-0c22-462d-a4c2-41c7b93f987e",
+			"name": "Kragmorth",
+			"class": "Assassino",
+			"level": 1,
+			"experience": 0,
+			"hp": 100,
+			"attack": 10,
+			"defense": 5,
+			"attribute_points": 0,
 			"ranking_points": 0,
-			"critical_chance": 25,
-			"created_at": "2026-06-25T19:56:26Z",
-			"updated_at": "2026-06-25T19:56:26Z"
+			"critical_chance": 10,
+			"created_at": "2026-07-17T11:41:45Z",
+			"updated_at": "2026-07-17T11:41:45Z"
 		}
 ```

@@ -8,11 +8,11 @@ export interface LoginRequest {
     password: string;
 }
 
-export interface LoginResponse {
-    user: string;
-    email: string;
-    password: string;
-}
+// export interface LoginResponse {
+//     user: string;
+//     email: string;
+//     password: string;
+// }
 
 export interface AuthResponse{
     success: boolean;

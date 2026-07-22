@@ -52,10 +52,14 @@ export function AuthProvider({children}: AuthProviderProps){
 
     async function login(email: string, password: string) {
         const response = await api.post<AuthResponse>("/auth/login", { email, password });
+        
         const token = response.data.data.access_token;
+        
         localStorage.setItem(TOKEN_KEY, token);
+        
         setToken(token);
-
+        setUser(user)
+        
         const me = await api.get("/api/me");
         setUser({
             id: me.data.data.id,

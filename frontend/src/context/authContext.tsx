@@ -13,7 +13,7 @@ interface AuthProviderProps {
     children: React.ReactNode;
 }
 
-export const AuthContex = createContext({} as AuthContextData);
+export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({children}: AuthProviderProps){
         const [user, setUser] = useState<User | null>(null);
@@ -58,7 +58,7 @@ export function AuthProvider({children}: AuthProviderProps){
         localStorage.setItem(TOKEN_KEY, token);
         
         setToken(token);
-        setUser(user)
+        //setUser(user)
         
         const me = await api.get("/api/me");
         setUser({
@@ -75,9 +75,9 @@ export function AuthProvider({children}: AuthProviderProps){
     }
 
     return (
-        <AuthContex.Provider value={{user, token, loading, isAuthenticated, login, logout}}>
+        <AuthContext.Provider value={{user, token, loading, isAuthenticated, login, logout}}>
             {children}
-        </AuthContex.Provider>
+        </AuthContext.Provider>
     );
 }
 

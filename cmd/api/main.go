@@ -116,13 +116,14 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 	protected := router.Group("/api")
 	protected.Use(middleware.JWTMiddleware(cfg))
 	{
-		protected.GET("/me", func(c *gin.Context) {
-			userID := c.GetString("user_id")
-			c.JSON(http.StatusOK, gin.H{
-				"user_id": userID,
-				"message": "Voce esta autenticado",
-			})
-		})
+		protected.GET("/me", authHandler.Me)
+		// protected.GET("/me", func(c *gin.Context) {
+		// 	userID := c.GetString("user_id")
+		// 	c.JSON(http.StatusOK, gin.H{
+		// 		"user_id": userID,
+		// 		"message": "Voce esta autenticado",
+		// 	})
+		// })
 	}
 
 	//Routes - Characters

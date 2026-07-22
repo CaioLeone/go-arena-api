@@ -174,3 +174,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		},
 	})
 }
+
+func (h *AuthHandler) Me(c *gin.Context) {
+	
+}

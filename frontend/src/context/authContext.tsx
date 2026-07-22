@@ -14,6 +14,7 @@ interface AuthProviderProps {
 }
 
 export const AuthContex = createContext({} as AuthContextData);
+
 export function AuthProvider({children}: AuthProviderProps){
         const [user, setUser] = useState<User | null>(null);
         const [token, setToken] = useState<string | null>(null);
@@ -34,9 +35,9 @@ export function AuthProvider({children}: AuthProviderProps){
                 const response = await api.get("/api/me");
 
                 setUser({
-                    id: response.data.user_id,
-                    name: "",
-                    email: "",
+                    id: response.data.data.id,
+                    name: response.data.data.name,
+                    email: response.data.data.email,
                 });
             } catch (error) {
                 localStorage.removeItem(TOKEN_KEY);
@@ -51,15 +52,15 @@ export function AuthProvider({children}: AuthProviderProps){
 
     async function login(email: string, password: string) {
         const response = await api.post<AuthResponse>("/auth/login", { email, password });
-        const token = response.data.token;
+        const token = response.data.data.access_token;
         localStorage.setItem(TOKEN_KEY, token);
         setToken(token);
 
         const me = await api.get("/api/me");
         setUser({
-            id: me.data.user_id,
-            name: "",
-            email: "",
+            id: me.data.data.id,
+            name: me.data.data.name,
+            email: me.data.data.email,
         });
     }
 

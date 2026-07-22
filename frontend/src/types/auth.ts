@@ -1,5 +1,4 @@
 export interface RegisterRequest{
-    user: string;
     email: string;
     password: string;
 }
@@ -16,7 +15,12 @@ export interface LoginResponse {
 }
 
 export interface AuthResponse{
-    token: string;
+    success: boolean;
+    data:{
+        user: User;
+        access_token: string;
+        refresh_token: string;
+    }
 }
 
 export interface User{

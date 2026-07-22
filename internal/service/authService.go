@@ -16,6 +16,7 @@ type AuthService interface {
 	Login(req *dto.UserLoginRequest) (*dto.LoginResponse, error)
 	ValidateToken(token string) (string, error)
 	Refresh(refreshToken string) (string, error)
+	GetUserByID(id string) (*dto.UserResponse, error)
 }
 
 // authService implementa AuthService
@@ -146,4 +147,17 @@ func (s *authService) Refresh(refreshToken string) (string, error) {
 	}
 
 	return accessToken, nil
+}
+
+func (s *authService) GetUserByID(id string) (*dto.UserResponse, error) {
+	user, err := s.userRepo.GetUserByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+	}, nil
 }

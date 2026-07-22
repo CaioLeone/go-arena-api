@@ -1,5 +1,5 @@
 export interface RegisterRequest{
-    username: string;
+    user: string;
     email: string;
     password: string;
 }
@@ -10,7 +10,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-    username: string;
+    user: string;
     email: string;
     password: string;
 }

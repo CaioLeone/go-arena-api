@@ -35,7 +35,7 @@ export function AuthProvider({children}: AuthProviderProps){
 
                 setUser({
                     id: response.data.user_id,
-                    username: "",
+                    user: "",
                     email: "",
                 });
             } catch (error) {
@@ -58,7 +58,7 @@ export function AuthProvider({children}: AuthProviderProps){
         const me = await api.get("/api/me");
         setUser({
             id: me.data.user_id,
-            username: "",
+            user: "",
             email: "",
         });
     }

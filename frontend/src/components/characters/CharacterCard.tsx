@@ -16,13 +16,13 @@ export default function CharacterCard({ character }: Props){
             }}
         >
             <h2>{character.name}</h2>
-            <p>Class: {character.class}</p>
-            <p>Level: {character.level}</p>
+            <p>Classe: {character.class}</p>
+            <p>Nivel: {character.level}</p>
             <p>HP: {character.hp}</p>
-            <p>Attack: {character.attack}</p>
-            <p>Defense: {character.defense}</p>
-            <p>Experience: {character.experience}</p>
-            <p>Attribute Points: {character.attribute_points}</p>
+            <p>Ataque: {character.attack}</p>
+            <p>Defesa: {character.defense}</p>
+            <p>Experiencia: {character.experience}</p>
+            <p>Pontos de Atributo: {character.attribute_points}</p>
         </div>
     );
 }

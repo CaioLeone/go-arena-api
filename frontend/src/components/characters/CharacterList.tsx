@@ -4,11 +4,11 @@ import type { Character } from '../../types/character';
 import CharacterCard from './CharacterCard';
 import CreateCharacterModal from './CreateCharacterModal';
 
-const [characters, setCharacters] = useState<Character[]>([]);
-const [loading, setLoading] = useState(true);
-const [openModal, setOpenModal] = useState(false);
-
 export default function CharacterList() {
+    const [characters, setCharacters] = useState<Character[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
+    
     useEffect(() => {
         loadCharacters();
     }, []);

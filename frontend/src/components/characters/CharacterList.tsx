@@ -46,11 +46,13 @@ export default function CharacterList() {
                 </button>
 
             </div>
-        <CreateCharacterModal
+            
+            <CreateCharacterModal
             open={openModal}
             onClose={() => setOpenModal(false)}
             onCreate={loadCharacters}
-        />
+            />
+            
             {characters.map((character) => 
                 <CharacterCard key={character.id} character={character} />
             )}

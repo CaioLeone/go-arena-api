@@ -50,7 +50,7 @@ export default function CharacterList() {
             <CreateCharacterModal
             open={openModal}
             onClose={() => setOpenModal(false)}
-            onCreate={loadCharacters}
+            onCreated={loadCharacters}
             />
             
             {characters.map((character) => 

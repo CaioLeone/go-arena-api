@@ -4,10 +4,10 @@ import  characterService from "../../services/characterService";
 interface Props {
     open: boolean;
     onClose: () => void;
-    onCreate: () => void;
+    onCreated: () => void;
 }
 
-export default function CreateCharacterModal({ open, onClose, onCreate }: Props) {
+export default function CreateCharacterModal({ open, onClose, onCreated }: Props) {
     const [name, setName] = useState("");
     const [characterClass, setCharacterClass] = useState("Barbaro");
     const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ export default function CreateCharacterModal({ open, onClose, onCreate }: Props)
             await characterService.create({name, class: characterClass});
             setName("");
             setCharacterClass("Barbaro");
-            onCreate();
+            onCreated();
             onClose();
         }catch{
             setError("Erro ao criar personagem");

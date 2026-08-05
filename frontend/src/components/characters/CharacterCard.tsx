@@ -7,7 +7,7 @@ interface Props{
 
 export default function CharacterCard({ character }: Props){
     return (
-        <link to={`/characters/${character.id}`}>
+        <Link to={`/characters/${character.id}`}>
             <CharacterCard character={character} />
             <div
                 style={{
@@ -28,7 +28,7 @@ export default function CharacterCard({ character }: Props){
                 <p>Experiencia: {character.experience}</p>
                 <p>Pontos de Atributo: {character.attribute_points}</p>
             </div>
-        </link>
+        </Link>
         
     );
 }

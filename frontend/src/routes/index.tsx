@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard";
 import Characters from "../pages/Characters";
 import Battles from "../pages/Battles";
 import Leaderboard from "../pages/Leaderboard";
+import CharacterDetail from "../pages/CharacterDetail";
 
 import { PrivateRoute } from "../components/PrivateRoute";
 
@@ -45,6 +46,14 @@ export default function AppRoutes() {
                     element={
                         <PrivateRoute> 
                             <Leaderboard/>
+                        </PrivateRoute>}
+                />
+
+                <Route 
+                    path="/characters/:id" 
+                    element={
+                        <PrivateRoute> 
+                            <CharacterDetail/>
                         </PrivateRoute>}
                 />
             </Routes>

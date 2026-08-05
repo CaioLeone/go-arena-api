@@ -8,7 +8,6 @@ interface Props{
 export default function CharacterCard({ character }: Props){
     return (
         <Link to={`/characters/${character.id}`}>
-            <CharacterCard character={character} />
             <div
                 style={{
                     border: "1px solid #ccc",
@@ -18,13 +17,19 @@ export default function CharacterCard({ character }: Props){
                     background: "#fff",
                 }}
             >
-                <h2>{character.name}</h2>
+                <h2 className="text-xl font-bold">{character.name}</h2>
                 <p>Classe: {character.class}</p>
                 <p>Nivel: {character.level}</p>
+
+                <hr className="my-2"/>
+                
                 <p>HP: {character.hp}</p>
                 <p>Ataque: {character.attack}</p>
                 <p>Defesa: {character.defense}</p>
                 <p>Chance de Critico: {character.critical_chance}</p>
+                
+                <hr className="my-2"/>
+                
                 <p>Experiencia: {character.experience}</p>
                 <p>Pontos de Atributo: {character.attribute_points}</p>
             </div>

@@ -48,7 +48,7 @@ export default function CharacterDetail() {
 
     async function handleSpendPoints(attribute: string){
         if(!character) return;
-        const updated = await characterService.spendAttribute(character.id,{ attribute });
+        const updated = await characterService.spendAttribute(character.id,{ [attribute]: 1 });
         setCharacter(updated);
     }
 
@@ -107,6 +107,7 @@ export default function CharacterDetail() {
                         +
                     </button>
                 </p>
+
                 <p>
                     Ataque
                     {" "}
@@ -134,10 +135,10 @@ export default function CharacterDetail() {
                 <p>
                     Critico
                     {" "}
-                    {character.c}
+                    {character.critical_chance}
                     <button
                         className="ml-2 bg-green-600 text-white px-2 rounded"
-                        onClick={()=>handleSpendPoints("defense")}
+                        onClick={()=>handleSpendPoints("critical_chance")}
                     >
                         +
                     </button>

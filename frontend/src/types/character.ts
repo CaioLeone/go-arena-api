@@ -6,6 +6,7 @@ export interface Character{
     hp: number;
     attack: number;
     defense: number;
+    critical_chance: number;
     experience: number;
     attribute_points: number;
     created_at: string;
@@ -29,4 +30,5 @@ export interface SpendAttributeRequest {
     attack?: number;
     defense?: number;
     hp?: number;
+    critical_chance?: number;
 }

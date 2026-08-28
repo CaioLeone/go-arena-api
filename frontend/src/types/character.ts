@@ -1,15 +1,23 @@
 export interface Character{
     id: string;
+    user_id: string;
     name: string;
     class: string;
     level: number;
+    experience: number;
     hp: number;
     attack: number;
     defense: number;
-    critical_chance: number;
-    experience: number;
     attribute_points: number;
+    ranking_points: number;
+    critical_chance: number;
     created_at: string;
+    updated_at: string;
+}
+
+export interface CharacterListResponse {
+    characters: Character[];
+    total: number;
 }
 
 export interface CreateCharacterRequest {
@@ -18,8 +26,7 @@ export interface CreateCharacterRequest {
 }
 
 export interface UpdateCharacterRequest {
-    name?: string;
-    class?: string;
+    name: string;
 }
 
 export interface AddExperienceRequest {
@@ -27,8 +34,8 @@ export interface AddExperienceRequest {
 }
 
 export interface SpendAttributeRequest {
+    hp?: number;
     attack?: number;
     defense?: number;
-    hp?: number;
     critical_chance?: number;
 }

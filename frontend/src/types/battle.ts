@@ -1,9 +1,9 @@
 export interface BattleCreateRequest {
-    attacker_character_id: number;
-    defender_character_id: number;
+    attacker_character_id: string;
+    defender_character_id: string;
 }
 
-export interface BattleRound{
+export interface BattleRound {
     round: number;
     attacker_name: string;
     defender_name: string;

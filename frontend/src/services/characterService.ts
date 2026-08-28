@@ -10,7 +10,7 @@ import type {
 
 async function getAll(): Promise<Character[]> {
     const response = await api.get('/characters');
-    return response.data.data;
+    return response.data.data.characters;
 }
 
 async function getById(id: string): Promise<Character> {

@@ -19,31 +19,40 @@ export default function LeaderBoard() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        loadRanking();
+        async function load() {
+            try {
+                await loadRanking();
+            } catch {
+                setError(
+                    "Erro ao carregar o ranking."
+                );
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        load();
     }, []);
 
     async function loadRanking() {
+        const leaderboard = await rankingService.getTopPlayers();
+
+        setPlayers(
+            leaderboard.players
+        );
+
+        setTotal(
+            leaderboard.total
+        );
+
         try {
-            setError("");
+            const myRanking = await rankingService.getUserRanking();
 
-            const leaderboard = await rankingService.getTopPlayers();
-
-            setPlayers(leaderboard.players);
-            setTotal(leaderboard.total);
-
-            try {
-                const myRanking = await rankingService.getUserRanking();
-
-                setUserRanking(myRanking);
-            } catch {
-                setUserRanking(null);
-            }
-        } catch {
-            setError(
-                "Erro ao carregar o ranking."
+            setUserRanking(
+                myRanking
             );
-        } finally {
-            setLoading(false);
+        } catch {
+            setUserRanking(null);
         }
     }
 
@@ -52,18 +61,7 @@ export default function LeaderBoard() {
             setUpdating(true);
             setError("");
 
-            const leaderboard = await rankingService.getTopPlayers();
-
-            setPlayers(leaderboard.players);
-            setTotal(leaderboard.total);
-
-            try {
-                const myRanking = await rankingService.getUserRanking();
-
-                setUserRanking(myRanking);
-            } catch {
-                setUserRanking(null);
-            }
+            await loadRanking();
         } catch {
             setError(
                 "Erro ao atualizar o ranking."
@@ -101,13 +99,18 @@ export default function LeaderBoard() {
                     </h1>
 
                     <p>
-                        Total de jogadores: {total}
+                        Total de jogadores:{" "}
+                        {total}
                     </p>
                 </div>
 
                 <button
-                    onClick={handleRefresh}
-                    disabled={updating}
+                    onClick={
+                        handleRefresh
+                    }
+                    disabled={
+                        updating
+                    }
                 >
                     {updating
                         ? "Atualizando..."
@@ -139,27 +142,38 @@ export default function LeaderBoard() {
                         Minha Posição
                     </h2>
 
-                    <p>
-                        #{userRanking.rank}
-                    </p>
+                    <h3>
+                        #
+                        {
+                            userRanking.rank
+                        }
+                    </h3>
 
                     <strong>
-                        {userRanking.name}
+                        {
+                            userRanking.name
+                        }
                     </strong>
 
                     <p>
                         Classe:{" "}
-                        {userRanking.class}
+                        {
+                            userRanking.class
+                        }
                     </p>
 
                     <p>
                         Nível:{" "}
-                        {userRanking.level}
+                        {
+                            userRanking.level
+                        }
                     </p>
 
                     <p>
                         Pontos:{" "}
-                        {userRanking.score}
+                        {
+                            userRanking.score
+                        }
                     </p>
                 </section>
             )}
@@ -169,65 +183,81 @@ export default function LeaderBoard() {
                     Top Players
                 </h2>
 
-                {players.length === 0 && (
+                {players.length ===
+                    0 && (
                     <p>
-                        Nenhum jogador no ranking.
+                        Nenhum jogador
+                        no ranking.
                     </p>
                 )}
 
-                {players.map((player) => (
-                    <div
-                        key={
-                            player.character_id
-                        }
-                        style={{
-                            border:
-                                "1px solid #ddd",
-                            borderRadius: 6,
-                            padding: 15,
-                            marginBottom: 10,
-                            display: "flex",
-                            justifyContent:
-                                "space-between",
-                            alignItems:
-                                "center",
-                        }}
-                    >
+                {players.map(
+                    (player) => (
                         <div
+                            key={
+                                player.character_id
+                            }
                             style={{
-                                display: "flex",
-                                gap: 15,
+                                border:
+                                    "1px solid #ddd",
+                                borderRadius:
+                                    6,
+                                padding: 15,
+                                marginBottom:
+                                    10,
+                                display:
+                                    "flex",
+                                justifyContent:
+                                    "space-between",
                                 alignItems:
                                     "center",
                             }}
                         >
-                            <strong>
-                                #{player.rank}
-                            </strong>
-
-                            <div>
+                            <div
+                                style={{
+                                    display:
+                                        "flex",
+                                    gap: 15,
+                                    alignItems:
+                                        "center",
+                                }}
+                            >
                                 <strong>
-                                    {player.name}
+                                    #
+                                    {
+                                        player.rank
+                                    }
                                 </strong>
 
-                                <p>
-                                    {
-                                        player.class
-                                    }
-                                    {" - "}
-                                    Nível{" "}
-                                    {
-                                        player.level
-                                    }
-                                </p>
-                            </div>
-                        </div>
+                                <div>
+                                    <strong>
+                                        {
+                                            player.name
+                                        }
+                                    </strong>
 
-                        <strong>
-                            {player.score} pts
-                        </strong>
-                    </div>
-                ))}
+                                    <p>
+                                        {
+                                            player.class
+                                        }
+                                        {" - "}
+                                        Nível{" "}
+                                        {
+                                            player.level
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+
+                            <strong>
+                                {
+                                    player.score
+                                }{" "}
+                                pts
+                            </strong>
+                        </div>
+                    )
+                )}
             </section>
 
         </DashboardLayout>

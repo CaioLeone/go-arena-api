@@ -1,9 +1,6 @@
 import api from "./api";
 
-import type {
-    LeaderboardResponse,
-    UserRanking,
-} from "../types/ranking";
+import type { LeaderboardResponse, UserRanking, } from "../types/ranking";
 
 async function getTopPlayers(): Promise<LeaderboardResponse> {
     const response = await api.get("/ranking/top");

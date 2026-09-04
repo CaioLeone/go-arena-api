@@ -8,19 +8,24 @@ interface Props {
 
 export default function DashboardLayout({children}: Props){
     return (
-        <>
-            <Navbar/>
-            <div 
-                style={{
-                    display: "flex",
-                }}
-            >
-                <Sidebar/>
-                <main 
-                    style={{flex: 1, padding: "30px"}}>
+ <div className="min-h-screen bg-slate-950 text-slate-100">
+            <Navbar />
+            <div className="flex">
+                <Sidebar />
+                <main
+                    className="
+                        min-w-0
+                        flex-1
+                        p-4
+                        sm:p-6
+                        lg:p-8
+                    "
+                >
+                    <div className="mx-auto max-w-7xl">
                         {children}
-                    </main>
+                    </div>
+                </main>
             </div>
-        </>
+        </div>
     );
 }

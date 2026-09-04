@@ -4,27 +4,68 @@ export default function Navbar() {
     const {user, logout} = useAuth();
 
     return (
-        <header 
-            style={{
-                height: "60px",
-                background: "#20232a",
-                color: "#fff",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0 20px",
-            }}
+                <header
+            className="
+                sticky
+                top-0
+                z-50
+                flex
+                h-16
+                items-center
+                justify-between
+                border-b
+                border-slate-800
+                bg-slate-900
+                px-4
+                sm:px-6
+            "
         >
-            <h2>Arena dos Bárbaros</h2>
+            <div>
+                <h1
+                    className="
+                        text-lg
+                        font-bold
+                        text-amber-400
+                        sm:text-xl
+                    "
+                >
+                    Arena dos Bárbaros
+                </h1>
+            </div>
+
             <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "15px",
-                }}
+                className="
+                    flex
+                    items-center
+                    gap-3
+                "
             >
-                <span>{user?.name}</span>
-                <button onClick={logout}>Logout</button>
+                <span
+                    className="
+                        hidden
+                        text-sm
+                        text-slate-300
+                        sm:block
+                    "
+                >
+                    {user?.name}
+                </span>
+                <button
+                    onClick={logout}
+                    className="
+                        rounded-lg
+                        bg-red-600
+                        px-3
+                        py-2
+                        text-sm
+                        font-medium
+                        text-white
+                        transition
+                        hover:bg-red-500
+                    "
+                >
+                    Sair
+                </button>
             </div>
         </header>
     );

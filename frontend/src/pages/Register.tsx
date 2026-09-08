@@ -37,14 +37,47 @@ export default function Register() {
         }
     }
     return (
-        <div>
+        <div
+            className="
+            flex
+            min-h-screen
+            items-center
+            justify-center
+            bg-slate-950
+            p-4
+        "
+        >
             <h1>Cadastro</h1>
-            <form onSubmit={handleSubmit}>
+            <form 
+                className="
+                w-full
+                max-w-md
+                rounded-xl
+                border
+                border-slate-700
+                bg-slate-900
+                p-6
+                shadow-xl
+                sm:p-8
+            "
+                onSubmit={handleSubmit}
+            >
 
                 <div>
                     <label>Email</label>
                     <br />
                     <input
+                        className="
+                        w-full
+                        max-w-md
+                        rounded-xl
+                        border
+                        border-slate-700
+                        bg-slate-900
+                        p-6
+                        shadow-xl
+                        sm:p-8
+                    "
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -78,7 +111,20 @@ export default function Register() {
                     error && (<p style={{ color: "red" }}> {error}</p>)
                 }
 
-                <button type="submit" disabled={loading}>
+                <button 
+                    className="
+                    w-full
+                    rounded-lg
+                    bg-amber-500
+                    px-4
+                    py-2
+                    font-bold
+                    text-slate-950
+                    transition
+                    hover:bg-amber-400
+                    disabled:opacity-50
+                "
+                    type="submit" disabled={loading}>
                     {
                         loading ? "Cadastrando..." : "Cadastrar"
                     }

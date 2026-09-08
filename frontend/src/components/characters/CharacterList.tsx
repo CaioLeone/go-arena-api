@@ -33,18 +33,15 @@ export default function CharacterList() {
     return (
         <>
             <div className="flex justify-between mb-6">
-
                 <h1 className="text-2xl font-bold">
                     Personagens
                 </h1>
-
                 <button
                     onClick={()=>setOpenModal(true)}
                     className="bg-green-600 text-white px-4 py-2 rounded"
                 >
                     Novo Personagem
                 </button>
-
             </div>
             
             <CreateCharacterModal

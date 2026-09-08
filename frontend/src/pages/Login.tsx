@@ -26,14 +26,48 @@ export default function Login(){
     }
 
     return(
-        <div>
+        <div
+            className="
+            flex
+            min-h-screen
+            items-center
+            justify-center
+            bg-slate-950
+            p-4
+            "
+        >
             <h1>Login</h1>
 
             <form onSubmit={handleSubmit}>
-                <div>
+                <div
+                    className="
+                    w-full
+                    max-w-md
+                    rounded-xl
+                    border
+                    border-slate-700
+                    bg-slate-900
+                    p-6
+                    shadow-xl
+                    sm:p-8
+                "
+                >
                     <label>Email</label>
                     <br />
-                    <input type="email"
+                    <input 
+                        className="
+                        w-full
+                        rounded-lg
+                        border
+                        border-slate-700
+                        bg-slate-800
+                        px-3
+                        py-2
+                        text-white
+                        outline-none
+                        focus:border-amber-500
+                    "
+                            type="email"
                            value={email} 
                            onChange={(e) => setEmail(e.target.value)}
                            required 
@@ -44,10 +78,23 @@ export default function Login(){
                 <div>
                     <label>Senha</label>
                     <br />
-                    <input type="password"
-                           value={password} 
-                           onChange={(e) => setPassword(e.target.value)}
-                           required 
+                    <input 
+                        className="
+                        w-full
+                        rounded-lg
+                        border
+                        border-slate-700
+                        bg-slate-800
+                        px-3
+                        py-2
+                        text-white
+                        outline-none
+                        focus:border-amber-500
+                    "
+                        type="password"
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)}
+                            required 
                     />
                 </div>
                 <br />
@@ -57,7 +104,20 @@ export default function Login(){
                             <p style={{color: "red"}}>{error}</p>
                         )
                     }
-                    <button type="submit" disabled={loading}>
+                    <button 
+                        className="
+                        w-full
+                        rounded-lg
+                        bg-amber-500
+                        px-4
+                        py-2
+                        font-bold
+                        text-slate-950
+                        transition
+                        hover:bg-amber-400
+                        disabled:opacity-50
+                    "
+                        type="submit" disabled={loading}>
                         {loading ? "Entrando" : "Entrar"}
                     </button>
             </form>

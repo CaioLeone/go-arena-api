@@ -1,5 +1,5 @@
-import {useState} from "react";
-import  characterService from "../../services/characterService";
+import { useState } from "react";
+import characterService from "../../services/characterService";
 
 interface Props {
     open: boolean;
@@ -7,80 +7,216 @@ interface Props {
     onCreated: () => void;
 }
 
-export default function CreateCharacterModal({ open, onClose, onCreated }: Props) {
+export default function CreateCharacterModal({
+    open,
+    onClose,
+    onCreated,
+}: Props) {
     const [name, setName] = useState("");
     const [characterClass, setCharacterClass] = useState("Barbaro");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    if(!open) return null;
+    if (!open) {
+        return null;
+    }
 
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(
+        e: React.FormEvent
+    ) {
         e.preventDefault();
 
-        try{
+        try {
             setLoading(true);
             setError("");
 
-            await characterService.create({name, class: characterClass});
+            await characterService.create({
+                name,
+                class: characterClass,
+            });
+
             setName("");
             setCharacterClass("Barbaro");
+
             onCreated();
-            onClose();
-        }catch{
-            setError("Erro ao criar personagem");
-        }finally{
+        } catch {
+            setError(
+                "Erro ao criar personagem."
+            );
+        } finally {
             setLoading(false);
         }
     }
+
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-6 w-96">
-                <h2 className="text-xl font-bold mb-4">
+        <div
+            className="
+                fixed
+                inset-0
+                z-50
+                flex
+                items-center
+                justify-center
+                bg-black/70
+                p-4
+            "
+        >
+
+            <div
+                className="
+                    w-full
+                    max-w-md
+                    rounded-xl
+                    border
+                    border-slate-700
+                    bg-slate-900
+                    p-6
+                    shadow-2xl
+                "
+            >
+
+                <h2
+                    className="
+                        mb-6
+                        text-2xl
+                        font-bold
+                        text-white
+                    "
+                >
                     Criar Personagem
                 </h2>
-
-                <form 
+                <form
                     onSubmit={handleSubmit}
-                    className="space-y-4"
+                    className="space-y-5"
                 >
+
                     <div>
-                        <label className="block mb-1">
+                        <label
+                            className="
+                                mb-2
+                                block
+                                text-sm
+                                font-medium
+                                text-slate-300
+                            "
+                        >
                             Nome
                         </label>
+
                         <input
-                            className="border w-full p-2 rounded"
                             value={name}
-                            onChange={(e)=>setName(e.target.value)}
+                            onChange={(e) =>
+                                setName(
+                                    e.target.value
+                                )
+                            }
                             required
+                            className="
+                                w-full
+                                rounded-lg
+                                border
+                                border-slate-700
+                                bg-slate-800
+                                px-3
+                                py-2
+                                text-white
+                                outline-none
+                                transition
+                                focus:border-amber-500
+                            "
                         />
+
                     </div>
 
                     <div>
-                        <label className="block mb-1">
+                        <label
+                            className="
+                                mb-2
+                                block
+                                text-sm
+                                font-medium
+                                text-slate-300
+                            "
+                        >
                             Classe
                         </label>
+
                         <select
-                            className="border w-full p-2 rounded"
-                            value={characterClass}
-                            onChange={(e)=>setCharacterClass(e.target.value)}
+                            value={
+                                characterClass
+                            }
+                            onChange={(e) =>
+                                setCharacterClass(
+                                    e.target.value
+                                )
+                            }
+                            className="
+                                w-full
+                                rounded-lg
+                                border
+                                border-slate-700
+                                bg-slate-800
+                                px-3
+                                py-2
+                                text-white
+                                outline-none
+                                focus:border-amber-500
+                            "
                         >
-                            <option value="Barbaro">Bárbaro</option>
-                            <option value="Mago">Mago</option>
-                            <option value="Arqueiro">Arqueiro</option>
-                            <option value="Assassino">Assassino</option>
+                            <option value="Barbaro">
+                                Bárbaro
+                            </option>
+
+                            <option value="Mago">
+                                Mago
+                            </option>
+
+                            <option value="Arqueiro">
+                                Arqueiro
+                            </option>
+
+                            <option value="Assassino">
+                                Assassino
+                            </option>
                         </select>
+
                     </div>
 
                     {error && (
-                        <p className="text-red-500">{error}</p>
+                        <p
+                            className="
+                                rounded-lg
+                                bg-red-950
+                                p-3
+                                text-sm
+                                text-red-300
+                            "
+                        >
+                            {error}
+                        </p>
                     )}
 
-                    <div className="flex justify-end gap-2">
+                    <div
+                        className="
+                            flex
+                            justify-end
+                            gap-3
+                        "
+                    >
+
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 border rounded"
+                            className="
+                                rounded-lg
+                                border
+                                border-slate-600
+                                px-4
+                                py-2
+                                text-slate-300
+                                transition
+                                hover:bg-slate-800
+                            "
                         >
                             Cancelar
                         </button>
@@ -88,9 +224,21 @@ export default function CreateCharacterModal({ open, onClose, onCreated }: Props
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-blue-600 text-white px-4 py-2 rounded"
+                            className="
+                                rounded-lg
+                                bg-amber-500
+                                px-4
+                                py-2
+                                font-semibold
+                                text-slate-950
+                                transition
+                                hover:bg-amber-400
+                                disabled:opacity-50
+                            "
                         >
-                            {loading ? "Criando..." : "Criar"}
+                            {loading
+                                ? "Criando..."
+                                : "Criar"}
                         </button>
                     </div>
                 </form>

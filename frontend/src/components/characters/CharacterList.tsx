@@ -4,14 +4,18 @@ import type { Character } from '../../types/character';
 import CharacterCard from './CharacterCard';
 import CreateCharacterModal from './CreateCharacterModal';
 
-export default function CharacterList() {
+interface Props {
+    refreshKey: number;
+}
+
+export default function CharacterList({ refreshKey }: Props) {
     const [characters, setCharacters] = useState<Character[]>([]);
     const [loading, setLoading] = useState(true);
     const [openModal, setOpenModal] = useState(false);
     
     useEffect(() => {
         loadCharacters();
-    }, []);
+    }, [refreshKey]);
 
     async function loadCharacters() {
         try {

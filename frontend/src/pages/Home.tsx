@@ -2,137 +2,128 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
     return (
-        <div className="min-h-screen bg-slate-950 text-white">
+        <div className="arena-page">
+
             <header
                 className="
-                    flex
-                    items-center
-                    justify-between
                     border-b
-                    border-slate-800
-                    px-6
-                    py-4
+                    border-slate-800/80
+                    bg-slate-950/80
+                    backdrop-blur
                 "
             >
-                <h1
-                    className="
-                        text-xl
-                        font-bold
-                        text-amber-400
-                    "
-                >
-                    Arena dos Bárbaros
-                </h1>
-
                 <div
                     className="
+                        arena-container
                         flex
+                        h-20
                         items-center
-                        gap-3
+                        justify-between
                     "
                 >
-                    <Link
-                        to="/login"
-                        className="
-                            rounded-lg
-                            border
-                            border-slate-700
-                            px-4
-                            py-2
-                            font-medium
-                            text-slate-200
-                            transition
-                            hover:border-amber-500
-                            hover:text-amber-400
-                        "
-                    >
-                        Entrar
-                    </Link>
 
                     <Link
-                        to="/register"
+                        to="/"
                         className="
-                            rounded-lg
-                            bg-amber-500
-                            px-4
-                            py-2
-                            font-semibold
-                            text-slate-950
-                            transition
-                            hover:bg-amber-400
+                            text-xl
+                            font-black
+                            tracking-tight
+                            text-white
+                            sm:text-2xl
                         "
                     >
-                        Criar Conta
+                        Arena dos
+                        <span className="text-amber-400">
+                            {" "}Bárbaros
+                        </span>
                     </Link>
+
+                    <div className="flex items-center gap-3">
+
+                        <Link
+                            to="/login"
+                            className="arena-button-secondary py-2"
+                        >
+                            Entrar
+                        </Link>
+
+                        <Link
+                            to="/register"
+                            className="
+                                arena-button-primary
+                                hidden
+                                py-2
+                                sm:inline-flex
+                            "
+                        >
+                            Criar Conta
+                        </Link>
+
+                    </div>
+
                 </div>
             </header>
 
-            <main
-                className="
-                    mx-auto
-                    flex
-                    min-h-[calc(100vh-73px)]
-                    max-w-7xl
-                    items-center
-                    px-6
-                    py-12
-                "
-            >
-                <div
+            <main>
+
+                <section
                     className="
+                        arena-container
                         grid
-                        w-full
-                        grid-cols-1
+                        min-h-[calc(100vh-80px)]
                         items-center
                         gap-12
-                        lg:grid-cols-2
+                        py-16
+                        lg:grid-cols-[1.15fr_0.85fr]
+                        lg:py-20
                     "
                 >
-                    <section>
-                        <span
-                            className="
-                                inline-block
-                                rounded-full
-                                bg-amber-500/10
-                                px-3
-                                py-1
-                                text-sm
-                                font-medium
-                                text-amber-400
-                            "
-                        >
-                            Entre na Arena
+
+                    <div>
+
+                        <span className="arena-badge">
+                            ⚔ Entre na Arena
                         </span>
 
-                        <h2
+                        <h1
                             className="
-                                mt-5
-                                text-4xl
-                                font-bold
-                                leading-tight
-                                sm:text-5xl
-                                lg:text-6xl
+                                mt-6
+                                max-w-3xl
+                                text-5xl
+                                font-black
+                                leading-[1.05]
+                                tracking-tight
+                                text-white
+                                sm:text-6xl
+                                lg:text-7xl
                             "
                         >
                             Forje seu guerreiro.
-                            <span className="text-amber-400">
-                                {" "}
+
+                            <span
+                                className="
+                                    block
+                                    text-amber-400
+                                "
+                            >
                                 Domine a Arena.
                             </span>
-                        </h2>
+                        </h1>
 
                         <p
                             className="
                                 mt-6
-                                max-w-xl
+                                max-w-2xl
                                 text-lg
-                                leading-relaxed
+                                leading-8
                                 text-slate-400
+                                sm:text-xl
                             "
                         >
-                            Crie personagens, evolua seus atributos,
-                            enfrente outros guerreiros e conquiste seu
-                            lugar no ranking da Arena dos Bárbaros.
+                            Crie personagens, desenvolva seus
+                            atributos, enfrente adversários e lute
+                            pelo topo do ranking da Arena dos
+                            Bárbaros.
                         </p>
 
                         <div
@@ -144,135 +135,234 @@ export default function Home() {
                                 sm:flex-row
                             "
                         >
+
                             <Link
                                 to="/register"
-                                className="
-                                    rounded-lg
-                                    bg-amber-500
-                                    px-6
-                                    py-3
-                                    text-center
-                                    font-bold
-                                    text-slate-950
-                                    transition
-                                    hover:bg-amber-400
-                                "
+                                className="arena-button-primary"
                             >
-                                Criar Meu Guerreiro
+                                Criar meu guerreiro
                             </Link>
 
                             <Link
                                 to="/login"
-                                className="
-                                    rounded-lg
-                                    border
-                                    border-slate-700
-                                    px-6
-                                    py-3
-                                    text-center
-                                    font-semibold
-                                    text-white
-                                    transition
-                                    hover:border-amber-500
-                                    hover:text-amber-400
-                                "
+                                className="arena-button-secondary"
                             >
                                 Já tenho uma conta
                             </Link>
-                        </div>
-                    </section>
 
-                    <section
-                        className="
-                            rounded-2xl
-                            border
-                            border-slate-800
-                            bg-slate-900
-                            p-6
-                            shadow-2xl
-                            sm:p-8
-                        "
-                    >
-                        <h3
+                        </div>
+
+                        <div
                             className="
-                                text-2xl
-                                font-bold
-                                text-amber-400
+                                mt-12
+                                grid
+                                max-w-2xl
+                                grid-cols-3
+                                gap-4
+                                border-t
+                                border-slate-800
+                                pt-6
                             "
                         >
-                            Prepare-se para a batalha
-                        </h3>
 
-                        <div className="mt-6 space-y-4">
-                            <div
-                                className="
-                                    rounded-xl
-                                    bg-slate-800
-                                    p-4
-                                "
-                            >
-                                <h4 className="font-bold">
-                                    Crie seu personagem
-                                </h4>
+                            <div>
+                                <strong className="text-lg text-white">
+                                    4
+                                </strong>
 
-                                <p
-                                    className="
-                                        mt-1
-                                        text-sm
-                                        text-slate-400
-                                    "
-                                >
-                                    Escolha uma classe e comece sua jornada.
+                                <p className="text-sm text-slate-500">
+                                    Classes
                                 </p>
                             </div>
 
-                            <div
-                                className="
-                                    rounded-xl
-                                    bg-slate-800
-                                    p-4
-                                "
-                            >
-                                <h4 className="font-bold">
-                                    Evolua seus atributos
-                                </h4>
+                            <div>
+                                <strong className="text-lg text-white">
+                                    PvP
+                                </strong>
 
-                                <p
-                                    className="
-                                        mt-1
-                                        text-sm
-                                        text-slate-400
-                                    "
-                                >
-                                    Aumente vida, ataque, defesa e chance crítica.
+                                <p className="text-sm text-slate-500">
+                                    Batalhas
                                 </p>
                             </div>
 
-                            <div
-                                className="
-                                    rounded-xl
-                                    bg-slate-800
-                                    p-4
-                                "
-                            >
-                                <h4 className="font-bold">
-                                    Conquiste o ranking
-                                </h4>
+                            <div>
+                                <strong className="text-lg text-white">
+                                    Ranking
+                                </strong>
 
-                                <p
-                                    className="
-                                        mt-1
-                                        text-sm
-                                        text-slate-400
-                                    "
-                                >
-                                    Vença batalhas e suba entre os melhores guerreiros.
+                                <p className="text-sm text-slate-500">
+                                    Competitivo
                                 </p>
                             </div>
+
                         </div>
-                    </section>
-                </div>
+
+                    </div>
+
+                    <div
+                        className="
+                            relative
+                            mx-auto
+                            w-full
+                            max-w-lg
+                        "
+                    >
+
+                        <div
+                            className="
+                                absolute
+                                -inset-10
+                                -z-10
+                                rounded-full
+                                bg-amber-500/10
+                                blur-3xl
+                            "
+                        />
+
+                        <div className="arena-card p-6 sm:p-8">
+
+                            <div
+                                className="
+                                    mb-8
+                                    flex
+                                    items-center
+                                    justify-between
+                                "
+                            >
+
+                                <div>
+                                    <p
+                                        className="
+                                            text-xs
+                                            font-bold
+                                            uppercase
+                                            tracking-[0.2em]
+                                            text-amber-400
+                                        "
+                                    >
+                                        Arena
+                                    </p>
+
+                                    <h2
+                                        className="
+                                            mt-1
+                                            text-2xl
+                                            font-black
+                                        "
+                                    >
+                                        Prepare-se para a batalha
+                                    </h2>
+                                </div>
+
+                                <div
+                                    className="
+                                        flex
+                                        h-12
+                                        w-12
+                                        items-center
+                                        justify-center
+                                        rounded-xl
+                                        bg-amber-500
+                                        text-2xl
+                                    "
+                                >
+                                    ⚔
+                                </div>
+
+                            </div>
+
+                            <div className="space-y-3">
+
+                                <Feature
+                                    number="01"
+                                    title="Crie seu personagem"
+                                    description="Escolha entre Bárbaro, Mago, Arqueiro ou Assassino."
+                                />
+
+                                <Feature
+                                    number="02"
+                                    title="Evolua seus atributos"
+                                    description="Melhore vida, ataque, defesa e chance crítica."
+                                />
+
+                                <Feature
+                                    number="03"
+                                    title="Entre em batalha"
+                                    description="Enfrente adversários e descubra quem domina a Arena."
+                                />
+
+                                <Feature
+                                    number="04"
+                                    title="Suba no ranking"
+                                    description="Acumule pontos e conquiste sua posição entre os melhores."
+                                />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
             </main>
+
+        </div>
+    );
+}
+
+interface FeatureProps {
+    number: string;
+    title: string;
+    description: string;
+}
+
+function Feature({
+    number,
+    title,
+    description,
+}: FeatureProps) {
+    return (
+        <div
+            className="
+                flex
+                gap-4
+                rounded-xl
+                border
+                border-slate-800
+                bg-slate-950/50
+                p-4
+            "
+        >
+
+            <span
+                className="
+                    font-black
+                    text-amber-500
+                "
+            >
+                {number}
+            </span>
+
+            <div>
+
+                <h3 className="font-bold text-white">
+                    {title}
+                </h3>
+
+                <p
+                    className="
+                        mt-1
+                        text-sm
+                        leading-6
+                        text-slate-400
+                    "
+                >
+                    {description}
+                </p>
+
+            </div>
+
         </div>
     );
 }

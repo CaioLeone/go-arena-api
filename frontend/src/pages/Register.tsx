@@ -39,101 +39,175 @@ export default function Register() {
     return (
         <div
             className="
-            flex
-            min-h-screen
-            items-center
-            justify-center
-            bg-slate-950
-            p-4
-        "
-        >
-            <h1>Cadastro</h1>
-            <form 
-                className="
-                w-full
-                max-w-md
-                rounded-xl
-                border
-                border-slate-700
-                bg-slate-900
-                p-6
-                shadow-xl
-                sm:p-8
+                arena-page
+                flex
+                min-h-screen
+                items-center
+                justify-center
+                px-4
+                py-12
             "
-                onSubmit={handleSubmit}
-            >
+        >
 
-                <div>
-                    <label>Email</label>
-                    <br />
-                    <input
+            <div className="w-full max-w-md">
+
+                <div className="mb-8 text-center">
+
+                    <Link
+                        to="/"
                         className="
-                        w-full
-                        max-w-md
-                        rounded-xl
-                        border
-                        border-slate-700
-                        bg-slate-900
-                        p-6
-                        shadow-xl
-                        sm:p-8
-                    "
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <br />
-                <div>
-                    <label>Senha</label>
-                    <br />
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <br />
-                <div>
-                    <label>Confirmar senha</label>
-                    <br />
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <br />
-                {
-                    error && (<p style={{ color: "red" }}> {error}</p>)
-                }
+                            text-2xl
+                            font-black
+                            text-white
+                        "
+                    >
+                        Arena dos
+                        <span className="text-amber-400">
+                            {" "}Bárbaros
+                        </span>
+                    </Link>
 
-                <button 
+                    <h1
+                        className="
+                            mt-8
+                            text-3xl
+                            font-black
+                        "
+                    >
+                        Entre para a Arena
+                    </h1>
+
+                    <p className="mt-2 text-slate-400">
+                        Crie sua conta e prepare seu primeiro guerreiro.
+                    </p>
+
+                </div>
+
+                <div className="arena-card p-6 sm:p-8">
+
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-5"
+                    >
+
+                        <div>
+
+                            <label className="arena-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
+                                }
+                                className="arena-input"
+                                placeholder="guerreiro@email.com"
+                                required
+                            />
+
+                        </div>
+
+                        <div>
+
+                            <label className="arena-label">
+                                Senha
+                            </label>
+
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) =>
+                                    setPassword(e.target.value)
+                                }
+                                className="arena-input"
+                                placeholder="Mínimo de 6 caracteres"
+                                required
+                            />
+
+                        </div>
+
+                        <div>
+
+                            <label className="arena-label">
+                                Confirmar senha
+                            </label>
+
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) =>
+                                    setConfirmPassword(
+                                        e.target.value
+                                    )
+                                }
+                                className="arena-input"
+                                placeholder="Repita sua senha"
+                                required
+                            />
+
+                        </div>
+
+                        {error && (
+                            <p className="arena-error">
+                                {error}
+                            </p>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="
+                                arena-button-primary
+                                w-full
+                            "
+                        >
+                            {loading
+                                ? "Criando conta..."
+                                : "Criar Conta"}
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <p
                     className="
-                    w-full
-                    rounded-lg
-                    bg-amber-500
-                    px-4
-                    py-2
-                    font-bold
-                    text-slate-950
-                    transition
-                    hover:bg-amber-400
-                    disabled:opacity-50
-                "
-                    type="submit" disabled={loading}>
-                    {
-                        loading ? "Cadastrando..." : "Cadastrar"
-                    }
-                </button>
-            </form>
-            <br />
-            <p> Já possui uma conta? {" "}
-                <Link to="/login"> Fazer Login </Link>
-            </p>
+                        mt-6
+                        text-center
+                        text-sm
+                        text-slate-400
+                    "
+                >
+                    Já possui uma conta?{" "}
+
+                    <Link
+                        to="/login"
+                        className="
+                            font-semibold
+                            text-amber-400
+                            hover:text-amber-300
+                        "
+                    >
+                        Fazer login
+                    </Link>
+                </p>
+
+                <div className="mt-6 text-center">
+
+                    <Link
+                        to="/"
+                        className="
+                            text-sm
+                            text-slate-500
+                            hover:text-slate-300
+                        "
+                    >
+                        ← Voltar para a Arena
+                    </Link>
+                </div>
+            </div>
         </div>
     );
 }

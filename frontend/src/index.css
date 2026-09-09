@@ -106,21 +106,21 @@
 
     /* ---------- Buttons ---------- */
 
-    .arena-button {
-        @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-bold transition disabled:cursor-not-allowed disabled:opacity-50;
-    }
+.arena-button {
+    @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-bold transition disabled:cursor-not-allowed disabled:opacity-50;
+}
 
-    .arena-button-primary {
-        @apply arena-button bg-amber-500 text-slate-950 hover:bg-amber-400;
-    }
+.arena-button-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-3 font-bold text-slate-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50;
+}
 
-    .arena-button-secondary {
-        @apply arena-button border border-slate-700 bg-slate-900 text-slate-100 hover:border-amber-500 hover:text-amber-400;
-    }
+.arena-button-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 font-bold text-slate-100 transition hover:border-amber-500 hover:text-amber-400 disabled:cursor-not-allowed disabled:opacity-50;
+}
 
-    .arena-button-danger {
-        @apply arena-button bg-red-600 text-white hover:bg-red-500;
-    }
+.arena-button-danger {
+    @apply inline-flex items-center justify-center rounded-xl bg-red-600 px-5 py-3 font-bold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50;
+}
 
     /* ---------- Misc ---------- */
 

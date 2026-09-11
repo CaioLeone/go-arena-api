@@ -37,13 +37,9 @@ export default function LeaderBoard() {
     async function loadRanking() {
         const leaderboard = await rankingService.getTopPlayers();
 
-        setPlayers(
-            leaderboard.players
-        );
+        setPlayers(leaderboard.players);
 
-        setTotal(
-            leaderboard.total
-        );
+        setTotal(leaderboard.total);
 
         try {
             const myRanking = await rankingService.getUserRanking();
@@ -92,20 +88,12 @@ export default function LeaderBoard() {
             >
                 <div>
                     <h1> Leaderboard </h1>
-
-                    <p>
-                        Total de jogadores:{" "}
-                        {total}
-                    </p>
+                    <p> Total de jogadores:{" "} {total} </p>
                 </div>
 
                 <button
-                    onClick={
-                        handleRefresh
-                    }
-                    disabled={
-                        updating
-                    }
+                    onClick={ handleRefresh }
+                    disabled={ updating }
                 >
                     {updating
                         ? "Atualizando..."
@@ -135,47 +123,19 @@ export default function LeaderBoard() {
                 >
                     <h2> Minha Posição </h2>
 
-                    <h3>
-                        #
-                        {
-                            userRanking.rank
-                        }
-                    </h3>
+                    <h3> # { userRanking.rank } </h3>
 
                     <strong> {userRanking.name} </strong>
-
-                    <p>
-                        Classe:{" "}
-                        {
-                            userRanking.class
-                        }
-                    </p>
-
-                    <p>
-                        Nível:{" "}
-                        {
-                            userRanking.level
-                        }
-                    </p>
-
-                    <p>
-                        Pontos:{" "}
-                        {
-                            userRanking.score
-                        }
-                    </p>
+                    <p> Classe:{" "} { userRanking.class } </p>
+                    <p> Nível:{" "} { userRanking.level } </p>
+                    <p> Pontos:{" "} { userRanking.score } </p>
                 </section>
             )}
 
             <section>
                 <h2> Top Players </h2>
-
-                {players.length ===
-                    0 && (
-                    <p>
-                        Nenhum jogador
-                        no ranking.
-                    </p>
+                {players.length === 0 && (
+                    <p> Nenhum jogador no ranking. </p>
                 )}
 
                 {players.map(
@@ -209,39 +169,19 @@ export default function LeaderBoard() {
                                         "center",
                                 }}
                             >
-                                <strong>
-                                    #
-                                    {
-                                        player.rank
-                                    }
-                                </strong>
-
+                                <strong> # { player.rank } </strong>
                                 <div>
-                                    <strong>
-                                        {
-                                            player.name
-                                        }
-                                    </strong>
-
+                                    <strong> { player.name } </strong>
                                     <p>
-                                        {
-                                            player.class
-                                        }
+                                        { player.class }
                                         {" - "}
                                         Nível{" "}
-                                        {
-                                            player.level
-                                        }
+                                        { player.level }
                                     </p>
                                 </div>
                             </div>
 
-                            <strong>
-                                {
-                                    player.score
-                                }{" "}
-                                pts
-                            </strong>
+                            <strong> { player.score }{" "} pts </strong>
                         </div>
                     )
                 )}

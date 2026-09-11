@@ -74,16 +74,13 @@ export default function LeaderBoard() {
     if (loading) {
         return (
             <DashboardLayout>
-                <p>
-                    Carregando ranking...
-                </p>
+                <p> Carregando ranking... </p>
             </DashboardLayout>
         );
     }
 
     return (
         <DashboardLayout>
-
             <div
                 style={{
                     display: "flex",
@@ -94,9 +91,7 @@ export default function LeaderBoard() {
                 }}
             >
                 <div>
-                    <h1>
-                        Leaderboard
-                    </h1>
+                    <h1> Leaderboard </h1>
 
                     <p>
                         Total de jogadores:{" "}
@@ -138,9 +133,7 @@ export default function LeaderBoard() {
                         marginBottom: 30,
                     }}
                 >
-                    <h2>
-                        Minha Posição
-                    </h2>
+                    <h2> Minha Posição </h2>
 
                     <h3>
                         #
@@ -149,11 +142,7 @@ export default function LeaderBoard() {
                         }
                     </h3>
 
-                    <strong>
-                        {
-                            userRanking.name
-                        }
-                    </strong>
+                    <strong> {userRanking.name} </strong>
 
                     <p>
                         Classe:{" "}
@@ -179,9 +168,7 @@ export default function LeaderBoard() {
             )}
 
             <section>
-                <h2>
-                    Top Players
-                </h2>
+                <h2> Top Players </h2>
 
                 {players.length ===
                     0 && (
@@ -259,7 +246,6 @@ export default function LeaderBoard() {
                     )
                 )}
             </section>
-
         </DashboardLayout>
     );
 }

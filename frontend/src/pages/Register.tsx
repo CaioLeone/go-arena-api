@@ -23,15 +23,25 @@ export default function Register() {
         try {
             setLoading(true);
             
-            await api.post("/auth/register", {email, password,});
-            
+            const response = await api.post("/auth/register", {email, password,});
+                    
+            console.log("Register response:", response.data);
             alert("Usuario cadastrador com sucesso");
             
             navigate("/login");
+
         } catch (err: any) {
-            const message = err.response?.data?.error ?? "Erro ao encontrar usuario";
-            
+            console.error("Erro no registro:", err);
+
+            console.error("Resposta do backend:", err.response?.data);
+
+            const message =
+            err.response?.data?.error ||
+            err.response?.data?.message ||
+            "Não foi possível criar a conta.";
+
             setError(message);
+
         } finally {
             setLoading(false);
         }

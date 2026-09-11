@@ -37,16 +37,14 @@ export default function LeaderBoard() {
     async function loadRanking() {
         const leaderboard = await rankingService.getTopPlayers();
 
-        setPlayers(leaderboard.players);
+        setPlayers(leaderboard.players ?? []);
 
-        setTotal(leaderboard.total);
+        setTotal(leaderboard.total ?? 0);
 
         try {
             const myRanking = await rankingService.getUserRanking();
 
-            setUserRanking(
-                myRanking
-            );
+            setUserRanking(myRanking ?? null);
         } catch {
             setUserRanking(null);
         }

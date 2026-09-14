@@ -8,7 +8,7 @@ async function start(data: BattleCreateRequest): Promise<Battle> {
 
 async function getHistory(): Promise<BattleHistory[]> {
     const response = await api.get('/battles/history');
-    return response.data.data;
+    return response.data?.data ?? [];
 }
 
 const battleService = {

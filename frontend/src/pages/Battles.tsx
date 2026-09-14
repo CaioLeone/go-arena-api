@@ -12,37 +12,29 @@ import type { Battle, BattleHistory, } from "../types/battle";
 
 export default function Battles() {
     const [characters, setCharacters] = useState<Character[]>([]);
-
     const [attackerId, setAttackerId] = useState("");
-
     const [defenderId, setDefenderId] = useState("");
-
     const [battleResult, setBattleResult] = useState<Battle | null>(null);
-
     const [history, setHistory] = useState<BattleHistory[]>([]);
-
     const [loading, setLoading] = useState(true);
-
     const [battleLoading, setBattleLoading] = useState(false);
-
     const [error, setError] = useState("");
 
     useEffect(() => { loadData(); }, []);
 
     async function loadData() {
         try {
-            const charactersData =
-                await characterService.getAll();
+            setError("");
+            const charactersData = await characterService.getAll();
+            const historyData = await battleService.getHistory();
 
-            const historyData =
-                await battleService.getHistory();
-
-            setCharacters(charactersData);
-            setHistory(historyData);
+            setCharacters(charactersData ?? []);
+            setHistory(historyData ?? []);
         } catch {
-            setError(
-                "Erro ao carregar dados das batalhas."
-            );
+            console.error("Erro ao carregar dados das batalhas:", error);
+            setCharacters([]);
+            setHistory([]);
+            setError("Erro ao carregar dados das batalhas. Por favor, tente novamente.");
         } finally {
             setLoading(false);
         }

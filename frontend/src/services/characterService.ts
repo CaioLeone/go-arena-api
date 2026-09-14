@@ -10,12 +10,16 @@ import type {
 
 async function getAll(): Promise<Character[]> {
     const response = await api.get('/characters');
-    return response.data.data.characters;
+    const data = response.data?.data;
+
+    return data?.characters ?? [];
 }
 
 async function getById(id: string): Promise<Character> {
     const response = await api.get(`/characters/${id}`);
-    return response.data.data;
+    const data = response.data?.data;
+   
+    return data ?? {};
 }
 
 async function create(data: CreateCharacterRequest): Promise<Character> {

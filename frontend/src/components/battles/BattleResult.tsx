@@ -22,13 +22,9 @@ export default function BattleResult({ battle }: Props) {
                 {battle.defender_name}
             </p>
 
-            <h3>
-                Vencedor: {battle.winner_name}
-            </h3>
+            <h3> Vencedor: {battle.winner_name} </h3>
 
-            <p>
-                Dano total: {battle.damage_dealt}
-            </p>
+            <p> Dano total: {battle.damage_dealt} </p>
 
             <p>
                 HP final de {battle.attacker_name}:{" "}
@@ -40,12 +36,8 @@ export default function BattleResult({ battle }: Props) {
                 {battle.defender_hp_final}
             </p>
 
-            <p>
-                Total de rounds: {battle.rounds_count}
-            </p>
-
+            <p> Total de rounds: {battle.rounds_count}</p>
             <hr />
-
             <h3>Rounds</h3>
 
             {battle.rounds.map((round) => (
@@ -55,13 +47,9 @@ export default function BattleResult({ battle }: Props) {
                         marginBottom: 15,
                     }}
                 >
-                    <strong>
-                        Round {round.round}
-                    </strong>
+                    <strong> Round {round.round} </strong>
 
-                    <p>
-                        {round.message}
-                    </p>
+                    <p>{round.message} </p>
 
                     <p>
                         {round.attacker_name}
@@ -69,14 +57,10 @@ export default function BattleResult({ battle }: Props) {
                         {round.defender_name}
                     </p>
 
-                    <p>
-                        Dano: {round.damage}
-                    </p>
+                    <p> Dano: {round.damage}</p>
 
                     {round.is_critical && (
-                        <p>
-                            Golpe crítico!
-                        </p>
+                        <p> Golpe crítico! </p>
                     )}
 
                     <p>

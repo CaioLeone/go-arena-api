@@ -12,6 +12,7 @@ export default function CharacterList({ refreshKey }: Props) {
     const [characters, setCharacters] = useState<Character[]>([]);
     const [loading, setLoading] = useState(true);
     const [openModal, setOpenModal] = useState(false);
+    const [error, setError] = useState("");
     
     useEffect(() => {
         loadCharacters();
@@ -19,8 +20,17 @@ export default function CharacterList({ refreshKey }: Props) {
 
     async function loadCharacters() {
         try {
+            setLoading(true);
+            setError("");
+
             const data = await characterService.getAll();
-            setCharacters(data);
+            setCharacters(data ?? []);
+
+        }catch (error) {
+            console.error("Erro ao carregar personagens: ", error);
+            
+            setCharacters([]);
+            setError("Erro ao carregar personagens. Por favor, tente novamente.");
         }finally {
             setLoading(false);
         }

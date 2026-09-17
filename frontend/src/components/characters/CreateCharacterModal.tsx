@@ -21,9 +21,7 @@ export default function CreateCharacterModal({
         return null;
     }
 
-    async function handleSubmit(
-        e: React.FormEvent
-    ) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
         try {
@@ -39,10 +37,13 @@ export default function CreateCharacterModal({
             setCharacterClass("Barbaro");
 
             onCreated();
-        } catch {
-            setError(
-                "Erro ao criar personagem."
-            );
+        } catch (err: any){
+            console.error("Erro ao criar personagem: ", err);
+            console.error("Resposta do servidor: ", err.response?.data);
+            
+            const message = err.response?.data?.error || err.response?.data?.message ||"Erro ao criar personagem. Por favor, tente novamente.";
+            setError(message);
+            
         } finally {
             setLoading(false);
         }
@@ -125,7 +126,6 @@ export default function CreateCharacterModal({
                                 focus:border-amber-500
                             "
                         />
-
                     </div>
 
                     <div>

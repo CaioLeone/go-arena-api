@@ -9,12 +9,11 @@ import type {
 } from "../types/character";
 
 async function getAll(): Promise<Character[]> {
-    const response = await api.get('/characters');
-    //const data = response.data?.data;
+    const response = await api.get("/characters");
 
-    console.log('getAll response data:', response.data); // Debugging line
+    console.log("getAll response data:", response.data);
 
-    return response.data ?? [];
+    return response.data?.data ?? [];
 }
 
 async function getById(id: string): Promise<Character> {

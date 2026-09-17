@@ -12,6 +12,8 @@ async function getAll(): Promise<Character[]> {
     const response = await api.get('/characters');
     const data = response.data?.data;
 
+    console.log('getAll response data:', data); // Debugging line
+
     return data?.characters ?? [];
 }
 

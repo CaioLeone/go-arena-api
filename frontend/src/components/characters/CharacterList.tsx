@@ -41,7 +41,11 @@ export default function CharacterList({ refreshKey }: Props) {
     }
 
     if (characters.length === 0) {
-        return (<p>Nenhum personagem encontrado.</p>);
+        return (
+            <p className="text-slate-400">
+                Nenhum personagem encontrado.
+            </p>
+        );
     }
 
     return (
@@ -64,9 +68,23 @@ export default function CharacterList({ refreshKey }: Props) {
             onCreated={loadCharacters}
             />
             
-            {characters.map((character) => 
-                <CharacterCard key={character.id} character={character} />
-            )}
+            <div
+                className="
+                    grid
+                    grid-cols-1
+                    gap-4
+                    md:grid-cols-2
+                    xl:grid-cols-3
+                "
+            >
+                {characters.map((character) => (
+                        <CharacterCard
+                            key={character.id}
+                            character={character}
+                        />
+                    )
+                )}
+            </div>
         </>
     );
 }

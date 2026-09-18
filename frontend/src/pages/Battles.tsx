@@ -129,20 +129,25 @@ export default function Battles() {
                     >
                         <option value=""> Escolha um personagem </option>
 
-                        {characters.map(
-                            (character) => (
-                                <option
-                                    key={character.id}
-                                    value={character.id}
-                                >
-                                    {character.name}
-                                    {" - "}
-                                    {character.class}
-                                    {" - Nv. "}
-                                    {character.level}
-                                </option>
+                        {characters
+                            .filter(
+                                (character) =>
+                                    character.id !== defenderId
                             )
-                        )}
+                            .map(
+                                (character) => (
+                                    <option
+                                        key={character.id}
+                                        value={character.id}
+                                    >
+                                        {character.name}
+                                        {" - "}
+                                        {character.class}
+                                        {" - Nv. "}
+                                        {character.level}
+                                    </option>
+                                )
+                            )}
                     </select>
                 </div>
                 <br />
@@ -161,20 +166,25 @@ export default function Battles() {
                     >
                         <option value=""> Escolha um personagem </option>
 
-                        {characters.map(
-                            (character) => (
-                                <option
-                                    key={character.id}
-                                    value={character.id}
-                                >
-                                    {character.name}
-                                    {" - "}
-                                    {character.class}
-                                    {" - Nv. "}
-                                    {character.level}
-                                </option>
+                        {characters
+                            .filter(
+                                (character) =>
+                                    character.id !== attackerId
                             )
-                        )}
+                            .map(
+                                (character) => (
+                                    <option
+                                        key={character.id}
+                                        value={character.id}
+                                    >
+                                        {character.name}
+                                        {" - "}
+                                        {character.class}
+                                        {" - Nv. "}
+                                        {character.level}
+                                    </option>
+                                )
+                            )}
                     </select>
                 </div>
                 <br />

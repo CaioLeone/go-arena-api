@@ -30,10 +30,12 @@ export default function Battles() {
 
             setCharacters(charactersData ?? []);
             setHistory(historyData ?? []);
-        } catch {
-            console.error("Erro ao carregar dados das batalhas:", error);
+        } catch (err){
+            console.error("Erro ao carregar dados das batalhas:", err);
+            
             setCharacters([]);
             setHistory([]);
+            
             setError("Erro ao carregar dados das batalhas. Por favor, tente novamente.");
         } finally {
             setLoading(false);
@@ -62,11 +64,8 @@ export default function Battles() {
 
             const result =
                 await battleService.start({
-                    attacker_character_id:
-                        attackerId,
-
-                    defender_character_id:
-                        defenderId,
+                    attacker_character_id: attackerId,
+                    defender_character_id: defenderId,
                 });
 
             setBattleResult(result);
@@ -75,10 +74,10 @@ export default function Battles() {
                 await battleService.getHistory();
 
             setHistory(updatedHistory);
-        } catch {
-            setError(
-                "Não foi possível iniciar a batalha."
-            );
+        } catch (err){
+            console.error("Erro ao iniciar batalha:", err);
+            
+            setError("Erro ao iniciar batalha. Por favor, tente novamente.");
         } finally {
             setBattleLoading(false);
         }
@@ -112,10 +111,7 @@ export default function Battles() {
                 <h2>Iniciar Batalha</h2>
 
                 <div>
-                    <label>
-                        Atacante
-                    </label>
-
+                    <label> Atacante </label>
                     <br />
 
                     <select
@@ -126,9 +122,7 @@ export default function Battles() {
                             )
                         }
                     >
-                        <option value="">
-                            Escolha um personagem
-                        </option>
+                        <option value=""> Escolha um personagem </option>
 
                         {characters.map(
                             (character) => (
@@ -146,14 +140,10 @@ export default function Battles() {
                         )}
                     </select>
                 </div>
-
                 <br />
 
                 <div>
-                    <label>
-                        Defensor
-                    </label>
-
+                    <label> Defensor </label>
                     <br />
 
                     <select
@@ -164,9 +154,7 @@ export default function Battles() {
                             )
                         }
                     >
-                        <option value="">
-                            Escolha um personagem
-                        </option>
+                        <option value=""> Escolha um personagem </option>
 
                         {characters.map(
                             (character) => (
@@ -184,7 +172,6 @@ export default function Battles() {
                         )}
                     </select>
                 </div>
-
                 <br />
 
                 <button
@@ -209,9 +196,7 @@ export default function Battles() {
                 <h2>Histórico</h2>
 
                 {history.length === 0 && (
-                    <p>
-                        Nenhuma batalha realizada.
-                    </p>
+                    <p> Nenhuma batalha realizada. </p>
                 )}
 
                 {history.map((battle) => (

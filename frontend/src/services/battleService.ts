@@ -3,11 +3,17 @@ import type { Battle, BattleCreateRequest, BattleHistory } from "../types/battle
 
 async function start(data: BattleCreateRequest): Promise<Battle> {
     const response = await api.post('/battles', data);
-    return response.data.data;
+
+    console.log("POST /battles response:", response.data);
+
+    return response.data?.data;
 }
 
 async function getHistory(): Promise<BattleHistory[]> {
     const response = await api.get('/battles/history');
+    
+    console.log("GET /battles/history response:", response.data);
+    
     return response.data?.data ?? [];
 }
 

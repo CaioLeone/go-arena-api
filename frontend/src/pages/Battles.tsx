@@ -24,12 +24,17 @@ export default function Battles() {
 
     async function loadData() {
         try {
+            setLoading(true);
             setError("");
-            const charactersData = await characterService.getAll();
-            const historyData = await battleService.getHistory();
-
+            
+            const [charactersData, historyData] = await Promise.all([
+                characterService.getAll(),
+                battleService.getHistory(),
+            ]);
+            
             setCharacters(charactersData ?? []);
             setHistory(historyData ?? []);
+
         } catch (err){
             console.error("Erro ao carregar dados das batalhas:", err);
             

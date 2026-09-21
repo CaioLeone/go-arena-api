@@ -14,6 +14,7 @@ type CharacterService interface {
 	Create(userID string, req *dto.CharacterCreateRequest) (*dto.CharacterResponse, error)
 	GetByID(id string, userID string) (*dto.CharacterResponse, error)
 	GetAll(userID string) ([]*dto.CharacterResponse, error)
+	GetOpponents(userID string) ([]*dto.CharacterResponse, error)
 	Update(id string, userID string, req *dto.CharacterUpdateRequest) (*dto.CharacterResponse, error)
 	Delete(id string, userID string) error
 	AddExperience(characterID string, experience int) error
@@ -116,6 +117,19 @@ func (s *characterService) GetAll(userID string) ([]*dto.CharacterResponse, erro
 	}
 
 	var responses []*dto.CharacterResponse
+	for _, char := range characters {
+		responses = append(responses, modelToDTO(char))
+	}
+	return responses, nil
+}
+
+func (s *characterService) GetOpponents(userID string) ([]*dto.CharacterResponse, error) {
+	characters, err := s.characterRepo.GetOpponents(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*dto.CharacterResponse, len(characters))
 	for _, char := range characters {
 		responses = append(responses, modelToDTO(char))
 	}

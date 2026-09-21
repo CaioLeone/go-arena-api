@@ -13,6 +13,7 @@ type CharacterRepository interface {
 	GetByIDWithoutUser(id string) (*model.CharacterModel, error)
 	GetAllByUserID(userID string) ([]*model.CharacterModel, error)
 	GetByIDNoUserFilter(id string) (*model.CharacterModel, error)
+	GetOpponents(userID string) ([]*model.CharacterModel, error)
 	Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error)
 	Delete(id string, userID string) error
 	GetByName(name string) (*model.CharacterModel, error)
@@ -291,6 +292,66 @@ func (r *characterRepository) GetByIDNoUserFilter(id string) (*model.CharacterMo
 	}
 
 	return &char, nil
+}
+
+func (r *characterRepository) GetOpponents(userID string) ([]*model.CharacterModel, error) {
+	query := `
+		SELECT
+			id,
+			user_id,
+			name,
+			class,
+			level,
+			experience,
+			hp,
+			attack,
+			defense,
+			attribute_points,
+			critical_chance,
+			ranking_points,
+			created_at,
+			updated_at
+		FROM characters
+		WHERE user_id <> $1
+		ORDER BY ranking_points DESC, level DESC, name ASC
+	`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("Erro ao buscar adversarios: %w", err)
+	}
+	defer rows.Close()
+
+	var characters []*model.CharacterModel
+	for rows.Next(){
+		var char model.CharacterModel
+
+		err := rows.Scan(
+			&char.ID,
+			&char.UserID,
+			&char.Name,
+			&char.Class,
+			&char.Level,
+			&char.Experience,
+			&char.HP,
+			&char.Attack,
+			&char.Defense,
+			&char.AttributePoints,
+			&char.CriticalChance,
+			&char.RankingPoints,
+			&char.CreatedAt,
+			&char.UpdatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("Erro ao ler adversarios: %w", err)
+		}
+		characters = append(characters, &char)
+	}
+	
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("Erro ao verificar adversarios: %w", err)
+	}
+	return characters, nil
 }
 
 func (r *characterRepository) Update(id string, userID string, character *model.CharacterModel) (*model.CharacterModel, error) {

@@ -51,16 +51,12 @@ export default function Battles() {
         setError("");
 
         if (!attackerId || !defenderId) {
-            setError(
-                "Escolha os dois personagens."
-            );
+            setError("Escolha os dois personagens.");
             return;
         }
 
-        if (attackerId === defenderId) {
-            setError(
-                "Escolha personagens diferentes."
-            );
+        if (attackerId === attackerId) {
+            setError("Escolha personagens diferentes.");
             return;
         }
 
@@ -75,8 +71,7 @@ export default function Battles() {
 
             setBattleResult(result);
 
-            const updatedHistory =
-                await battleService.getHistory();
+            const updatedHistory = await battleService.getHistory();
 
             setHistory(updatedHistory);
         } catch (err){
@@ -91,9 +86,7 @@ export default function Battles() {
     if (loading) {
         return (
             <DashboardLayout>
-                <p>
-                    Carregando batalhas...
-                </p>
+                <p> Carregando batalhas... </p>
             </DashboardLayout>
         );
     }

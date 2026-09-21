@@ -47,6 +47,14 @@ func (s *battleService) loadCharacters(userID string, req *dto.BattleCreateReque
 		return nil, nil, fmt.Errorf("Personagem defensor não encontrado")
 	}
 
+	if attacker.ID == defender.ID {
+		return nil, nil, fmt.Errorf("Escolha personagens diferentes")
+	}
+
+	if attacker.UserID == defender.UserID {
+		return nil, nil, fmt.Errorf("Voce nao pode batalhjar contra personagens do mesmo usuario")
+	}
+
 	return attacker, defender, nil
 }
 

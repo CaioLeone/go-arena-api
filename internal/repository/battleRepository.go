@@ -168,6 +168,7 @@ func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset i
     `
 
 	rows, err := r.db.Query(query, userID, limit, offset)
+
 	if err != nil {
 		return nil, fmt.Errorf("Erro ao buscar histórico de batalhas: %w", err)
 	}
@@ -191,6 +192,10 @@ func (r *battleRepository) GetHistoryByUserID(userID string, limit int, offset i
 			&battle.RoundsData,
 			&battle.CreatedAt,
 		)
+
+		if err := rows.Err(); err != nil{
+			return nil, fmt.Errorf("Erro ao iterar historico de batalhas: %w", err,)
+		}
 
 		if err != nil {
 			return nil, fmt.Errorf("Erro ao ler batalha: %w", err)

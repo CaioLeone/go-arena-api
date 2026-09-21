@@ -23,6 +23,12 @@ async function getById(id: string): Promise<Character> {
     return data ?? {};
 }
 
+async function getOpponents(): Promise<Character[]> {
+    const response = await api.get("/characters/opponents");
+
+    return response.data?.data ?? [];
+}
+
 async function create(data: CreateCharacterRequest): Promise<Character> {
     const response = await api.post('/characters', data);
     return response.data.data;
@@ -50,6 +56,7 @@ async function spendAttribute(id: string, data: SpendAttributeRequest): Promise<
 const characterService = {
     getAll,
     getById,
+    getOpponents,
     create,
     update,
     remove,

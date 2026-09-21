@@ -123,6 +123,34 @@ func (h *CharacterHandler) GetByID(c *gin.Context) {
 	})
 }
 
+// GetOpponents godoc
+//
+// @Summary Listar adversários
+// @Description Retorna personagens pertencentes a outros usuários.
+// @Tags Characters
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /characters/opponents [get]
+func (h *CharacterHandler) GetOpponents(c *gin.Context) {
+	userID := c.GetString("user_id")
+
+	characters, err := h.characterService.GetOpponents(userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    characters,
+	})
+}
+
 // Update godoc
 //
 // @Summary Atualizar personagem

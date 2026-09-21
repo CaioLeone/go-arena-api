@@ -134,6 +134,7 @@ func initializeDependencies(router *gin.Engine, db *sql.DB, cfg *config.Config, 
 		characters.POST("/:id/experience", characterHandler.AddExperience)
 		characters.POST("/:id/attributes", characterHandler.SpendAttributePoints)
 		characters.GET("", characterHandler.GetAll)
+		characters.GET("/opponents", characterHandler.GetOpponents)
 		characters.GET("/:id", characterHandler.GetByID)
 		characters.PUT("/:id", characterHandler.Update)
 		characters.DELETE("/:id", characterHandler.Delete)

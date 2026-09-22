@@ -33,9 +33,17 @@ export default function Battles() {
                 battleService.getHistory(),
             ]);
 
-            setMyCharacters( charactersData ?? []);
-            setOpponents(opponentsData ?? []);
-            setHistory(historyData ?? []);
+            console.log("Meus personagens:",charactersData);
+            console.log("Adversários:",opponentsData);
+            console.log("Histórico:",historyData);
+
+            const validCharacters = (charactersData ?? []).filter((character): character is Character => character != null);
+            const validOpponents = (opponentsData ?? []).filter((character): character is Character =>character != null);
+            const validHistory = (historyData ?? []).filter((battle): battle is BattleHistory =>battle != null);
+
+            setMyCharacters(validCharacters);
+            setOpponents(validOpponents);
+            setHistory(validHistory);
 
         } catch (err) {
             console.error(

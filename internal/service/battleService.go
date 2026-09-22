@@ -213,7 +213,9 @@ func (s *battleService) GetBattleHistory(userID string, limit int, offset int) (
 		return nil, err
 	}
 
-	var responses []*dto.BattleHistoryResponse
+	//var responses []*dto.BattleHistoryResponse
+	responses := make([]*dto.BattleHistoryResponse, 0, len(battles),)
+	
 	for _, b := range battles {
 		responses = append(responses, &dto.BattleHistoryResponse{
 			ID:              b.ID,

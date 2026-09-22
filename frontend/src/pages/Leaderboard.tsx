@@ -1,28 +1,44 @@
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 
 import DashboardLayout from "../components/layout/DashboardLayout";
 import rankingService from "../services/rankingService";
 
-import type { TopPlayer, UserRanking,} from "../types/ranking";
+import type {
+    TopPlayer,
+    UserRanking,
+} from "../types/ranking";
 
 export default function LeaderBoard() {
-    const [players, setPlayers] = useState<TopPlayer[]>([]);
+    const [players, setPlayers] =
+        useState<TopPlayer[]>([]);
 
-    const [userRanking, setUserRanking] = useState<UserRanking | null>(null);
+    const [userRanking, setUserRanking] =
+        useState<UserRanking | null>(null);
 
-    const [total, setTotal] = useState(0);
+    const [total, setTotal] =
+        useState(0);
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [updating, setUpdating] = useState(false);
+    const [updating, setUpdating] =
+        useState(false);
 
-    const [error, setError] = useState("");
+    const [error, setError] =
+        useState("");
 
     useEffect(() => {
         async function load() {
             try {
+                setError("");
+
                 await loadRanking();
-            } catch {
+            } catch (err) {
+                console.error(
+                    "Erro ao carregar ranking:",
+                    err
+                );
+
                 setError(
                     "Erro ao carregar o ranking."
                 );
@@ -35,17 +51,47 @@ export default function LeaderBoard() {
     }, []);
 
     async function loadRanking() {
-        const leaderboard = await rankingService.getTopPlayers();
+        const leaderboard =
+            await rankingService.getTopPlayers();
 
-        setPlayers(leaderboard.players ?? []);
+        console.log(
+            "Leaderboard:",
+            leaderboard
+        );
 
-        setTotal(leaderboard.total ?? 0);
+        const validPlayers =
+            (leaderboard.players ?? [])
+                .filter(
+                    (player): player is TopPlayer =>
+                        player != null
+                );
+
+        setPlayers(validPlayers);
+
+        setTotal(
+            leaderboard.total ??
+            validPlayers.length
+        );
 
         try {
-            const myRanking = await rankingService.getUserRanking();
+            const myRanking =
+                await rankingService.getUserRanking();
 
-            setUserRanking(myRanking ?? null);
-        } catch {
+            console.log(
+                "Meu ranking:",
+                myRanking
+            );
+
+            setUserRanking(
+                myRanking ?? null
+            );
+
+        } catch (err) {
+            console.error(
+                "Erro ao carregar posição do usuário:",
+                err
+            );
+
             setUserRanking(null);
         }
     }
@@ -56,10 +102,17 @@ export default function LeaderBoard() {
             setError("");
 
             await loadRanking();
-        } catch {
+
+        } catch (err) {
+            console.error(
+                "Erro ao atualizar ranking:",
+                err
+            );
+
             setError(
                 "Erro ao atualizar o ranking."
             );
+
         } finally {
             setUpdating(false);
         }
@@ -68,122 +121,435 @@ export default function LeaderBoard() {
     if (loading) {
         return (
             <DashboardLayout>
-                <p> Carregando ranking... </p>
+                <div className="arena-content">
+                    <p className="text-slate-400">
+                        Carregando ranking...
+                    </p>
+                </div>
             </DashboardLayout>
         );
     }
 
     return (
         <DashboardLayout>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent:
-                        "space-between",
-                    alignItems: "center",
-                    marginBottom: 20,
-                }}
-            >
-                <div>
-                    <h1> Leaderboard </h1>
-                    <p> Total de jogadores:{" "} {total} </p>
+            <div className="arena-content">
+
+                {/* Cabeçalho */}
+                <div
+                    className="
+                        mb-8
+                        flex
+                        flex-col
+                        gap-4
+                        sm:flex-row
+                        sm:items-end
+                        sm:justify-between
+                    "
+                >
+                    <div>
+                        <span className="arena-badge">
+                            Salão da Glória
+                        </span>
+
+                        <h1 className="arena-title mt-3">
+                            Ranking
+                        </h1>
+
+                        <p className="arena-subtitle">
+                            Os guerreiros mais poderosos
+                            da Arena dos Bárbaros.
+                        </p>
+
+                        <p
+                            className="
+                                mt-2
+                                text-sm
+                                text-slate-500
+                            "
+                        >
+                            {total}{" "}
+                            {total === 1
+                                ? "guerreiro no ranking"
+                                : "guerreiros no ranking"}
+                        </p>
+                    </div>
+
+                    <button
+                        className="
+                            rounded-lg
+                            border
+                            border-slate-700
+                            bg-slate-900
+                            px-4
+                            py-2
+                            font-semibold
+                            text-slate-300
+                            transition
+                            hover:border-amber-500/50
+                            hover:text-amber-400
+                            disabled:cursor-not-allowed
+                            disabled:opacity-50
+                        "
+                        onClick={handleRefresh}
+                        disabled={updating}
+                    >
+                        {updating
+                            ? "Atualizando..."
+                            : "↻ Atualizar"}
+                    </button>
                 </div>
 
-                <button
-                    onClick={ handleRefresh }
-                    disabled={ updating }
-                >
-                    {updating
-                        ? "Atualizando..."
-                        : "Atualizar"}
-                </button>
-            </div>
-
-            {error && (
-                <p
-                    style={{
-                        color: "red",
-                    }}
-                >
-                    {error}
-                </p>
-            )}
-
-            {userRanking && (
-                <section
-                    style={{
-                        border:
-                            "1px solid #ccc",
-                        borderRadius: 8,
-                        padding: 20,
-                        marginBottom: 30,
-                    }}
-                >
-                    <h2> Minha Posição </h2>
-
-                    <h3> # { userRanking.rank } </h3>
-
-                    <strong> {userRanking.name} </strong>
-                    <p> Classe:{" "} { userRanking.class } </p>
-                    <p> Nível:{" "} { userRanking.level } </p>
-                    <p> Pontos:{" "} { userRanking.score } </p>
-                </section>
-            )}
-
-            <section>
-                <h2> Top Players </h2>
-                {players.length === 0 && (
-                    <p> Nenhum jogador no ranking. </p>
+                {/* Erro */}
+                {error && (
+                    <div className="arena-error mb-6">
+                        {error}
+                    </div>
                 )}
 
-                {players.map(
-                    (player) => (
+                {/* Minha posição */}
+                {userRanking && (
+                    <section
+                        className="
+                            arena-card
+                            mb-10
+                            border-amber-500/30
+                        "
+                    >
                         <div
-                            key={
-                                player.character_id
-                            }
-                            style={{
-                                border:
-                                    "1px solid #ddd",
-                                borderRadius:
-                                    6,
-                                padding: 15,
-                                marginBottom:
-                                    10,
-                                display:
-                                    "flex",
-                                justifyContent:
-                                    "space-between",
-                                alignItems:
-                                    "center",
-                            }}
+                            className="
+                                flex
+                                flex-col
+                                gap-5
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
+                            "
                         >
-                            <div
-                                style={{
-                                    display:
-                                        "flex",
-                                    gap: 15,
-                                    alignItems:
-                                        "center",
-                                }}
-                            >
-                                <strong> # { player.rank } </strong>
-                                <div>
-                                    <strong> { player.name } </strong>
-                                    <p>
-                                        { player.class }
-                                        {" - "}
-                                        Nível{" "}
-                                        { player.level }
-                                    </p>
+                            <div>
+                                <span
+                                    className="
+                                        text-xs
+                                        font-bold
+                                        uppercase
+                                        tracking-wider
+                                        text-amber-400
+                                    "
+                                >
+                                    Minha posição
+                                </span>
+
+                                <div
+                                    className="
+                                        mt-2
+                                        flex
+                                        items-center
+                                        gap-4
+                                    "
+                                >
+                                    <div
+                                        className="
+                                            flex
+                                            h-14
+                                            w-14
+                                            items-center
+                                            justify-center
+                                            rounded-xl
+                                            border
+                                            border-amber-500/30
+                                            bg-amber-500/10
+                                            text-xl
+                                            font-black
+                                            text-amber-400
+                                        "
+                                    >
+                                        #{userRanking.rank}
+                                    </div>
+
+                                    <div>
+                                        <h2
+                                            className="
+                                                text-xl
+                                                font-bold
+                                                text-white
+                                            "
+                                        >
+                                            {userRanking.name ||
+                                                "Guerreiro"}
+                                        </h2>
+
+                                        <p
+                                            className="
+                                                text-sm
+                                                text-slate-400
+                                            "
+                                        >
+                                            {userRanking.class ||
+                                                "Classe não informada"}
+
+                                            {" • "}
+
+                                            Nível{" "}
+                                            {userRanking.level ?? "-"}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <strong> { player.score }{" "} pts </strong>
+                            <div
+                                className="
+                                    rounded-xl
+                                    border
+                                    border-amber-500/20
+                                    bg-amber-500/10
+                                    px-6
+                                    py-3
+                                    text-center
+                                "
+                            >
+                                <span
+                                    className="
+                                        block
+                                        text-xs
+                                        uppercase
+                                        tracking-wider
+                                        text-slate-400
+                                    "
+                                >
+                                    Pontos
+                                </span>
+
+                                <strong
+                                    className="
+                                        text-2xl
+                                        font-black
+                                        text-amber-400
+                                    "
+                                >
+                                    {userRanking.score ?? 0}
+                                </strong>
+                            </div>
                         </div>
-                    )
+                    </section>
                 )}
-            </section>
+
+                {/* Top Players */}
+                <section>
+                    <div className="mb-5">
+                        <h2 className="arena-section-title">
+                            Top Guerreiros
+                        </h2>
+
+                        <p className="arena-subtitle">
+                            Classificação geral dos
+                            combatentes da arena.
+                        </p>
+                    </div>
+
+                    {players.length === 0 ? (
+                        <div className="arena-card">
+                            <p className="text-slate-400">
+                                Nenhum guerreiro no ranking.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {players.map(
+                                (player, index) => (
+                                    <div
+                                        key={
+                                            player.character_id ||
+                                            `ranking-${player.rank}-${index}`
+                                        }
+                                        className="
+                                            arena-card
+                                            arena-card-hover
+                                        "
+                                    >
+                                        <div
+                                            className="
+                                                flex
+                                                items-center
+                                                justify-between
+                                                gap-4
+                                            "
+                                        >
+                                            {/* Posição + personagem */}
+                                            <div
+                                                className="
+                                                    flex
+                                                    min-w-0
+                                                    items-center
+                                                    gap-4
+                                                "
+                                            >
+                                                <RankingPosition
+                                                    rank={
+                                                        player.rank
+                                                    }
+                                                />
+
+                                                <div className="min-w-0">
+                                                    <h3
+                                                        className="
+                                                            truncate
+                                                            font-bold
+                                                            text-white
+                                                        "
+                                                    >
+                                                        {player.name ||
+                                                            "Guerreiro"}
+                                                    </h3>
+
+                                                    <p
+                                                        className="
+                                                            mt-1
+                                                            text-sm
+                                                            text-slate-400
+                                                        "
+                                                    >
+                                                        {player.class ||
+                                                            "Classe não informada"}
+
+                                                        {" • "}
+
+                                                        Nível{" "}
+                                                        {player.level ??
+                                                            "-"}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Pontuação */}
+                                            <div
+                                                className="
+                                                    shrink-0
+                                                    text-right
+                                                "
+                                            >
+                                                <strong
+                                                    className="
+                                                        text-xl
+                                                        font-black
+                                                        text-amber-400
+                                                    "
+                                                >
+                                                    {player.score ??
+                                                        0}
+                                                </strong>
+
+                                                <span
+                                                    className="
+                                                        ml-1
+                                                        text-sm
+                                                        text-slate-500
+                                                    "
+                                                >
+                                                    pts
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    )}
+                </section>
+
+            </div>
         </DashboardLayout>
+    );
+}
+
+/* ----------------------------------
+   Posição no ranking
+----------------------------------- */
+
+interface RankingPositionProps {
+    rank: number;
+}
+
+function RankingPosition({
+    rank,
+}: RankingPositionProps) {
+
+    if (rank === 1) {
+        return (
+            <div
+                className="
+                    flex
+                    h-12
+                    w-12
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-amber-500/15
+                    text-xl
+                "
+            >
+                🥇
+            </div>
+        );
+    }
+
+    if (rank === 2) {
+        return (
+            <div
+                className="
+                    flex
+                    h-12
+                    w-12
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-slate-500/15
+                    text-xl
+                "
+            >
+                🥈
+            </div>
+        );
+    }
+
+    if (rank === 3) {
+        return (
+            <div
+                className="
+                    flex
+                    h-12
+                    w-12
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-orange-500/10
+                    text-xl
+                "
+            >
+                🥉
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className="
+                flex
+                h-12
+                w-12
+                shrink-0
+                items-center
+                justify-center
+                rounded-xl
+                border
+                border-slate-800
+                bg-slate-950/50
+                font-bold
+                text-slate-400
+            "
+        >
+            #{rank}
+        </div>
     );
 }

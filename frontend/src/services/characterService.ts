@@ -26,6 +26,8 @@ async function getById(id: string): Promise<Character> {
 async function getOpponents(): Promise<Character[]> {
     const response = await api.get("/characters/opponents");
 
+    console.log("GET /characters/opponents response:",response.data);
+
     return response.data?.data ?? [];
 }
 

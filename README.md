@@ -164,7 +164,7 @@
 * Sistema de batalhas via UI
 * LearderBoard em tempo real
 
-## FASE 9: MELHORIAS UX + Deploy (1.5h)
+## FASE 9: MELHORIAS UX + Deploy (1.5h) 
 * Objetivo: Polish e deploy
 
 ### Task

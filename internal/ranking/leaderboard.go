@@ -82,48 +82,68 @@ func (ls *LeaderboardService) GetPlayerScore(characterID string, characterName s
 }
 
 func (ls *LeaderboardService) GetTopPlayers(limit int64) ([]PlayerRanking, error) {
-	ctx := context.Background()
+ 	ctx := context.Background()
 
-	if limit <= 0 {
-		limit = 10
-	}
-	if limit > 100 {
-		limit = 100
-	}
+    if limit <= 0 {
+        limit = 10
+    }
 
-	scores, err := ls.redisClient.ZRangeWithScores(ctx, LeaderboardKey, 0, limit-1, true)
-	if err != nil {
-		return nil, fmt.Errorf("Erro ao buscar top players: %w", err)
-	}
+    if limit > 100 {
+        limit = 100
+    }
 
-	players := make([]PlayerRanking, 0, len(scores))
+    scores, err := ls.redisClient.ZRangeWithScores(
+        ctx,
+        LeaderboardKey,
+        0,
+        limit-1,
+        true,
+    )
 
-	for i, z := range scores {
-		memberKey, ok := z.Member.(string)
-		if !ok {
-			log.Printf("Aviso: Membro do leaderboard nao e string: %v", z.Member)
-			continue
-		}
+    if err != nil {
+        return nil, fmt.Errorf(
+            "erro ao buscar top players: %w",
+            err,
+        )
+    }
 
-		parts := strings.SplitN(memberKey, ":", 2)
-		if len(parts) != 2 {
-			log.Printf("Aviso: Membro do leaderboard nao tem formato esperado: %s", memberKey)
-			continue
-		}
+    players := make([]PlayerRanking, 0, len(scores))
 
-		characterID := parts[0]
-		characterName := parts[1]
+    for i, z := range scores {
+        memberKey, ok := z.Member.(string)
 
-		player := PlayerRanking{
-			Rank:        int64(i + 1),
-			CharacterID: characterID,
-			Name:        characterName,
-			Score:       int64(z.Score),
-		}
+        if !ok {
+            log.Printf(
+                "Aviso: membro do leaderboard não é string: %v",
+                z.Member,
+            )
+            continue
+        }
 
-		players = append(players, player)
-	}
-	return players, nil
+        parts := strings.SplitN(memberKey, ":", 2)
+
+        if len(parts) != 2 {
+            log.Printf(
+                "Aviso: membro inválido no leaderboard: %s",
+                memberKey,
+            )
+            continue
+        }
+
+        characterID := parts[0]
+        characterName := parts[1]
+
+        player := PlayerRanking{
+            Rank:        int64(i + 1),
+            CharacterID: characterID,
+            Name:        characterName,
+            Score:       int64(z.Score),
+        }
+
+        players = append(players, player)
+    }
+
+    return players, nil
 }
 
 func (ls *LeaderboardService) GetLeaderboardJSON(limit int64) (string, error) {

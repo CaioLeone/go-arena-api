@@ -25,7 +25,7 @@ func NewLeaderboardService(redisClient *redisclient.Client) *LeaderboardService 
 
 type PlayerRanking struct {
 	Rank        int64  `json:"rank"`
-	characterID string `json:"character_id"`
+	CharacterID string `json:"character_id"`
 	Name        string `json:"name"`
 	Score       int64  `json:"score"`
 }
@@ -116,7 +116,7 @@ func (ls *LeaderboardService) GetTopPlayers(limit int64) ([]PlayerRanking, error
 
 		player := PlayerRanking{
 			Rank:        int64(i + 1),
-			characterID: characterID,
+			CharacterID: characterID,
 			Name:        characterName,
 			Score:       int64(z.Score),
 		}

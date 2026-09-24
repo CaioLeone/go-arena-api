@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/caioLeone/go-arena-api/internal/dto"
 	"github.com/caioLeone/go-arena-api/internal/ranking"
 	"github.com/caioLeone/go-arena-api/internal/repository"
 	"github.com/gin-gonic/gin"
@@ -43,33 +44,41 @@ func (h *RankingHandler) GetUserRanking(c *gin.Context) {
 		})
 		return
 	}
-	if len(characters) == 0 {
-		c.JSON(http.StatusOK, gin.H{
-			"success": true,
-			"data":    []interface{}{},
-		})
-		return
-	}
 
-	var rankings []gin.H
+	rankings := make([]dto.UserRankingResponse, 0, len(characters))
 	for _, char := range characters {
-		rank, err := h.leaderboardService.GetPlayerRank(char.ID.String(), char.Name)
+
+		rank, err :=
+			h.leaderboardService.GetPlayerRank(
+				char.ID.String(),
+				char.Name,
+			)
+
 		if err != nil {
 			rank = -1
 		}
 
-		score, err := h.leaderboardService.GetPlayerScore(char.ID.String(), char.Name)
+		score, err :=
+			h.leaderboardService.GetPlayerScore(
+				char.ID.String(),
+				char.Name,
+			)
+
 		if err != nil {
 			score = 0
 		}
-		rankings = append(rankings, gin.H{
-			"character_id": char.ID,
-			"name":         char.Name,
-			"class":        char.Class,
-			"level":        char.Level,
-			"rank":         rank,
-			"score":        int64(score),
-		})
+
+		rankings = append(
+			rankings,
+			dto.UserRankingResponse{
+				CharacterID: char.ID,
+				Name:        char.Name,
+				Class:       char.Class,
+				Level:       char.Level,
+				Rank:        rank,
+				Score:       int64(score),
+			},
+		)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -92,17 +101,15 @@ func (h *RankingHandler) GetTopPlayers(c *gin.Context) {
 	limitStr := c.DefaultQuery("limit", "10")
 
 	limit, err := strconv.ParseInt(limitStr, 10, 64)
-	if err != nil {
+	if err != nil || limit <= 0 {
 		limit = 10
 	}
-	if limit <= 10 {
-		limit = 10
-	}
+
 	if limit > 100 {
 		limit = 100
 	}
 
-	players, err := h.leaderboardService.GetTopPlayers(limit)
+	rankingPlayers, err := h.leaderboardService.GetTopPlayers(limit)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -110,11 +117,32 @@ func (h *RankingHandler) GetTopPlayers(c *gin.Context) {
 		})
 		return
 	}
+
+	players := make([]dto.TopPlayersResponse, len(rankingPlayers))
+	for _, rankingPlayer := range rankingPlayers {
+		character, err := h.characterRepo.GetByIDNoUserFilter(rankingPlayer.CharacterID)
+
+		if err != nil {
+			continue
+		}
+
+		players = append(players, dto.TopPlayersResponse{
+			Rank:        rankingPlayer.Rank,
+			CharacterID: character.ID,
+			Name:        character.Name,
+			Class:       character.Class,
+			Level:       character.Level,
+			Score:       rankingPlayer.Score,
+		})
+	}
+
+	response := dto.LeaderboardResponse{
+		Players: players,
+		Total:   len(players),
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"data": gin.H{
-			"players": players,
-			"total":   len(players),
-		},
+		"data":    response,
 	})
 }

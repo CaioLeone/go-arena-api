@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	redisclient "github.com/caioLeone/go-arena-api/pkg/redis"
 	goredis "github.com/redis/go-redis/v9"
@@ -23,15 +24,11 @@ func NewLeaderboardService(redisClient *redisclient.Client) *LeaderboardService 
 }
 
 type PlayerRanking struct {
-	Rank  int64  `json:"rank"`
-	Name  string `json:"name"`
-	Score int64  `json:"score"`
+	Rank        int64  `json:"rank"`
+	characterID string `json:"character_id"`
+	Name        string `json:"name"`
+	Score       int64  `json:"score"`
 }
-
-// type PlayerRanking struct {
-// 	CharacterID string `json:"character_id"`
-// 	Score       int64  `json:"score"`
-// }
 
 // UpdatePlayerScore atualiza score de uma jogador no leaderboard
 func (ls *LeaderboardService) UpdatePlayerScore(characterID string, characterName string, score float64) error {
@@ -45,51 +42,7 @@ func (ls *LeaderboardService) UpdatePlayerScore(characterID string, characterNam
 		return fmt.Errorf("Erro ao atualizar leaderboard: %w", err)
 	}
 	return nil
-	// err := ls.redisClient.ZAdd(ctx, LeaderboardKey, characterID, score)
-	// if err != nil {
-	// 	log.Printf("Erro ao atualizar leaderboard: %v", err)
-	// 	return fmt.Errorf("Erro ao atualizar leaderboard: %w", err)
-	// }
-	// return nil
 }
-
-// func (ls *LeaderboardService) GetPlayerRank(characterID string) (int64, error) {
-// 	ctx := context.Background()
-
-// 	// memberKey := fmt.Sprintf("%s:%s", characterID, characterName)
-
-// 	// log.Println("Procurando:", memberKey)
-
-// 	// score, err := ls.redisClient.ZScore(ctx, LeaderboardKey, memberKey)
-// 	// if err != nil {
-// 	// 	log.Println("Score não encontrado:", err)
-// 	// 	return -1, err
-// 	// }
-
-// 	// log.Println("Score encontrado:", score)
-
-// 	// //rawClient := ls.redisClient.GetRawClient()
-
-// 	// rank, err := ls.redisClient.ZRevRank(ctx, LeaderboardKey, memberKey)
-// 	// if err != nil {
-// 	// 	log.Println("Rank não encontrado:", err)
-// 	// 	return -1, err
-// 	// }
-
-// 	// log.Println("Rank:", rank+1)
-
-// 	// return rank + 1, nil
-
-// 	rawClient := ls.redisClient.GetRawClient()
-// 	rank, err := rawClient.ZRevRank(ctx, LeaderboardKey, characterID).Result()
-// 	if err != nil {
-// 		if err == goredis.Nil {
-// 			return -1, nil // Jogador não encontrado
-// 		}
-// 		return -1, fmt.Errorf("Erro ao buscar rank: %w", err)
-// 	}
-// 	return rank + 1, nil
-// }
 
 // GetPlayerRank retorna o rank de um jogador
 func (ls *LeaderboardService) GetPlayerRank(characterID string, characterName string) (int64, error) {
@@ -142,29 +95,35 @@ func (ls *LeaderboardService) GetTopPlayers(limit int64) ([]PlayerRanking, error
 	if err != nil {
 		return nil, fmt.Errorf("Erro ao buscar top players: %w", err)
 	}
-	var players []PlayerRanking
+
+	players := make([]PlayerRanking, 0, len(scores))
+
 	for i, z := range scores {
-		memberName, ok := z.Member.(string)
+		memberKey, ok := z.Member.(string)
 		if !ok {
 			log.Printf("Aviso: Membro do leaderboard nao e string: %v", z.Member)
 			continue
 		}
-		player := PlayerRanking{
-			Rank:  int64(i + 1),
-			Score: int64(z.Score),
-			Name:  memberName,
+
+		parts := strings.SplitN(memberKey, ":", 2)
+		if len(parts) != 2 {
+			log.Printf("Aviso: Membro do leaderboard nao tem formato esperado: %s", memberKey)
+			continue
 		}
+
+		characterID := parts[0]
+		characterName := parts[1]
+
+		player := PlayerRanking{
+			Rank:        int64(i + 1),
+			characterID: characterID,
+			Name:        characterName,
+			Score:       int64(z.Score),
+		}
+
 		players = append(players, player)
 	}
 	return players, nil
-	// for _, z := range scores {
-	// 	id := z.Member.(string)
-	// 	players = append(players, PlayerRanking{
-	// 		CharacterID: id,
-	// 		Score:       int64(z.Score),
-	// 	})
-	// }
-	// return players, nil
 }
 
 func (ls *LeaderboardService) GetLeaderboardJSON(limit int64) (string, error) {

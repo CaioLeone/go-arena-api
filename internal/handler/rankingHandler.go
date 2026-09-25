@@ -118,22 +118,32 @@ func (h *RankingHandler) GetTopPlayers(c *gin.Context) {
 		return
 	}
 
-	players := make([]dto.TopPlayersResponse, len(rankingPlayers))
+	players := make(
+		[]dto.TopPlayersResponse,
+		0,
+		len(rankingPlayers),
+	)
+
 	for _, rankingPlayer := range rankingPlayers {
-		character, err := h.characterRepo.GetByIDNoUserFilter(rankingPlayer.CharacterID)
+		character, err := h.characterRepo.GetByIDNoUserFilter(
+			rankingPlayer.CharacterID,
+		)
 
 		if err != nil {
 			continue
 		}
 
-		players = append(players, dto.TopPlayersResponse{
-			Rank:        rankingPlayer.Rank,
-			CharacterID: character.ID,
-			Name:        character.Name,
-			Class:       character.Class,
-			Level:       character.Level,
-			Score:       rankingPlayer.Score,
-		})
+		players = append(
+			players,
+			dto.TopPlayersResponse{
+				Rank:        rankingPlayer.Rank,
+				CharacterID: character.ID,
+				Name:        character.Name,
+				Class:       character.Class,
+				Level:       character.Level,
+				Score:       rankingPlayer.Score,
+			},
+		)
 	}
 
 	response := dto.LeaderboardResponse{
